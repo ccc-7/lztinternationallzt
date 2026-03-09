@@ -1,0 +1,5 @@
+id,name,email,role,year,major,status
+U001,Alice Wang,alice.wang@example.com,TA,Year 3,Computer Science,active
+U002,Bob Li,bob.li@example.com,TA,Year 2,Information Engineering,active
+U003,Chris Zhang,chris.zhang@example.com,TA,Year 4,Software Engineering,inactive
+

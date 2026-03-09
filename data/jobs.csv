@@ -1,0 +1,5 @@
+job_id,title,module_code,organiser,min_year,max_year,hours,status
+J001,Intro to Java TA,EBU6304,Dr. Smith,2,4,40,open
+J002,Data Structures TA,EBU6302,Dr. Chen,2,4,30,open
+J003,Invigilation Support,N/A,Admin,1,4,10,closed
+
