@@ -72,7 +72,38 @@ ta-webapp/
 
 ### 一、系统环境配置（JDK 17 + Tomcat 10 + Maven）
 
-#### 1. 安装并配置 JDK 17
+#### 1. 下载并安装 VS Code
+
+1. 下载并安装 VS Code（Windows x64 User Installer）。  
+2. 用默认设置完成安装，启动一次确保正常打开。
+
+---
+
+#### 2. 安装 VS Code Java 扩展（必装）
+
+在 VS Code 的 Extensions 中安装：
+
+- **Extension Pack for Java**（Java 基础开发体验）
+- **Community Server Connectors**（用于连接/管理本地 Tomcat）
+
+说明：
+
+- 不建议安装已过时的 “Tomcat for Java” 扩展（已不再推荐）。
+- 可选安装 “Maven for Java”（若未随 Java 扩展包一起安装）。
+
+---
+
+#### 3. 配置 VS Code 使用 JDK 17（建议）
+
+若你的电脑存在多个 JDK 版本，建议在 VS Code 中显式选择 JDK 17：
+
+- 打开命令面板：`Ctrl + Shift + P`
+- 搜索并执行：`Java: Configure Java Runtime`
+- 将项目/默认运行时指向你的 JDK 17 安装路径（例如 `D:\Java\jdk-17.0.x`）
+
+---
+
+#### 4. 下载并安装 JDK 17（并设置系统变量）
 
 1. 安装 JDK 17（例如解压到：`D:\Java\jdk-17.0.x`）。  
 2. 配置系统环境变量（以 Windows 为例）：
@@ -92,7 +123,7 @@ java -version
 
 ---
 
-#### 2. 安装并配置 Apache Tomcat 10
+#### 5. 下载并安装 Apache Tomcat 10
 
 1. 下载 Tomcat 10：
    - 打开 `https://tomcat.apache.org/`，进入 **Tomcat 10** 下载页面；
@@ -121,7 +152,7 @@ http://localhost:8080
 
 ---
 
-#### 3. 安装并配置 Maven
+#### 6. 下载并安装 Apache Maven
 
 1. 下载 Maven：
    - 打开 `https://maven.apache.org/download.cgi`
@@ -142,6 +173,18 @@ mvn -v
 应看到 Maven 版本信息，并且 Java 版本为 17。
 
 ---
+
+#### 7. Git for Windows 说明
+
+1. 下载并安装 Git for Windows（x64）。  
+2. 安装完成后在 PowerShell 验证：
+
+```powershell
+git --version
+```
+
+能输出版本号则说明 Git 可用。
+
 
 ### 二、文件功能说明
 
