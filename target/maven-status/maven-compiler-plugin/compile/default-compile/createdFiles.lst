@@ -1,8 +1,0 @@
-edu\bupt\ta\controller\HomeServlet.class
-edu\bupt\ta\controller\JobListServlet.class
-edu\bupt\ta\service\JobService.class
-edu\bupt\ta\model\User.class
-edu\bupt\ta\model\Application.class
-edu\bupt\ta\storage\FileStorageUtil.class
-edu\bupt\ta\controller\LoginServlet.class
-edu\bupt\ta\model\Job.class
