@@ -1,0 +1,93 @@
+Story ID,Story Name,Description,Priority,Iteration (Sprint) number,Acceptance Criteria,Estimation,Notes,Date started (or planned),Date finished (or planned)
+US01,Create Applicant Profile,"As a TA
+I want to create my applicant profile
+So that I can submit complete applications.",Must,1,"1. The TA can enter name, student ID, programme, year of study, skills and availability.
+2. Required fields must be validated before saving.
+3. The profile can be saved successfully and reopened later.
+4. An error message is shown if required information is missing.",3,Core profile creation,2026-03-09,2026-03-11
+US02,Edit Applicant Profile,"As a TA
+I want to edit my profile information
+So that my information remains accurate and up to date.",Should,2,"1. The TA can update previously saved information.
+2. Updated information is saved and displayed correctly.
+3. Existing CV records are kept unless replaced deliberately.",2,Profile maintenance,2026-03-16,2026-03-18
+US03,Upload CV,"As a TA
+I want to upload my CV
+So that organisers can review my qualifications.",Must,1,"1. The TA can upload a CV file from the local device.
+2. The system shows the uploaded file name after a successful upload.
+3. The TA can replace the uploaded CV with a newer version.
+4. An error message is shown if no file is selected.",3,Required before application,2026-03-09,2026-03-11
+US04,Browse Available Jobs,"As a TA
+I want to browse available jobs
+So that I can identify positions that match my interests and availability.",Must,1,"1. The system displays a list of currently open jobs.
+2. Each job card shows the module or activity name, role type, hours and deadline.
+3. Closed jobs are not shown in the default open-job list.",3,Core workflow,2026-03-10,2026-03-12
+US05,Filter and Search Jobs,"As a TA
+I want to filter and search jobs
+So that I can find suitable jobs more efficiently.",Should,2,"1. The TA can filter jobs by module or activity, type and status.
+2. The TA can search jobs by keyword.
+3. Filtered results update correctly.
+4. An empty-state message is shown if no result matches the filter.",3,Usability feature,2026-03-16,2026-03-19
+US06,View Job Details,"As a TA
+I want to view detailed job information
+So that I can decide whether to apply.",Must,1,"1. The TA can open a job detail page from the job list.
+2. The detail page includes role description, requirements, hours, deadline and organiser information.
+3. The page clearly shows whether the job is open or closed.",2,Decision support,2026-03-10,2026-03-12
+US07,Apply for a Job,"As a TA
+I want to apply for a job
+So that I can be considered for a TA position.",Must,1,"1. The TA must complete profile information before applying.
+2. The TA must upload a CV before applying.
+3. The system confirms successful submission.
+4. The application is recorded in the TA application list.
+5. The MO can view the submitted application in the applicant list.",5,Core feature,2026-03-11,2026-03-14
+US08,View Application Status,"As a TA
+I want to view my application status
+So that I know whether my application is pending, shortlisted, rejected or selected.",Must,1,"1. The TA can open a My Applications page.
+2. Each submitted application shows its current status.
+3. Status labels are displayed consistently and clearly.
+4. The TA can access the related job title from the application record.",3,Transparency,2026-03-12,2026-03-15
+US09,Post a Job,"As an MO
+I want to create and publish a job post
+So that eligible students can apply.",Must,1,"1. The MO can enter job title, role description, requirements, hours, deadline and number of vacancies.
+2. Required fields must be completed before publishing.
+3. Published jobs appear in the TA job list.
+4. The MO can save the job as a draft or publish it directly.",5,Core function,2026-03-09,2026-03-12
+US10,Edit or Close a Job Post,"As an MO
+I want to edit or close a job post
+So that outdated or filled jobs are no longer available for new applications.",Should,2,"1. The MO can edit job details before the deadline.
+2. The MO can close a job post manually.
+3. Closed jobs are marked as closed and cannot receive new applications.",3,Job lifecycle,2026-03-17,2026-03-20
+US11,View Applicant List,"As an MO
+I want to view applicants for a specific job
+So that I can review candidates efficiently.",Must,1,"1. The MO can open a list of applicants for each posted job.
+2. Each applicant entry shows name, programme, availability and application status.
+3. The applicant count is displayed clearly for the job.",3,Selection step,2026-03-12,2026-03-15
+US12,Review Applicant Details and CV,"As an MO
+I want to review an applicant¡¯s full profile and CV
+So that I can make an informed selection decision.",Must,1,"1. The MO can open an applicant detail page from the applicant list.
+2. The page shows profile information and CV access.
+3. The MO can return to the applicant list without losing context.",3,Decision support,2026-03-12,2026-03-15
+US13,Select / Reject / Waitlist Applicants,"As an MO
+I want to select, reject or waitlist applicants
+So that the recruitment outcome can be managed clearly.",Must,1,"1. The MO can set the application outcome to Selected, Rejected or Waitlisted.
+2. The updated decision is reflected in the applicant list.
+3. The TA sees the updated status in My Applications.",5,Recruitment decision,2026-03-13,2026-03-15
+US14,View TA Workload Summary,"As an Admin
+I want to view each TA¡¯s overall workload
+So that I can monitor allocation fairness.",Must,1,"1. The admin can view a list of TAs with their assigned or selected workload summary.
+2. The summary includes TA name, number of assigned posts and total hours.
+3. The admin can identify heavily loaded TAs easily.",3,Management function,2026-03-13,2026-03-15
+US15,Filter Workload Records,"As an Admin
+I want to filter workload records
+So that I can inspect specific TAs or overloaded cases.",Should,2,"1. The admin can search by TA name or student ID.
+2. The admin can filter by workload status.
+3. An empty-state message is shown if no record matches the filter.",2,Monitoring improvement,2026-03-18,2026-03-21
+US16,AI Skill Matching Suggestion,"As an MO
+I want to see a skill-matching suggestion for applicants
+So that I can shortlist candidates faster.",Could,Future,"1. The system displays a matching score or explanation for each applicant.
+2. The result is presented as a suggestion rather than an automatic decision.
+3. The explanation is visible to support transparency.",8,Optional enhancement,,
+US17,AI Workload Balancing Suggestion,"As an Admin
+I want workload balancing suggestions
+So that work can be distributed more fairly.",Could,Future,"1. The system highlights potentially overloaded TAs.
+2. The system provides a suggested redistribution option.
+3. Suggestions are advisory rather than automatically applied.",8,Optional AI feature,,

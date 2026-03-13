@@ -87,3 +87,28 @@
   - 基本测试与验证。
 - 为每个成员分配至少 1 个明确任务，并对应到 Git 功能分支命名（例如 `sy/login-basic-flow`），为下一步编码阶段做准备。
 
+## Iteration 1 / Second Meeting Summary
+
+### 1. 会议概况
+
+- **日期**：2026-03-13  
+- **参会成员**：Zhu Siyuan, Chen Taiyu  Liu Zeteng
+- **记录人**：Chen Taiyu 
+- **主要目标**：
+  - 明确了第一阶段的任务要求
+  - 讨论并确定接下来的方向以及分工安排；
+  - 与老师进行沟通，理解了backlog的具体要求。
+
+### 2.项目目标
+
+- 开始着手完成：
+  - 产品待办列表（product backlog）
+  - 原型（prototype）
+  - 一份简短报告（brief report）
+
+### 3. 已完成事项
+
+- product backlog 
+- brief report 的初稿撰写
+- 两篇稿子优化方向的确定
+
