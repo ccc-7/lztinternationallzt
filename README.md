@@ -1,14 +1,20 @@
 ## TA Recruitment System – 环境与基础配置说明
 
-当前阶段，本仓库的 `README` 只说明**本地开发环境的配置步骤（JDK 17 + Tomcat 10 + Maven）**。  
-后续会在文档中逐步补充需求、设计和分支规则等内容。
-
 项目说明：
 
 - 本仓库是一个使用 Maven 管理的 Java Servlet/JSP Web 应用，war 方式部署到本地 Tomcat。
 - 数据全部存放在文本文件中（CSV 为主），不使用数据库。
 
 ---
+
+### 成员列表
+
+- 辛炯彻 `@jiongche110`
+- 苗润曦 `@Miao200506`
+- 杨刚 `@yongyuandez`
+- 朱思远 `@woruqingshan`
+- 刘泽棠 `@SystemName-e6lq`
+- 陈泰宇 `@ccc-7`
 
 ### 项目结构概览（当前文件 / 文件夹）
 
