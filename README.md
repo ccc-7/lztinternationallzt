@@ -9,12 +9,12 @@
 
 ### 成员列表
 
-- 辛炯彻 `@jiongche110`
-- 苗润曦 `@Miao200506`
-- 杨刚 `@yongyuandez`
-- 朱思远 `@woruqingshan`
-- 刘泽棠 `@SystemName-e6lq`
 - 陈泰宇 `@ccc-7`
+- 朱思远 `@woruqingshan`
+- 刘泽棠 `@yongyuandez`
+- 苗润曦 `@Miao200506`
+- 杨刚 `@SystemName-e6lq`
+- 辛炯彻 `@jiongche110`
 
 ### 项目结构概览（当前文件 / 文件夹）
 
