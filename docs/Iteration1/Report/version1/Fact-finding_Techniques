@@ -1,0 +1,15 @@
+To better understand the needs of key users in the TA recruitment process, we selected semi-structured one-on-one interviews as the core fact-finding technique, targeting TA applicants and Module Organisers (MOs) as direct stakeholders.
+This semi-structured interview method combines the rigor of structured fixed-core question modules with the flexibility of unstructured open-ended inquiries. Fixed questions ensure consistent collection of core requirement information, while open communication allows interviewees to express unanticipated needs or pain points, avoiding omissions of key user demands.
+The interview process is streamlined into three efficient stages to support agile rapid iteration and quick feedback:
+Pre-interview Preparation: We designed a modular semi-structured outline, and prepared recording tools (with consent) and user story draft templates.
+Interview Implementation: Each 20–30 minute session started with a project briefing, followed by modular questioning and targeted follow-up probes; key demands and pain points were recorded in real time.
+Post-interview Sorting (within 24 hours): Recordings were transcribed and valid data collated; insights were transformed into standard agile user stories, high-frequency demands were marked as high-priority backlog items.
+Findings from TA Applicant Interviews:
+Applicants care most about clear information, transparent rules, and visible outcomes. Before applying, they want to see detailed module requirements, especially required skills and subject knowledge. They also expect the system to make the application rules explicit, such as the limit of applying for up to three positions and so on.
+Applicants also highlighted the weakness of the previous process, which relied on questionnaires and email. The main problem was the lack of transparency, especially after submission. As a result, the new system should clearly show application outcomes, such as whether the applicant is rejected, selected, or still under review. 
+Findings from MO Interviews:
+The MO interviews showed that organisers focus mainly on workflow clarity and manageability. From their perspective, the recruitment process should follow a clear order: publishing positions, presenting required skills or knowledge, receiving applications, reviewing applicant information and CVs, and then making decisions.
+MOs considered two functions especially important: clear job posting and efficient applicant review. They also believed that applicants should be able to see the job requirements clearly before applying, in order to reduce unsuitable applications and improve efficiency.
+Regarding AI, the feedback suggested that AI is not essential to the core workflow. The priority is to ensure that the recruitment system itself works effectively. AI may be added later as an enhancement, but it is not a basic requirement.
+
+Note: This part is individually finished by Yang Gang

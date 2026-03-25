@@ -1,0 +1,71 @@
+package edu.bupt.ta.controller;
+
+import edu.bupt.ta.model.User;
+import edu.bupt.ta.model.UserRole;
+import edu.bupt.ta.service.JobService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet("/mo/jobs/new")
+public class MOJobServlet extends HttpServlet {
+
+    private final JobService jobService = new JobService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        User user = (User) req.getSession().getAttribute("currentUser");
+        if (user == null || user.getRole() != UserRole.MO) {
+            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
+
+        req.getRequestDispatcher("/WEB-INF/jsp/mo/new-job.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        req.setCharacterEncoding("UTF-8");
+
+        User user = (User) req.getSession().getAttribute("currentUser");
+        if (user == null || user.getRole() != UserRole.MO) {
+            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
+
+        try {
+            String title = req.getParameter("title");
+            String moduleCode = req.getParameter("moduleCode");
+            String organiser = req.getParameter("organiser");
+            String hoursStr = req.getParameter("hours");
+            String minYearStr = req.getParameter("minYear");
+            String maxYearStr = req.getParameter("maxYear");
+            String requiredSkills = req.getParameter("requiredSkills");
+
+            int hours = Integer.parseInt(hoursStr);
+            int minYear = Integer.parseInt(minYearStr);
+            int maxYear = Integer.parseInt(maxYearStr);
+
+            if (organiser == null || organiser.isBlank()) {
+                organiser = user.getDisplayName();
+            }
+
+            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills);
+            req.getSession().setAttribute("flashSuccess", "岗位创建成功");
+            resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
+        } catch (Exception e) {
+            req.getSession().setAttribute("flashError", "岗位创建失败，请检查输入");
+            resp.sendRedirect(req.getContextPath() + "/mo/jobs/new");
+        }
+    }
+}
