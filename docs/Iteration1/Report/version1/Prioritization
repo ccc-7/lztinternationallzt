@@ -1,0 +1,10 @@
+(1). Must Have (With the highest priority)
+These are the core functions of the Minimum Viable Product (MVP), without which the basic recruitment process cannot be completed. They include TA-side functions (create/edit profile, upload CV, browse/view positions, submit applications, check application status) , MO-side functions (post positions, view applicant information, review admissions, select/reject/waitlist applicants), and Administrator-side functions (count TA workload), covering the core link of registration, application, review and result inquiry as the foundation of system operation.
+(2). Should Have (With high priority)
+These are important experience optimization functions that can significantly improve efficiency. They include position filtering/search jobs, edit/close positions, workload record filtering, and form draft saving, multi-channel result notification, online interview check-in. These features have low development cost and high user value, solving secondary pain points.
+(3). Could Have (with medium priority)
+These are value-added expansion functions promoted when resources are sufficient, such as AI skill matching and AI workload balancing suggestions for MO and admin respectively. They assist review and management but are non-core and do not affect basic processes.
+(4). Want to Have (With low priority)
+They serve only a minority of  users and can be delayed if resources are insufficient. They include system skin customization, Chinese-English bilingual support, TA work experience management, personalized position push, and personal application information. They have no impact on the core recruitment process and low commercial value.
+
+Note: This part is individually finished by Yang Gang
