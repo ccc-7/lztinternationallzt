@@ -2,7 +2,7 @@ package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
-import edu.bupt.ta.service.JobService;
+import edu.bupt.ta.service.ApplicationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,10 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/jobs")
-public class JobListServlet extends HttpServlet {
+@WebServlet("/applications")
+public class ApplicationStatusServlet extends HttpServlet {
 
-    private final JobService jobService = new JobService();
+    private final ApplicationService applicationService = new ApplicationService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -27,7 +27,7 @@ public class JobListServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("jobs", jobService.getOpenJobsForUser(user));
-        req.getRequestDispatcher("/WEB-INF/jsp/ta/jobs.jsp").forward(req, resp);
+        req.setAttribute("applications", applicationService.getApplicationsByUserId(user.getUserId()));
+        req.getRequestDispatcher("/WEB-INF/jsp/ta/applications.jsp").forward(req, resp);
     }
 }

@@ -1,5 +1,2 @@
-application_id,user_id,job_id,status,submitted_at,notes
-A001,U001,J001,pending,2026-03-10 10:00,First-time applicant
-A002,U002,J001,accepted,2026-03-10 11:30,Has previous TA experience
-A003,U003,J003,rejected,2026-03-11 09:15,Job already closed
-
+applicationId,userId,jobId,status,submittedAt,notes
+A001,U001,J001,PENDING,2026-03-16 10:00:00,First application
