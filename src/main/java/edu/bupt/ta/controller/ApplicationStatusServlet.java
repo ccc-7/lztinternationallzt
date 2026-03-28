@@ -1,0 +1,33 @@
+package edu.bupt.ta.controller;
+
+import edu.bupt.ta.model.User;
+import edu.bupt.ta.model.UserRole;
+import edu.bupt.ta.service.ApplicationService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet("/applications")
+public class ApplicationStatusServlet extends HttpServlet {
+
+    private final ApplicationService applicationService = new ApplicationService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        User user = (User) req.getSession().getAttribute("currentUser");
+        if (user == null || user.getRole() != UserRole.TA) {
+            req.getSession().setAttribute("flashError", "请先以 TA 身份登录");
+            resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
+
+        req.setAttribute("applications", applicationService.getApplicationsByUserId(user.getUserId()));
+        req.getRequestDispatcher("/WEB-INF/jsp/ta/applications.jsp").forward(req, resp);
+    }
+}
