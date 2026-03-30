@@ -13,13 +13,13 @@ import java.io.IOException;
  * Home page controller. Forwards requests to index.jsp.
  * Reserved: Will later load announcements/stats from JobService and pass to JSP.
  */
-@WebServlet(urlPatterns = {"/", "/home"})
+@WebServlet(urlPatterns = {"/home"})
 public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/home.jsp");
         rd.forward(request, response);
     }
 }
