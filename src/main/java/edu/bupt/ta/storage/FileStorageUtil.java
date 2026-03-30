@@ -83,8 +83,25 @@ public class FileStorageUtil {
             ensureFile(USERS_FILE, USERS_HEADER);
             ensureFile(JOBS_FILE, JOBS_HEADER);
             ensureFile(APPLICATIONS_FILE, APPLICATIONS_HEADER);
+            ensureDefaultUsers();
         } catch (IOException e) {
             throw new RuntimeException("初始化数据文件失败：" + e.getMessage(), e);
+        }
+    }
+
+    private static void ensureDefaultUsers() throws IOException {
+        List<String> lines = Files.readAllLines(USERS_FILE, StandardCharsets.UTF_8);
+        if (lines.size() <= 1) {
+            try (BufferedWriter writer = Files.newBufferedWriter(USERS_FILE, StandardCharsets.UTF_8)) {
+                writer.write(USERS_HEADER);
+                writer.newLine();
+                writer.write("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE");
+                writer.newLine();
+                writer.write("U002,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE");
+                writer.newLine();
+                writer.write("U003,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE");
+                writer.newLine();
+            }
         }
     }
 
