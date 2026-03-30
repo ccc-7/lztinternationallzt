@@ -10,6 +10,8 @@ import edu.bupt.ta.model.UserRole;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,6 +39,11 @@ public class FileStorageUtil {
     }
 
     private static Path resolveBaseDir() {
+        Path repoDataDir = resolveRepoDataDir();
+        if (repoDataDir != null) {
+            return repoDataDir;
+        }
+
         List<Path> candidates = new ArrayList<>();
 
         String sysProp = System.getProperty("ta.data.dir");
@@ -77,6 +84,58 @@ public class FileStorageUtil {
         return Paths.get("data");
     }
 
+    private static Path resolveRepoDataDir() {
+        String userDir = System.getProperty("user.dir");
+        if (userDir != null && !userDir.isBlank()) {
+            Path fromUserDir = findTrackedDataDir(Paths.get(userDir));
+            if (fromUserDir != null) {
+                return fromUserDir;
+            }
+        }
+
+        try {
+            URI codeSource = FileStorageUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            Path location = Paths.get(codeSource);
+            Path fromCodeSource = findTrackedDataDir(location);
+            if (fromCodeSource != null) {
+                return fromCodeSource;
+            }
+        } catch (URISyntaxException | RuntimeException ignored) {
+            // Fallback to legacy resolution flow if code source cannot be resolved.
+        }
+
+        return null;
+    }
+
+    private static Path findTrackedDataDir(Path start) {
+        if (start == null) {
+            return null;
+        }
+
+        Path current = start.toAbsolutePath().normalize();
+        if (Files.isRegularFile(current)) {
+            current = current.getParent();
+        }
+
+        while (current != null) {
+            Path localPom = current.resolve("pom.xml");
+            Path localData = current.resolve("data");
+            if (Files.exists(localPom) && Files.isDirectory(localData)) {
+                return localData;
+            }
+
+            Path modulePom = current.resolve("ta-webapp").resolve("pom.xml");
+            Path moduleData = current.resolve("ta-webapp").resolve("data");
+            if (Files.exists(modulePom) && Files.isDirectory(moduleData)) {
+                return moduleData;
+            }
+
+            current = current.getParent();
+        }
+
+        return null;
+    }
+
     private static void initFiles() {
         try {
             Files.createDirectories(BASE_DIR);
@@ -84,6 +143,8 @@ public class FileStorageUtil {
             ensureFile(JOBS_FILE, JOBS_HEADER);
             ensureFile(APPLICATIONS_FILE, APPLICATIONS_HEADER);
             ensureDefaultUsers();
+            ensureDefaultJobs();
+            ensureDefaultApplications();
         } catch (IOException e) {
             throw new RuntimeException("初始化数据文件失败：" + e.getMessage(), e);
         }
@@ -100,6 +161,34 @@ public class FileStorageUtil {
                 writer.write("U002,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE");
                 writer.newLine();
                 writer.write("U003,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE");
+                writer.newLine();
+            }
+        }
+    }
+
+    private static void ensureDefaultJobs() throws IOException {
+        List<String> lines = Files.readAllLines(JOBS_FILE, StandardCharsets.UTF_8);
+        if (lines.size() <= 1) {
+            try (BufferedWriter writer = Files.newBufferedWriter(JOBS_FILE, StandardCharsets.UTF_8)) {
+                writer.write(JOBS_HEADER);
+                writer.newLine();
+                writer.write("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95");
+                writer.newLine();
+                writer.write("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89");
+                writer.newLine();
+                writer.write("J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92");
+                writer.newLine();
+            }
+        }
+    }
+
+    private static void ensureDefaultApplications() throws IOException {
+        List<String> lines = Files.readAllLines(APPLICATIONS_FILE, StandardCharsets.UTF_8);
+        if (lines.size() <= 1) {
+            try (BufferedWriter writer = Files.newBufferedWriter(APPLICATIONS_FILE, StandardCharsets.UTF_8)) {
+                writer.write(APPLICATIONS_HEADER);
+                writer.newLine();
+                writer.write("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application");
                 writer.newLine();
             }
         }
