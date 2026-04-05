@@ -39,49 +39,8 @@ public class FileStorageUtil {
     }
 
     private static Path resolveBaseDir() {
-        Path repoDataDir = resolveRepoDataDir();
-        if (repoDataDir != null) {
-            return repoDataDir;
-        }
-
-        List<Path> candidates = new ArrayList<>();
-
-        String sysProp = System.getProperty("ta.data.dir");
-        if (sysProp != null && !sysProp.isBlank()) {
-            candidates.add(Paths.get(sysProp));
-        }
-
-        String env = System.getenv("TA_DATA_DIR");
-        if (env != null && !env.isBlank()) {
-            candidates.add(Paths.get(env));
-        }
-
-        String catalinaBase = System.getProperty("catalina.base");
-        if (catalinaBase != null && !catalinaBase.isBlank()) {
-            candidates.add(Paths.get(catalinaBase, "ta-data"));
-        }
-
-        String userDir = System.getProperty("user.dir");
-        if (userDir != null && !userDir.isBlank()) {
-            Path ud = Paths.get(userDir);
-            candidates.add(ud.resolve("data"));
-            candidates.add(ud.resolve("ta-webapp").resolve("data"));
-            if (ud.getParent() != null) {
-                candidates.add(ud.getParent().resolve("data"));
-            }
-        }
-
-        for (Path candidate : candidates) {
-            if (Files.exists(candidate)) {
-                return candidate;
-            }
-        }
-
-        if (!candidates.isEmpty()) {
-            return candidates.get(0);
-        }
-
-        return Paths.get("data");
+        // 强制只用项目根目录下的 data 文件夹
+        return Paths.get("data").toAbsolutePath().normalize();
     }
 
     private static Path resolveRepoDataDir() {
