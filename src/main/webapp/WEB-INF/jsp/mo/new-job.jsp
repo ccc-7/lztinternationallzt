@@ -66,13 +66,23 @@
                     <input type="number" name="maxYear" min="1" max="8" required>
                 </div>
 
+                <div>
+                    <label>招聘人数</label>
+                    <input type="number" name="vacancies" min="1" placeholder="例如：2" required>
+                </div>
+
+                <div>
+                    <label>申请截止日期</label>
+                    <input type="date" name="deadline" required>
+                </div>
+
                 <div class="full-width">
                     <label>技能要求</label>
                     <input type="text" name="requiredSkills" placeholder="Java, Python, Communication">
                 </div>
 
                 <div class="full-width form-actions">
-                    <button type="submit" class="btn btn-primary">创建岗位</button>
+                    <button type="submit" class="btn btn-primary">发布岗位</button>
                     <a href="${pageContext.request.contextPath}/mo/dashboard" class="btn btn-secondary">返回</a>
                 </div>
             </form>

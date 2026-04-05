@@ -1,2 +1,2 @@
-applicationId,userId,jobId,status,submittedAt,notes
-A001,U001,J001,PENDING,2026-03-16 10:00:00,First application
+applicationId,userId,jobId,status,submittedAt,notes,availability
+A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,

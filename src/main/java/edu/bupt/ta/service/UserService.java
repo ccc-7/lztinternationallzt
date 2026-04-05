@@ -81,6 +81,64 @@ public class UserService {
         return user;
     }
 
+    public void registerUser(User user) {
+        List<User> users = storage.loadUsers();
+
+        Optional<User> existed = users.stream()
+                .filter(u -> u.getUsername().equalsIgnoreCase(user.getUsername()))
+                .findFirst();
+
+        if (existed.isPresent()) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
+
+        if (user.getSkills() != null) {
+            user.setSkills(normalizeSkills(user.getSkills()));
+        }
+
+        user.setUserId(nextUserId(users));
+        user.setUsername(user.getUsername().trim());
+        user.setPassword(user.getPassword().trim());
+        if (user.getName() != null) {
+            user.setName(user.getName().trim());
+        }
+        if (user.getEmail() != null) {
+            user.setEmail(user.getEmail().trim());
+        }
+        if (user.getMajor() != null) {
+            user.setMajor(user.getMajor().trim());
+        }
+
+        users.add(user);
+        storage.saveUsers(users);
+    }
+
+    public void toggleUserStatus(String userId) {
+        List<User> users = storage.loadUsers();
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                user.setStatus("ACTIVE".equals(user.getStatus()) ? "INACTIVE" : "ACTIVE");
+                break;
+            }
+        }
+        storage.saveUsers(users);
+    }
+
+    public void updatePassword(String userId, String newPassword) {
+        List<User> users = storage.loadUsers();
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                user.setPassword(newPassword);
+                break;
+            }
+        }
+        storage.saveUsers(users);
+    }
+
+    public void saveUsersDirect(List<User> users) {
+        storage.saveUsers(users);
+    }
+
     private String nextUserId(List<User> users) {
         int max = users.stream()
                 .map(User::getUserId)

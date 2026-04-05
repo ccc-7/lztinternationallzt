@@ -7,10 +7,10 @@
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
-<div class="layout">
-    <aside class="sidebar">
+<div class="layout layout-ta">
+    <aside class="sidebar sidebar-ta" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo">TA</div>
+            <div class="brand-logo brand-ta">TA</div>
             <div>
                 <h3>TA Portal</h3>
                 <p>Recruitment System</p>
@@ -18,146 +18,296 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item active" href="${pageContext.request.contextPath}/ta/dashboard">Dashboard</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/jobs">Available Positions</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/applications">My Applications</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/logout">Log out</a>
+            <a class="nav-item active" href="${pageContext.request.contextPath}/ta/dashboard">
+                <span class="nav-icon-svg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </span>
+                Dashboard
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
+                <span class="nav-icon-svg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                </span>
+                Available Positions
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/applications">
+                <span class="nav-icon-svg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </span>
+                My Applications
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/logout">
+                <span class="nav-icon-svg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </span>
+                Log out
+            </a>
         </nav>
     </aside>
 
-    <main class="content">
-        <div class="topbar">
-            <button class="sidebar-toggle">☰</button>
+    <main class="content content-ta">
+        <div class="topbar topbar-ta">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+            <div class="topbar-title">TA Dashboard</div>
             <div class="topbar-right">
-                <span><%= currentUser != null ? currentUser.getDisplayName() : "" %></span>
+                <div class="user-menu">
+                    <span class="user-name"><%= currentUser != null ? currentUser.getDisplayName() : "" %></span>
+                </div>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
-        <div class="portal-shell">
-            <div class="portal-main">
-                <section class="panel portal-header-panel">
-                    <h1>Dashboard</h1>
-                    <p class="portal-greeting">Hi, ${sessionScope.currentUser.name}!</p>
-                </section>
+        <div class="ta-dashboard">
+            <div class="portal-shell">
+                <div class="portal-main">
+                    <section class="panel portal-header-panel">
+                        <h1>Dashboard</h1>
+                        <p class="portal-greeting">Hi, ${sessionScope.currentUser.name}!</p>
+                    </section>
 
-                <section class="panel portal-timeline-panel">
-                    <div class="portal-section-title">Application timeline</div>
-
-                    <div class="portal-toolbar">
-                        <select>
-                            <option>This semester</option>
-                            <option>This month</option>
-                            <option>All</option>
-                        </select>
-
-                        <select>
-                            <option>Sort by latest</option>
-                            <option>Sort by status</option>
-                        </select>
-
-                        <input type="text" placeholder="Search by position title or module code">
-                    </div>
-
-                    <div class="timeline-list">
-                        <div class="timeline-item">
-                            <div class="timeline-time">Now</div>
-                            <div class="timeline-content">
-                                <h4>Application summary updated</h4>
-                                <p>You currently have <strong>${pendingCount}</strong> active application(s) under review or interview.</p>
+                    <section class="stats-grid stats-ta">
+                        <div class="stat-card">
+                            <div class="stat-icon">&#128203;</div>
+                            <div class="stat-content">
+                                <h4>Active Applications</h4>
+                                <div class="stat-value">${pendingCount}</div>
+                                <p>Pending or interview stage</p>
                             </div>
-                            <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/applications">View details</a>
+                        </div>
+                        <div class="stat-card stat-highlight">
+                            <div class="stat-icon">&#10004;</div>
+                            <div class="stat-content">
+                                <h4>Accepted</h4>
+                                <div class="stat-value">${acceptedApplications}</div>
+                                <p>Applications approved</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">&#128640;</div>
+                            <div class="stat-content">
+                                <h4>Matched Positions</h4>
+                                <div class="stat-value">${matchCount}</div>
+                                <p>Open positions for you</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">&#9651;</div>
+                            <div class="stat-content">
+                                <h4>Total Open</h4>
+                                <div class="stat-value">${totalOpenPositions}</div>
+                                <p>Available positions</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="panel portal-timeline-panel">
+                        <div class="portal-section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Application Timeline
                         </div>
 
-                        <div class="timeline-item">
-                            <div class="timeline-time">Match</div>
-                            <div class="timeline-content">
-                                <h4>Recommended positions</h4>
-                                <p>${bestMatchMessage}</p>
-                            </div>
-                            <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/jobs">Open jobs</a>
+                        <c:choose>
+                            <c:when test="${empty myApplications}">
+                                <div class="empty-state-panel">
+                                    <span class="empty-icon-large">&#128203;</span>
+                                    <p>No applications yet</p>
+                                    <a href="${pageContext.request.contextPath}/jobs" class="btn btn-primary btn-small">Browse Positions</a>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="timeline-list">
+                                    <c:forEach var="app" items="${myApplications}">
+                                        <div class="timeline-item">
+                                            <div class="timeline-time">${app.submittedAt}</div>
+                                            <div class="timeline-content">
+                                                <h4>Application: ${jobTitles[app.jobId]}</h4>
+                                                <p>Status: <span class="badge ${app.status}">${app.status == 'PENDING' ? 'Pending' : app.status == 'ACCEPTED' ? 'Accepted' : app.status == 'REJECTED' ? 'Rejected' : 'Interview'}</span></p>
+                                            </div>
+                                            <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/applications">Details</a>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                                <div class="timeline-footer">
+                                    <a href="${pageContext.request.contextPath}/applications" class="link-more">View all applications &rarr;</a>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="panel">
+                        <div class="portal-section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            Recommended For You
                         </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-time">Profile</div>
-                            <div class="timeline-content">
-                                <h4>Profile readiness</h4>
-                                <p>Keep your major, skills and year information updated to improve role matching.</p>
-                            </div>
-                            <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/ta/dashboard">Review profile</a>
+                        <p class="best-match-msg">${bestMatchMessage}</p>
+                        <div class="match-actions">
+                            <a href="${pageContext.request.contextPath}/jobs" class="btn btn-primary btn-small">Browse All Matches</a>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <section class="stats-grid">
-                    <div class="stat-card">
-                        <h4>Active applications</h4>
-                        <div class="stat-value">${pendingCount}</div>
-                        <p>Pending or interview-stage applications.</p>
-                    </div>
+                    <section class="panel">
+                        <div class="portal-section-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            My Profile
+                        </div>
+                        <div class="profile-grid">
+                            <div class="profile-item">
+                                <span class="profile-label">Username</span>
+                                <span class="profile-value">${sessionScope.currentUser.username}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">Name</span>
+                                <span class="profile-value">${sessionScope.currentUser.name}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">Email</span>
+                                <span class="profile-value">${sessionScope.currentUser.email}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">Year</span>
+                                <span class="profile-value">${sessionScope.currentUser.year}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">Major</span>
+                                <span class="profile-value">${sessionScope.currentUser.major}</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">Skills</span>
+                                <span class="profile-value">${sessionScope.currentUser.skills}</span>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-secondary btn-small" disabled title="Coming Soon - Profile editing will be available soon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Edit Profile (Coming Soon)
+                            </button>
+                        </div>
+                    </section>
+                </div>
 
-                    <div class="stat-card">
-                        <h4>Matched positions</h4>
-                        <div class="stat-value">${matchedJobs}</div>
-                        <p>Open positions matching your profile.</p>
-                    </div>
+                <aside class="portal-side">
+                    <section class="panel portal-side-box">
+                        <div class="portal-side-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            Quick Actions
+                        </div>
+                        <div class="quick-action-grid">
+                            <a href="${pageContext.request.contextPath}/jobs" class="quick-action-card">
+                                <span class="qa-icon">&#128269;</span>
+                                <span class="qa-text">Apply for Position</span>
+                            </a>
+                            <a href="${pageContext.request.contextPath}/applications" class="quick-action-card">
+                                <span class="qa-icon">&#128203;</span>
+                                <span class="qa-text">Check Applications</span>
+                            </a>
+                            <a href="${pageContext.request.contextPath}/jobs" class="quick-action-card">
+                                <span class="qa-icon">&#128640;</span>
+                                <span class="qa-text">View Matches</span>
+                            </a>
+                        </div>
+                    </section>
 
-                    <div class="stat-card">
-                        <h4>Next actions</h4>
-                        <div class="stat-value">${todoCount}</div>
-                        <p>Items that may require your attention.</p>
-                    </div>
+                    <section class="panel portal-side-box">
+                        <div class="portal-side-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            Hot Positions
+                        </div>
+                        <div class="hot-jobs-list">
+                            <c:forEach var="entry" items="${topJobs}" varStatus="status">
+                                <div class="hot-job-item">
+                                    <span class="hot-job-rank">${status.index + 1}</span>
+                                    <div class="hot-job-info">
+                                        <span class="hot-job-title">${jobTitles[entry.key]}</span>
+                                        <span class="hot-job-count">${entry.value} applicants</span>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                            <c:if test="${empty topJobs}">
+                                <div class="empty-state-small">No data available</div>
+                            </c:if>
+                        </div>
+                    </section>
 
-                    <div class="stat-card">
-                        <h4>Profile overview</h4>
-                        <div class="ring-score">TA</div>
-                        <p>Your profile is visible to module organisers.</p>
-                    </div>
-                </section>
-
-                <section class="panel">
-                    <div class="portal-section-title">My profile</div>
-                    <div class="profile-grid">
-                        <div><strong>Username:</strong> ${sessionScope.currentUser.username}</div>
-                        <div><strong>Name:</strong> ${sessionScope.currentUser.name}</div>
-                        <div><strong>Email:</strong> ${sessionScope.currentUser.email}</div>
-                        <div><strong>Year:</strong> ${sessionScope.currentUser.year}</div>
-                        <div><strong>Major:</strong> ${sessionScope.currentUser.major}</div>
-                        <div><strong>Skills:</strong> ${sessionScope.currentUser.skills}</div>
-                    </div>
-                </section>
+                    <section class="panel portal-side-box">
+                        <div class="portal-side-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Profile Completeness
+                        </div>
+                        <div class="completeness-bar">
+                            <div class="completeness-fill" style="width: ${currentUser.major != null && currentUser.skills != null && currentUser.year > 0 ? 80 : 50}%"></div>
+                        </div>
+                        <div class="completeness-text">
+                            <c:choose>
+                                <c:when test="${currentUser.major != null && currentUser.skills != null && currentUser.year > 0}">
+                                    Your profile is nearly complete! Add more skills for better matches.
+                                </c:when>
+                                <c:otherwise>
+                                    Complete your profile (major, year, skills) to improve position matching.
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </section>
+                </aside>
             </div>
-
-            <aside class="portal-side">
-                <section class="panel portal-side-box">
-                    <div class="portal-side-title">Position search</div>
-                    <input class="portal-side-input" type="text" placeholder="Search positions">
-                    <div class="portal-side-actions">
-                        <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/jobs">Search my matches</a>
-                        <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/jobs">Search all positions</a>
-                    </div>
-                </section>
-
-                <section class="panel portal-side-box">
-                    <div class="portal-side-title">Recently used</div>
-                    <div class="portal-link-list">
-                        <a href="${pageContext.request.contextPath}/applications">Application Status</a>
-                        <a href="${pageContext.request.contextPath}/jobs">Available Positions</a>
-                        <a href="${pageContext.request.contextPath}/ta/dashboard">My Profile</a>
-                    </div>
-                </section>
-
-                <section class="panel portal-side-box">
-                    <div class="portal-side-title">Quick access</div>
-                    <div class="portal-link-list">
-                        <a href="${pageContext.request.contextPath}/jobs">Browse open positions</a>
-                        <a href="${pageContext.request.contextPath}/applications">Check current progress</a>
-                        <a href="${pageContext.request.contextPath}/logout">Secure sign out</a>
-                    </div>
-                </section>
-            </aside>
         </div>
     </main>
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+<script>
+function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var flashSuccess = '${sessionScope.flashSuccess}';
+    var flashError = '${sessionScope.flashError}';
+    if (flashSuccess) {
+        showToast(flashSuccess, 'success');
+    }
+    if (flashError) {
+        showToast(flashError, 'error');
+    }
+});
+</script>

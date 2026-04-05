@@ -7,18 +7,20 @@ public class Application {
     private ApplicationStatus status;
     private String submittedAt;
     private String notes;
+    private String availability;
 
     public Application() {
     }
 
     public Application(String applicationId, String userId, String jobId,
-                       ApplicationStatus status, String submittedAt, String notes) {
+                       ApplicationStatus status, String submittedAt, String notes, String availability) {
         this.applicationId = applicationId;
         this.userId = userId;
         this.jobId = jobId;
         this.status = status;
         this.submittedAt = submittedAt;
         this.notes = notes;
+        this.availability = availability;
     }
 
     public String getApplicationId() {
@@ -67,5 +69,13 @@ public class Application {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 }

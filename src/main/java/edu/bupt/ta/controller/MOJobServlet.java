@@ -51,16 +51,19 @@ public class MOJobServlet extends HttpServlet {
             String minYearStr = req.getParameter("minYear");
             String maxYearStr = req.getParameter("maxYear");
             String requiredSkills = req.getParameter("requiredSkills");
+            String deadline = req.getParameter("deadline");
+            String vacanciesStr = req.getParameter("vacancies");
 
             int hours = Integer.parseInt(hoursStr);
             int minYear = Integer.parseInt(minYearStr);
             int maxYear = Integer.parseInt(maxYearStr);
+            int vacancies = Integer.parseInt(vacanciesStr);
 
             if (organiser == null || organiser.isBlank()) {
                 organiser = user.getDisplayName();
             }
 
-            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills);
+            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
             req.getSession().setAttribute("flashSuccess", "岗位创建成功");
             resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
         } catch (Exception e) {

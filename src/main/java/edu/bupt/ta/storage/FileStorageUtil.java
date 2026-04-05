@@ -23,11 +23,11 @@ import java.util.List;
 public class FileStorageUtil {
 
     private static final String USERS_HEADER =
-            "userId,username,password,name,email,role,year,major,skills,status";
+            "userId,username,password,name,email,role,year,major,skills,status,availability";
     private static final String JOBS_HEADER =
-            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore";
+            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
     private static final String APPLICATIONS_HEADER =
-            "applicationId,userId,jobId,status,submittedAt,notes";
+            "applicationId,userId,jobId,status,submittedAt,notes,availability";
 
     private static final Path BASE_DIR = resolveBaseDir();
     private static final Path USERS_FILE = BASE_DIR.resolve("ta_users.csv");
@@ -156,11 +156,11 @@ public class FileStorageUtil {
             try (BufferedWriter writer = Files.newBufferedWriter(USERS_FILE, StandardCharsets.UTF_8)) {
                 writer.write(USERS_HEADER);
                 writer.newLine();
-                writer.write("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE");
+                writer.write("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,");
                 writer.newLine();
-                writer.write("U002,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE");
+                writer.write("U002,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE,");
                 writer.newLine();
-                writer.write("U003,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE");
+                writer.write("U003,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE,");
                 writer.newLine();
             }
         }
@@ -172,11 +172,11 @@ public class FileStorageUtil {
             try (BufferedWriter writer = Files.newBufferedWriter(JOBS_FILE, StandardCharsets.UTF_8)) {
                 writer.write(JOBS_HEADER);
                 writer.newLine();
-                writer.write("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95");
+                writer.write("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2026-05-01,3");
                 writer.newLine();
-                writer.write("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89");
+                writer.write("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2026-05-15,2");
                 writer.newLine();
-                writer.write("J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92");
+                writer.write("J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-04-30,4");
                 writer.newLine();
             }
         }
@@ -188,7 +188,7 @@ public class FileStorageUtil {
             try (BufferedWriter writer = Files.newBufferedWriter(APPLICATIONS_FILE, StandardCharsets.UTF_8)) {
                 writer.write(APPLICATIONS_HEADER);
                 writer.newLine();
-                writer.write("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application");
+                writer.write("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,");
                 writer.newLine();
             }
         }
@@ -217,7 +217,7 @@ public class FileStorageUtil {
                     continue;
                 }
                 List<String> f = parseCsvLine(line);
-                if (f.size() < 10) {
+                if (f.size() < 11) {
                     continue;
                 }
                 User user = new User(
@@ -230,7 +230,8 @@ public class FileStorageUtil {
                         parseInt(f.get(6), 0),
                         f.get(7),
                         f.get(8),
-                        f.get(9)
+                        f.get(9),
+                        f.get(10)
                 );
                 users.add(user);
             }
@@ -255,7 +256,8 @@ public class FileStorageUtil {
                         String.valueOf(user.getYear()),
                         user.getMajor(),
                         user.getSkills(),
-                        user.getStatus()
+                        user.getStatus(),
+                        user.getAvailability() == null ? "" : user.getAvailability()
                 ));
                 writer.newLine();
             }
@@ -278,7 +280,7 @@ public class FileStorageUtil {
                     continue;
                 }
                 List<String> f = parseCsvLine(line);
-                if (f.size() < 10) {
+                if (f.size() < 12) {
                     continue;
                 }
                 Job job = new Job(
@@ -291,7 +293,9 @@ public class FileStorageUtil {
                         parseInt(f.get(6), 0),
                         JobStatus.fromString(f.get(7)),
                         f.get(8),
-                        parseInt(f.get(9), 0)
+                        parseInt(f.get(9), 0),
+                        f.get(10),
+                        parseInt(f.get(11), 1)
                 );
                 jobs.add(job);
             }
@@ -316,7 +320,9 @@ public class FileStorageUtil {
                         String.valueOf(job.getHours()),
                         job.getStatus() == null ? "OPEN" : job.getStatus().name(),
                         job.getRequiredSkills(),
-                        String.valueOf(job.getMatchScore())
+                        String.valueOf(job.getMatchScore()),
+                        job.getDeadline() == null ? "" : job.getDeadline(),
+                        String.valueOf(job.getVacancies())
                 ));
                 writer.newLine();
             }
@@ -348,7 +354,8 @@ public class FileStorageUtil {
                         f.get(2),
                         ApplicationStatus.fromString(f.get(3)),
                         f.get(4),
-                        f.get(5)
+                        f.get(5),
+                        f.size() > 6 ? f.get(6) : ""
                 );
                 apps.add(app);
             }
@@ -369,7 +376,8 @@ public class FileStorageUtil {
                         app.getJobId(),
                         app.getStatus() == null ? "PENDING" : app.getStatus().name(),
                         app.getSubmittedAt(),
-                        app.getNotes()
+                        app.getNotes() == null ? "" : app.getNotes(),
+                        app.getAvailability() == null ? "" : app.getAvailability()
                 ));
                 writer.newLine();
             }

@@ -3,6 +3,7 @@ package edu.bupt.ta.controller;
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
 import edu.bupt.ta.service.AdminService;
+import edu.bupt.ta.service.LogService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class AdminDashboardServlet extends HttpServlet {
 
     private final AdminService adminService = new AdminService();
+    private final LogService logService = new LogService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -28,6 +30,7 @@ public class AdminDashboardServlet extends HttpServlet {
         }
 
         req.setAttribute("workloads", adminService.calculateUserWorkloads());
+        req.setAttribute("stats", adminService.getDashboardStats());
         req.getRequestDispatcher("/WEB-INF/jsp/admin/dashboard.jsp").forward(req, resp);
     }
 }
