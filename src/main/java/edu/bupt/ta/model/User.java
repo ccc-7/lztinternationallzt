@@ -11,12 +11,13 @@ public class User {
     private String major;
     private String skills;
     private String status;
+    private String availability;
 
     public User() {
     }
 
     public User(String userId, String username, String password, String name, String email,
-                UserRole role, int year, String major, String skills, String status) {
+                UserRole role, int year, String major, String skills, String status, String availability) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -27,6 +28,7 @@ public class User {
         this.major = major;
         this.skills = skills;
         this.status = status;
+        this.availability = availability;
     }
 
     public String getUserId() {
@@ -111,5 +113,13 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 }

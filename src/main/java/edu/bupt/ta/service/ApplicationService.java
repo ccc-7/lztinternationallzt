@@ -48,6 +48,30 @@ public class ApplicationService {
         return result;
     }
 
+    public List<Application> getApplicationsByJobId(String jobId) {
+        List<Application> result = new ArrayList<>();
+        for (Application app : storage.loadApplications()) {
+            if (app.getJobId().equals(jobId)) {
+                result.add(app);
+            }
+        }
+        return result;
+    }
+
+    public int countApplicationsByJobId(String jobId) {
+        int count = 0;
+        for (Application app : storage.loadApplications()) {
+            if (app.getJobId().equals(jobId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countTotalApplications() {
+        return storage.loadApplications().size();
+    }
+
     public void updateStatus(String applicationId, ApplicationStatus newStatus) {
         List<Application> applications = storage.loadApplications();
         boolean found = false;

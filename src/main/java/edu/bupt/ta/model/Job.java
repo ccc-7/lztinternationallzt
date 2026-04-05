@@ -11,13 +11,15 @@ public class Job {
     private JobStatus status;
     private String requiredSkills;
     private int matchScore;
+    private String deadline;
+    private int vacancies;
 
     public Job() {
     }
 
     public Job(String jobId, String title, String moduleCode, String organiser,
                int minYear, int maxYear, int hours, JobStatus status,
-               String requiredSkills, int matchScore) {
+               String requiredSkills, int matchScore, String deadline, int vacancies) {
         this.jobId = jobId;
         this.title = title;
         this.moduleCode = moduleCode;
@@ -28,6 +30,8 @@ public class Job {
         this.status = status;
         this.requiredSkills = requiredSkills;
         this.matchScore = matchScore;
+        this.deadline = deadline;
+        this.vacancies = vacancies;
     }
 
     public String getJobId() {
@@ -108,5 +112,21 @@ public class Job {
 
     public void setMatchScore(int matchScore) {
         this.matchScore = matchScore;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public int getVacancies() {
+        return vacancies;
+    }
+
+    public void setVacancies(int vacancies) {
+        this.vacancies = vacancies;
     }
 }

@@ -1,4 +1,4 @@
-jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore
-J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95
-J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89
-J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92
+jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies
+J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2026-05-01,3
+J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2026-05-15,2
+J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-04-30,4

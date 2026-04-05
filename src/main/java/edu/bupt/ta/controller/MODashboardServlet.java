@@ -1,6 +1,7 @@
 package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.ApplicationStatus;
+import edu.bupt.ta.model.Job;
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
 import edu.bupt.ta.service.ApplicationService;
@@ -12,6 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet("/mo/dashboard")
 public class MODashboardServlet extends HttpServlet {
@@ -33,6 +37,18 @@ public class MODashboardServlet extends HttpServlet {
         req.setAttribute("jobCount", jobService.countJobsByOrganiser(user.getDisplayName()));
         req.setAttribute("pendingCount", applicationService.countAllByStatus(ApplicationStatus.PENDING));
         req.setAttribute("acceptedCount", applicationService.countAllByStatus(ApplicationStatus.ACCEPTED));
+
+        req.setAttribute("totalJobs", jobService.countTotalJobs());
+        req.setAttribute("activeJobs", jobService.countActiveJobs());
+        req.setAttribute("totalApplicants", applicationService.countTotalApplications());
+        req.setAttribute("jobs", jobService.getAllJobs());
+
+        List<Job> jobs = jobService.getAllJobs();
+        Map<String, Integer> applicationCounts = new HashMap<>();
+        for (Job job : jobs) {
+            applicationCounts.put(job.getJobId(), applicationService.countApplicationsByJobId(job.getJobId()));
+        }
+        req.setAttribute("applicationCounts", applicationCounts);
 
         req.getRequestDispatcher("/WEB-INF/jsp/mo/dashboard.jsp").forward(req, resp);
     }
