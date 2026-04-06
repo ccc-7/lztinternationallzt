@@ -73,16 +73,22 @@ public class ApplicationService {
     }
 
     public void updateStatus(String applicationId, ApplicationStatus newStatus) {
+        updateStatus(applicationId, newStatus, null);
+    }
+
+    public void updateStatus(String applicationId, ApplicationStatus newStatus, String notesOverride) {
         List<Application> applications = storage.loadApplications();
         boolean found = false;
 
         for (Application app : applications) {
             if (app.getApplicationId().equals(applicationId)) {
                 app.setStatus(newStatus);
-                if (newStatus == ApplicationStatus.ACCEPTED) {
-                    app.setNotes("Accepted by MO");
+                if (notesOverride != null && !notesOverride.isBlank()) {
+                    app.setNotes(notesOverride);
+                } else if (newStatus == ApplicationStatus.ACCEPTED) {
+                    app.setNotes("Accepted");
                 } else if (newStatus == ApplicationStatus.REJECTED) {
-                    app.setNotes("Rejected by MO");
+                    app.setNotes("Rejected");
                 } else if (newStatus == ApplicationStatus.INTERVIEW) {
                     app.setNotes("Moved to interview");
                 }

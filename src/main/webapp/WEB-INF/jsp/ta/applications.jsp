@@ -6,27 +6,33 @@
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
-<div class="layout">
-    <aside class="sidebar">
+<div class="layout layout-ta">
+    <aside class="sidebar sidebar-ta" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo">TA</div>
+            <div class="brand-logo brand-ta">TA</div>
             <div>
-                <h3>Teaching Assistant</h3>
-                <p>Recruitment Suite</p>
+                <h3>TA Portal</h3>
+                <p>Recruitment System</p>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">个人档案</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/jobs">职位大厅</a>
-            <a class="nav-item active" href="${pageContext.request.contextPath}/applications">申请状态</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/logout">退出登录</a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">
+                <span class="nav-icon">&#9632;</span> 工作台
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
+                <span class="nav-icon">&#9651;</span> 职位大厅
+            </a>
+            <a class="nav-item active" href="${pageContext.request.contextPath}/applications">
+                <span class="nav-icon">&#9733;</span> 申请状态
+            </a>
         </nav>
     </aside>
 
-    <main class="content">
-        <div class="topbar">
-            <button class="sidebar-toggle">☰</button>
+    <main class="content content-ta">
+        <div class="topbar topbar-ta">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+            <div class="topbar-title">My Applications</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
                 <a href="${pageContext.request.contextPath}/logout">退出登录</a>
@@ -39,30 +45,63 @@
         </section>
 
         <section class="panel">
-            <table class="custom-table">
-                <thead>
-                <tr>
-                    <th>申请编号</th>
-                    <th>岗位编号</th>
-                    <th>状态</th>
-                    <th>提交时间</th>
-                    <th>备注</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="a" items="${applications}">
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
                     <tr>
-                        <td>${a.applicationId}</td>
-                        <td>${a.jobId}</td>
-                        <td><span class="badge">${a.status}</span></td>
-                        <td>${a.submittedAt}</td>
-                        <td>${a.notes}</td>
+                        <th>申请编号</th>
+                        <th>岗位编号</th>
+                        <th>状态</th>
+                        <th>提交时间</th>
+                        <th>反馈/备注</th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                        <c:when test="${empty applications}">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <div class="empty-content">
+                                        <span class="empty-icon">&#128203;</span>
+                                        <p>你还没有提交任何申请</p>
+                                        <a href="${pageContext.request.contextPath}/jobs" class="btn btn-primary btn-small">去浏览职位</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="a" items="${applications}">
+                                <tr>
+                                    <td><span class="app-id">${a.applicationId}</span></td>
+                                    <td><span class="job-id">${a.jobId}</span></td>
+                                    <td><span class="badge ${a.status}">${a.status}</span></td>
+                                    <td>${a.submittedAt}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty a.notes}">
+                                                <span class="empty-state-small">暂无</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${a.notes}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+<script>
+function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.toggle('collapsed');
+}
+</script>

@@ -44,9 +44,9 @@
                     <span class="user-name">${sessionScope.currentUser.name}</span>
                     <div class="user-dropdown">
                         <a href="#" class="dropdown-item" onclick="showPasswordModal()">修改密码</a>
-                        <a href="${pageContext.request.contextPath}/logout" class="dropdown-item">退出登录</a>
                     </div>
                 </div>
+                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
             </div>
         </div>
 

@@ -6,27 +6,33 @@
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
-<div class="layout">
-    <aside class="sidebar">
+<div class="layout layout-ta">
+    <aside class="sidebar sidebar-ta" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo">TA</div>
+            <div class="brand-logo brand-ta">TA</div>
             <div>
-                <h3>Teaching Assistant</h3>
-                <p>Recruitment Suite</p>
+                <h3>TA Portal</h3>
+                <p>Recruitment System</p>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">个人档案</a>
-            <a class="nav-item active" href="${pageContext.request.contextPath}/jobs">职位大厅</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/applications">申请状态</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/logout">退出登录</a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">
+                <span class="nav-icon">&#9632;</span> 工作台
+            </a>
+            <a class="nav-item active" href="${pageContext.request.contextPath}/jobs">
+                <span class="nav-icon">&#9651;</span> 职位大厅
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/applications">
+                <span class="nav-icon">&#9733;</span> 申请状态
+            </a>
         </nav>
     </aside>
 
-    <main class="content">
-        <div class="topbar">
-            <button class="sidebar-toggle">☰</button>
+    <main class="content content-ta">
+        <div class="topbar topbar-ta">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+            <div class="topbar-title">Available Positions</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
                 <a href="${pageContext.request.contextPath}/logout">退出登录</a>
@@ -64,3 +70,10 @@
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+<script>
+function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.classList.toggle('collapsed');
+}
+</script>

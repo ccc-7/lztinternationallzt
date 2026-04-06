@@ -9,7 +9,7 @@
 <div class="layout">
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-logo">MO</div>
+            <div class="brand-logo brand-mo">MO</div>
             <div>
                 <h3>Module Organiser</h3>
                 <p>Recruitment Suite</p>
@@ -17,16 +17,22 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item active" href="${pageContext.request.contextPath}/mo/dashboard">岗位总览</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/mo/jobs/new">发布岗位</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/mo/applications">申请管理</a>
-            <a class="nav-item" href="${pageContext.request.contextPath}/logout">退出登录</a>
+            <a class="nav-item active" href="${pageContext.request.contextPath}/mo/dashboard">
+                <span class="nav-icon">&#9632;</span> 工作台
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/mo/jobs/new">
+                <span class="nav-icon">&#9651;</span> 发布岗位
+            </a>
+            <a class="nav-item" href="${pageContext.request.contextPath}/mo/applications">
+                <span class="nav-icon">&#9733;</span> 申请管理
+            </a>
         </nav>
     </aside>
 
     <main class="content">
-        <div class="topbar">
+        <div class="topbar topbar-mo">
             <button class="sidebar-toggle">☰</button>
+            <div class="topbar-title">MO 工作台</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
                 <a href="${pageContext.request.contextPath}/logout">退出登录</a>
