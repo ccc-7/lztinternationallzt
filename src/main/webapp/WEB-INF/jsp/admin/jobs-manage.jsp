@@ -41,7 +41,7 @@
             <div class="topbar-title">职位管理</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
-                <a href="${pageContext.request.contextPath}/logout">退出</a>
+                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
             </div>
         </div>
 

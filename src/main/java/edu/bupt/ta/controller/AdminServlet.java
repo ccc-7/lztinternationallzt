@@ -341,7 +341,7 @@ public class AdminServlet extends HttpServlet {
         }
 
         try {
-            applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED);
+            applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED, "Rejected: " + reason);
 
             logService.log(admin.getUserId(), admin.getDisplayName(), "REJECT", "Application",
                     applicationId, "拒绝申请 " + applicationId + "，原因：" + reason, getClientIP(req));

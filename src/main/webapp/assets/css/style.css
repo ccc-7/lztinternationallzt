@@ -192,6 +192,7 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
 }
 
 .brand-ta { background: linear-gradient(135deg, #5856d6, #af52de); }
+.brand-mo { background: linear-gradient(135deg, #0071e3, #34c759); }
 .brand-admin { background: linear-gradient(135deg, var(--apple-black), #424245); }
 
 .sidebar-brand h3 {
@@ -267,6 +268,13 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
     margin-left: 240px;
 }
 
+.sidebar.collapsed ~ .content,
+.sidebar.collapsed ~ .content-ta,
+.sidebar.collapsed ~ main.content,
+.sidebar.collapsed ~ main.content-ta {
+    margin-left: 64px;
+}
+
 /* Topbar */
 .topbar {
     height: 52px;
@@ -285,6 +293,10 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
 
 .topbar-ta {
     background: linear-gradient(135deg, #5856d6, #af52de);
+}
+
+.topbar-mo {
+    background: linear-gradient(135deg, #0071e3, #34c759);
 }
 
 .topbar-admin {
@@ -677,6 +689,36 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
     padding: var(--space-2xl);
     position: relative;
     z-index: 1;
+}
+
+.login-wide {
+    max-width: 980px;
+}
+
+.login-split {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-2xl);
+    align-items: center;
+}
+
+.login-left {
+    padding-right: var(--space-xl);
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.login-copy {
+    margin-top: var(--space-2xl);
+}
+
+.login-copy h3 {
+    margin-bottom: var(--space-sm);
+}
+
+@media (max-width: 900px) {
+    .login-wide { max-width: 420px; }
+    .login-split { grid-template-columns: 1fr; }
+    .login-left { border-right: none; padding-right: 0; }
 }
 
 .login-shell {
