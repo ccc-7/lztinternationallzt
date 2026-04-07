@@ -156,6 +156,7 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: width var(--transition-normal);
 }
 
 .sidebar::after {
@@ -164,6 +165,35 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
 
 .sidebar.collapsed {
     width: 64px;
+}
+
+.sidebar.collapsed .sidebar-brand {
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-brand > div:last-child {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    gap: 0;
+    font-size: 0;
+}
+
+.sidebar.collapsed .nav-item .nav-icon {
+    font-size: 1rem;
+}
+
+.sidebar.collapsed .nav-item svg,
+.sidebar.collapsed .nav-icon-svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* Brand */
@@ -262,10 +292,12 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
     margin-left: 240px;
     min-height: 100vh;
     background: var(--bg-page);
+    transition: margin-left var(--transition-normal);
 }
 
 .content-ta {
     margin-left: 240px;
+    transition: margin-left var(--transition-normal);
 }
 
 .sidebar.collapsed ~ .content,
@@ -1362,6 +1394,7 @@ p { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); }
 .form-group textarea { resize: vertical; min-height: 100px; }
 .form-group small { display: block; margin-top: var(--space-xs); color: var(--text-tertiary); font-size: 0.8125rem; }
 .form-group .required { color: var(--status-red); }
+.required { color: var(--status-red); }
 
 .form-row {
     display: grid;

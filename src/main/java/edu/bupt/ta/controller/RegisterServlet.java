@@ -36,8 +36,26 @@ public class RegisterServlet extends HttpServlet {
         String skills = req.getParameter("skills");
 
         try {
-            int year = Integer.parseInt(yearStr);
-            User user = userService.registerTa(username, password, name, email, year, major, skills);
+            if (username == null || username.isBlank() || password == null || password.isBlank()) {
+                req.getSession().setAttribute("flashError", "请填写用户名和密码");
+                resp.sendRedirect(req.getContextPath() + "/register");
+                return;
+            }
+
+            int year = 0;
+            if (yearStr != null && !yearStr.isBlank()) {
+                year = Integer.parseInt(yearStr);
+            }
+
+            User user = userService.registerTa(
+                    username,
+                    password,
+                    name == null ? "" : name,
+                    email == null ? "" : email,
+                    year,
+                    major == null ? "" : major,
+                    skills == null ? "" : skills
+            );
             req.getSession().setAttribute("currentUser", user);
             req.getSession().setAttribute("flashSuccess", "注册成功，已自动登录");
             resp.sendRedirect(req.getContextPath() + "/ta/dashboard");

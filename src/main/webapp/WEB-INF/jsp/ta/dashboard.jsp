@@ -32,11 +32,11 @@
 
     <main class="content content-ta">
         <div class="topbar topbar-ta">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+            <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">TA Dashboard</div>
             <div class="topbar-right">
                 <div class="user-menu">
-                    <span class="user-name"><%= currentUser != null ? currentUser.getDisplayName() : "" %></span>
+                    <a class="user-name" href="${pageContext.request.contextPath}/ta/profile"><%= currentUser != null ? currentUser.getDisplayName() : "" %></a>
                 </div>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
@@ -135,50 +135,6 @@
                         </div>
                     </section>
 
-                    <section class="panel">
-                        <div class="portal-section-title">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            My Profile
-                        </div>
-                        <div class="profile-grid">
-                            <div class="profile-item">
-                                <span class="profile-label">Username</span>
-                                <span class="profile-value">${sessionScope.currentUser.username}</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">Name</span>
-                                <span class="profile-value">${sessionScope.currentUser.name}</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">Email</span>
-                                <span class="profile-value">${sessionScope.currentUser.email}</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">Year</span>
-                                <span class="profile-value">${sessionScope.currentUser.year}</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">Major</span>
-                                <span class="profile-value">${sessionScope.currentUser.major}</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">Skills</span>
-                                <span class="profile-value">${sessionScope.currentUser.skills}</span>
-                            </div>
-                        </div>
-                        <div class="profile-actions">
-                            <button class="btn btn-secondary btn-small" disabled title="Coming Soon - Profile editing will be available soon">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit Profile (Coming Soon)
-                            </button>
-                        </div>
-                    </section>
                 </div>
 
                 <aside class="portal-side">
@@ -272,20 +228,3 @@
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
-<script>
-function toggleSidebar() {
-    var sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var flashSuccess = '${sessionScope.flashSuccess}';
-    var flashError = '${sessionScope.flashError}';
-    if (flashSuccess) {
-        showToast(flashSuccess, 'success');
-    }
-    if (flashError) {
-        showToast(flashError, 'error');
-    }
-});
-</script>
