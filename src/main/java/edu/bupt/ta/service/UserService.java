@@ -68,8 +68,8 @@ public class UserService {
         user.setUserId(nextUserId(users));
         user.setUsername(username.trim());
         user.setPassword(password.trim());
-        user.setName(name.trim());
-        user.setEmail(email.trim());
+        user.setName(name == null ? "" : name.trim());
+        user.setEmail(email == null ? "" : email.trim());
         user.setRole(UserRole.TA);
         user.setYear(year);
         user.setMajor(major == null ? "" : major.trim());
@@ -79,6 +79,28 @@ public class UserService {
         users.add(user);
         storage.saveUsers(users);
         return user;
+    }
+
+    public User updateProfile(String userId, String name, String email, int year, String major, String skills, String availability) {
+        List<User> users = storage.loadUsers();
+        User updated = null;
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                user.setName(name == null ? "" : name.trim());
+                user.setEmail(email == null ? "" : email.trim());
+                user.setYear(year);
+                user.setMajor(major == null ? "" : major.trim());
+                user.setSkills(normalizeSkills(skills));
+                user.setAvailability(availability == null ? "" : availability.trim());
+                updated = user;
+                break;
+            }
+        }
+        if (updated == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+        storage.saveUsers(users);
+        return updated;
     }
 
     public void registerUser(User user) {

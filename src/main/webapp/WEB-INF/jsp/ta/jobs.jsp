@@ -31,10 +31,10 @@
 
     <main class="content content-ta">
         <div class="topbar topbar-ta">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+            <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">Available Positions</div>
             <div class="topbar-right">
-                <span>${sessionScope.currentUser.name}</span>
+                <a href="${pageContext.request.contextPath}/ta/profile">${sessionScope.currentUser.name}</a>
                 <a href="${pageContext.request.contextPath}/logout">退出登录</a>
             </div>
         </div>
@@ -71,9 +71,3 @@
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
-<script>
-function toggleSidebar() {
-    var sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.toggle('collapsed');
-}
-</script>
