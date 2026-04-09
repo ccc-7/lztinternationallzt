@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,13 @@ public class FileStorageUtil {
     private static final String APPLICATIONS_HEADER =
             "applicationId,userId,jobId,status,submittedAt,notes,availability";
 
+    private static final String DATA_DIR_PROPERTY = "ta.data.dir";
+    private static final String DATA_DIR_ENV = "TA_DATA_DIR";
+
+    private static final Path REPO_DATA_DIR = resolveRepoDataDir();
     private static final Path BASE_DIR = resolveBaseDir();
+    private static final Path MIRROR_DIR = resolveMirrorDir();
+
     private static final Path USERS_FILE = BASE_DIR.resolve("ta_users.csv");
     private static final Path JOBS_FILE = BASE_DIR.resolve("jobs.csv");
     private static final Path APPLICATIONS_FILE = BASE_DIR.resolve("applications.csv");
@@ -39,8 +46,29 @@ public class FileStorageUtil {
     }
 
     private static Path resolveBaseDir() {
-        // 强制只用项目根目录下的 data 文件夹
+        String configured = System.getProperty(DATA_DIR_PROPERTY);
+        if (configured == null || configured.isBlank()) {
+            configured = System.getenv(DATA_DIR_ENV);
+        }
+
+        if (configured != null && !configured.isBlank()) {
+            return Paths.get(configured).toAbsolutePath().normalize();
+        }
+
+        if (REPO_DATA_DIR != null) {
+            return REPO_DATA_DIR.toAbsolutePath().normalize();
+        }
+
         return Paths.get("data").toAbsolutePath().normalize();
+    }
+
+    private static Path resolveMirrorDir() {
+        if (REPO_DATA_DIR == null) {
+            return null;
+        }
+
+        Path repoDir = REPO_DATA_DIR.toAbsolutePath().normalize();
+        return repoDir.equals(BASE_DIR) ? null : repoDir;
     }
 
     private static Path resolveRepoDataDir() {
@@ -60,7 +88,7 @@ public class FileStorageUtil {
                 return fromCodeSource;
             }
         } catch (URISyntaxException | RuntimeException ignored) {
-            // Fallback to legacy resolution flow if code source cannot be resolved.
+            // Fall back to relative data directory if repo path cannot be resolved.
         }
 
         return null;
@@ -98,14 +126,20 @@ public class FileStorageUtil {
     private static void initFiles() {
         try {
             Files.createDirectories(BASE_DIR);
-            ensureFile(USERS_FILE, USERS_HEADER);
-            ensureFile(JOBS_FILE, JOBS_HEADER);
-            ensureFile(APPLICATIONS_FILE, APPLICATIONS_HEADER);
+            if (MIRROR_DIR != null) {
+                Files.createDirectories(MIRROR_DIR);
+            }
+
+            bootstrapFile(USERS_FILE, mirrorFile(USERS_FILE), USERS_HEADER);
+            bootstrapFile(JOBS_FILE, mirrorFile(JOBS_FILE), JOBS_HEADER);
+            bootstrapFile(APPLICATIONS_FILE, mirrorFile(APPLICATIONS_FILE), APPLICATIONS_HEADER);
+
             ensureDefaultUsers();
             ensureDefaultJobs();
             ensureDefaultApplications();
+            syncBaseToMirror();
         } catch (IOException e) {
-            throw new RuntimeException("初始化数据文件失败：" + e.getMessage(), e);
+            throw new RuntimeException("初始化数据文件失败: " + e.getMessage(), e);
         }
     }
 
@@ -115,11 +149,17 @@ public class FileStorageUtil {
             try (BufferedWriter writer = Files.newBufferedWriter(USERS_FILE, StandardCharsets.UTF_8)) {
                 writer.write(USERS_HEADER);
                 writer.newLine();
-                writer.write("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,");
+                writer.write("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,Mon/Wed afternoons");
                 writer.newLine();
-                writer.write("U002,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE,");
+                writer.write("U002,luna,123456,Luna,luna@bupt.edu.cn,TA,2,Software Engineering,Java|Testing|Documentation,ACTIVE,Tue/Thu mornings");
                 writer.newLine();
-                writer.write("U003,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE,");
+                writer.write("U003,kevin,123456,Kevin,kevin@bupt.edu.cn,TA,4,Embedded Systems,C|STM32|Debugging,ACTIVE,Fri all day");
+                writer.newLine();
+                writer.write("U004,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE,");
+                writer.newLine();
+                writer.write("U005,mo2,123456,Dr.Liu,liu@bupt.edu.cn,MO,0,Faculty,C|Circuits|Lab Supervision,ACTIVE,");
+                writer.newLine();
+                writer.write("U006,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE,");
                 writer.newLine();
             }
         }
@@ -135,7 +175,9 @@ public class FileStorageUtil {
                 writer.newLine();
                 writer.write("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2026-05-15,2");
                 writer.newLine();
-                writer.write("J003,Data Structures TA,EBU6102,Dr.Zhao,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-04-30,4");
+                writer.write("J003,Data Structures TA,EBU6102,Dr.Wang,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-04-30,2");
+                writer.newLine();
+                writer.write("J004,Digital Systems Lab TA,EBU6204,Dr.Liu,2,4,12,OPEN,Circuits|Lab Support|Communication,84,2026-05-20,2");
                 writer.newLine();
             }
         }
@@ -147,7 +189,7 @@ public class FileStorageUtil {
             try (BufferedWriter writer = Files.newBufferedWriter(APPLICATIONS_FILE, StandardCharsets.UTF_8)) {
                 writer.write(APPLICATIONS_HEADER);
                 writer.newLine();
-                writer.write("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,");
+                writer.write("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,Mon/Wed afternoons");
                 writer.newLine();
             }
         }
@@ -159,6 +201,48 @@ public class FileStorageUtil {
                 writer.write(header);
                 writer.newLine();
             }
+        }
+    }
+
+    private static void bootstrapFile(Path primary, Path mirror, String header) throws IOException {
+        if (!Files.exists(primary)) {
+            if (mirror != null && Files.exists(mirror)) {
+                Files.copy(mirror, primary, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                ensureFile(primary, header);
+            }
+        }
+
+        if (mirror != null && !Files.exists(mirror)) {
+            Files.copy(primary, mirror, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    private static Path mirrorFile(Path sourceFile) {
+        if (MIRROR_DIR == null) {
+            return null;
+        }
+        return MIRROR_DIR.resolve(sourceFile.getFileName().toString());
+    }
+
+    private static void syncBaseToMirror() throws IOException {
+        syncFileToMirror(USERS_FILE);
+        syncFileToMirror(JOBS_FILE);
+        syncFileToMirror(APPLICATIONS_FILE);
+    }
+
+    private static void syncFileToMirror(Path sourceFile) throws IOException {
+        Path mirror = mirrorFile(sourceFile);
+        if (mirror == null || !Files.exists(sourceFile)) {
+            return;
+        }
+
+        boolean shouldCopy = !Files.exists(mirror)
+                || Files.size(sourceFile) != Files.size(mirror)
+                || Files.getLastModifiedTime(sourceFile).compareTo(Files.getLastModifiedTime(mirror)) > 0;
+
+        if (shouldCopy) {
+            Files.copy(sourceFile, mirror, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
@@ -194,8 +278,9 @@ public class FileStorageUtil {
                 );
                 users.add(user);
             }
+            syncFileToMirror(USERS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("读取用户数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("读取用户数据失败: " + e.getMessage(), e);
         }
         return users;
     }
@@ -220,8 +305,9 @@ public class FileStorageUtil {
                 ));
                 writer.newLine();
             }
+            syncFileToMirror(USERS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("保存用户数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("保存用户数据失败: " + e.getMessage(), e);
         }
     }
 
@@ -258,8 +344,9 @@ public class FileStorageUtil {
                 );
                 jobs.add(job);
             }
+            syncFileToMirror(JOBS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("读取岗位数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("读取岗位数据失败: " + e.getMessage(), e);
         }
         return jobs;
     }
@@ -285,8 +372,9 @@ public class FileStorageUtil {
                 ));
                 writer.newLine();
             }
+            syncFileToMirror(JOBS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("保存岗位数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("保存岗位数据失败: " + e.getMessage(), e);
         }
     }
 
@@ -318,8 +406,9 @@ public class FileStorageUtil {
                 );
                 apps.add(app);
             }
+            syncFileToMirror(APPLICATIONS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("读取申请数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("读取申请数据失败: " + e.getMessage(), e);
         }
         return apps;
     }
@@ -340,8 +429,9 @@ public class FileStorageUtil {
                 ));
                 writer.newLine();
             }
+            syncFileToMirror(APPLICATIONS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException("保存申请数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("保存申请数据失败: " + e.getMessage(), e);
         }
     }
 
