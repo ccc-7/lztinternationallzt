@@ -272,6 +272,40 @@ cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
+如果需要让运行数据写入 Tomcat 外部目录 `D:\apache-tomcat-10.1.52\ta-data`，并同步镜像到本地项目 `ta-webapp\data`，不要直接在 PowerShell 里单独输入 `-Dta.data.dir=...`。  
+正确方式是先设置 `CATALINA_OPTS`，再启动 Tomcat。
+
+临时方式：仅对当前 PowerShell 窗口生效
+
+```powershell
+对应修改为自己的apache-tomcat-10.1.52\ta-data路径和ta-webapp\data（可能是lztinternationallzt/data）
+$env:CATALINA_OPTS='-Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data'
+cd D:\apache-tomcat-10.1.52\bin
+.\startup.bat
+```
+
+更推荐的持久方式：在 `D:\apache-tomcat-10.1.52\bin\setenv.bat` 中加入
+
+```bat
+@echo off
+set "CATALINA_OPTS=%CATALINA_OPTS% -Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data"
+```
+
+然后正常启动：
+
+```powershell
+cd D:\apache-tomcat-10.1.52\bin
+.\startup.bat
+```
+
+如果需要重新初始化外部数据目录，可以先删除：
+
+```powershell
+Remove-Item "D:\apache-tomcat-10.1.52\ta-data\ta_users.csv" -Force -ErrorAction SilentlyContinue
+Remove-Item "D:\apache-tomcat-10.1.52\ta-data\jobs.csv" -Force -ErrorAction SilentlyContinue
+Remove-Item "D:\apache-tomcat-10.1.52\ta-data\applications.csv" -Force -ErrorAction SilentlyContinue
+```
+
 *若 Tomcat 已运行，会自动检测新 WAR 并重新加载应用*
 
 ### 第四步：访问应用
