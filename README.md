@@ -1,79 +1,72 @@
-# TA 招聘系统（TA Recruitment System）
+# TA Recruitment System
+> A Maven-managed Java Servlet/JSP web application that supports the full recruitment workflow for three user roles: TA Applicant, MO (Module Organiser), and System Admin.
 
-> 一个use Maven 管理的 Java Servlet/JSP Web 应用，支持 TA、MO（Module Organiser）、Admin 三类角色的岗位招聘流程。
+## 📋 Project Overview
+This repository contains a fully functional TA recruitment portal system, designed with a **MVC layered architecture**:
+- **Backend**: Java Servlets for request processing, business logic implementation, and data persistence
+- **Frontend**: JSP template rendering, unified CSS styling, and JavaScript interactive logic
+- **Data Storage**: CSV text file based, no database dependency
+- **Deployment**: WAR package deployment to a local Tomcat server
 
-## 📋 项目简介
-
-本仓库是一个功能完整的 TA 招聘门户系统，采用 **MVC 分层结构** 设计：
-
-- **后端**：Java Servlet 处理请求、业务逻辑、数据持久化
-- **前端**：JSP 模板渲染、CSS 样式统一、JavaScript 交互
-- **数据存储**：基于 CSV 文本文件，无数据库依赖
-- **部署方式**：WAR 包部署到本地 Tomcat
-
-### ✨ 核心特性
-
-| 特性 | 说明 |
-|-----|------|
-| **三角色支持** | TA 申请者、MO 岗位发布者、Admin 管理员 |
-| **基于 Session 的认证** | 安全的登录/登出控制 |
-| **岗位管理** | MO 创建发布岗位、TA 浏览申请 |
-| **工作流审核** | MO 接受/拒绝申请，Admin 查看工作量统计 |
-| **响应式设计** | 统一美观的界面风格 |
+### ✨ Core Features
+| Feature | Description |
+|---------|-------------|
+| **Three Role Support** | TA Applicant, MO (Job Publisher), and System Admin |
+| **Session-Based Authentication** | Secure login and logout access control |
+| **Job Management** | MOs create and publish positions; TAs browse and apply for jobs |
+| **Approval Workflow** | MOs accept/reject applications; Admins view workload statistics |
+| **Responsive Design** | Unified and user-friendly interface style |
 
 ---
 
-## 👥 开发成员
-
-| 姓名 | GitHub |
+## 👥 Contributors
+| Name | GitHub |
 |------|--------|
-| 陈泰宇 | `@ccc-7` |
-| 朱思远 | `@woruqingshan` |
-| 刘泽棠 | `@yongyuandez` |
-| 苗润曦 | `@Miao200506` |
-| 杨刚 | `@SystemName-e6lq` |
-| 辛炯彻 | `@jiongche110` |
+| Chen Taiyu | `@ccc-7` |
+| Zhu Siyuan | `@woruqingshan` |
+| Liu Zetang | `@yongyuandez` |
+| Miao Runxi | `@Miao200506` |
+| Yang Gang | `@SystemName-e6lq` |
+| Xin Jiongche | `@jiongche110` |
 
 ---
 
-## 🎯 已实现功能
+## 🎯 Implemented Features
+### 1️⃣ TA Applicant
+- ✅ TA account registration
+- ✅ System login
+- ✅ Dashboard access (application overview)
+- ✅ Browse open job listings
+- ✅ Submit job applications
+- ✅ Check application status
 
-### 1️⃣ TA Applicant（学生申请者）
-- ✅ 注册 TA 账号
-- ✅ 登录系统
-- ✅ 查看 Dashboard（申请概览）
-- ✅ 浏览开放岗位列表
-- ✅ 提交岗位申请
-- ✅ 查看申请状态
+### 2️⃣ Module Organiser (MO)
+- ✅ System login
+- ✅ MO Dashboard access
+- ✅ Create and publish new job positions
+- ✅ View all application records
+- ✅ Accept/reject applications
 
-### 2️⃣ Module Organiser（课程负责人）
-- ✅ 登录系统
-- ✅ 查看 MO Dashboard
-- ✅ 创建并发布新岗位
-- ✅ 查看所有申请记录
-- ✅ 接受/拒绝申请
+### 3️⃣ System Admin
+- ✅ System login
+- ✅ View TA workload statistics
 
-### 3️⃣ Admin（系统管理员）
-- ✅ 登录系统
-- ✅ 查看 TA 工作量统计
-
-### 4️⃣ 系统公共能力
-- ✅ 基于 Session 的角色登录控制
-- ✅ 基于 CSV 的数据读写
-- ✅ 基于 Service 的业务逻辑封装
-- ✅ 基于 JSP + CSS 的统一门户风格
+### 4️⃣ System Common Capabilities
+- ✅ Session-based role login control
+- ✅ CSV-based data read and write operations
+- ✅ Service-layer encapsulated business logic
+- ✅ Unified portal style based on JSP + CSS
 
 ---
 
-## 📁 项目结构
-
+## 📁 Project Structure
 ```
 ta-webapp/
 ├── README.md
-├── pom.xml                           # Maven 构建配置
+├── pom.xml                           # Maven build configuration
 │
 ├── src/main/java/edu/bupt/ta/
-│   ├── controller/                   # HTTP 请求处理层
+│   ├── controller/                   # HTTP Request Handling Layer
 │   │   ├── HomeServlet.java
 │   │   ├── LoginServlet.java
 │   │   ├── LogoutServlet.java
@@ -87,7 +80,7 @@ ta-webapp/
 │   │   ├── MOApplicationServlet.java
 │   │   └── AdminDashboardServlet.java
 │   │
-│   ├── model/                        # 数据模型与枚举
+│   ├── model/                        # Data Models and Enums
 │   │   ├── User.java
 │   │   ├── UserRole.java
 │   │   ├── Job.java
@@ -95,343 +88,308 @@ ta-webapp/
 │   │   ├── Application.java
 │   │   └── ApplicationStatus.java
 │   │
-│   ├── service/                      # 业务逻辑层
+│   ├── service/                      # Business Logic Layer
 │   │   ├── UserService.java
 │   │   ├── JobService.java
 │   │   ├── ApplicationService.java
 │   │   ├── DashboardService.java
 │   │   └── AdminService.java
 │   │
-│   └── storage/                      # 数据持久化层
+│   └── storage/                      # Data Persistence Layer
 │       └── FileStorageUtil.java
 │
-├── src/main/webapp/                  # Web 根目录
-│   ├── index.jsp                     # 根路径入口
+├── src/main/webapp/                  # Web Root Directory
+│   ├── index.jsp                     # Root Path Entry
 │   ├── assets/
 │   │   ├── css/
-│   │   │   └── style.css             # 全站统一样式
+│   │   │   └── style.css             # Global Unified Styles
 │   │   └── js/
-│   │       └── app.js                # 页面交互脚本
+│   │       └── app.js                # Page Interaction Scripts
 │   │
 │   └── WEB-INF/
-│       ├── web.xml                   # Servlet 部署描述
+│       ├── web.xml                   # Servlet Deployment Descriptor
 │       └── jsp/
-│           ├── home.jsp              # 登录首页
-│           ├── register.jsp          # TA 注册页
+│           ├── home.jsp              # Login Home Page
+│           ├── register.jsp          # TA Registration Page
 │           │
-│           ├── common/               # 公共页面片段
+│           ├── common/               # Common Page Fragments
 │           │   ├── header.jspf
 │           │   ├── footer.jspf
-│           │   └── flash.jspf        # 消息提示
+│           │   └── flash.jspf        # Message Notification
 │           │
-│           ├── ta/                   # TA 相关页面
+│           ├── ta/                   # TA Related Pages
 │           │   ├── dashboard.jsp
 │           │   ├── jobs.jsp
 │           │   └── applications.jsp
 │           │
-│           ├── mo/                   # MO 相关页面
+│           ├── mo/                   # MO Related Pages
 │           │   ├── dashboard.jsp
 │           │   ├── new-job.jsp
 │           │   └── applications.jsp
 │           │
-│           └── admin/                # Admin 相关页面
+│           └── admin/                # Admin Related Pages
 │               └── dashboard.jsp
 │
-├── data/                             # 数据文件目录
-│   ├── ta_users.csv                  # 用户数据
-│   ├── jobs.csv                      # 岗位数据
-│   └── applications.csv              # 申请记录
+├── data/                             # Data File Directory
+│   ├── ta_users.csv                  # User Data
+│   ├── jobs.csv                      # Job Position Data
+│   └── applications.csv              # Application Records
 │
-├── docs/                             # 项目文档
+├── docs/                             # Project Documentation
 │   ├── project-plan.md
 │   ├── requirements.md
 │   └── architecture.md
 │
-└── target/                           # 构建输出（不提交）
+└── target/                           # Build Output (Not Committed)
     └── ta-webapp.war
 ```
 
 ---
 
-## 🔐 默认测试账号
-
-快速登录测试系统：
-
-| 角色 | 用户名 | 密码 |
-|------|---------|------|
+## 🔐 Default Test Accounts
+Quick login for system testing:
+| Role | Username | Password |
+|------|----------|----------|
 | **TA** | `seele` | `123456` |
 | **MO** | `mo1` | `123456` |
 | **Admin** | `admin` | `123456` |
 
 ---
 
-## 💻 环境配置（JDK 17 + Tomcat 10 + Maven）
-
-### 前置要求
-
-- **Windows** 操作系统
+## 💻 Environment Configuration (JDK 17 + Tomcat 10 + Maven)
+### Prerequisites
+- **Windows** Operating System
 - **JDK 17**
 - **Apache Tomcat 10**
 - **Apache Maven 3.9+**
 - **Git for Windows**
 
-### 一步步安装
-
-#### 1️⃣ 安装 VS Code 和 Java 扩展
-
+### Step-by-Step Installation
+#### 1️⃣ Install VS Code and Java Extensions
 ```bash
-# 在 VS Code Extensions 中搜索并安装：
+# Search and install in VS Code Extensions:
 - Extension Pack for Java
 - Community Server Connectors
 ```
 
-#### 2️⃣ 配置 JDK 17
+#### 2️⃣ Configure JDK 17
+1. **Download and Install JDK 17**
+   - Installation Directory (Example): `D:\Java\jdk-17.0.x`
 
-1. **下载并安装 JDK 17**
-   - 安装目录（示例）：`D:\Java\jdk-17.0.x`
+2. **Configure System Environment Variables**
+   - Create a new system variable `JAVA_HOME` with value: `D:\Java\jdk-17.0.x`
+   - Modify the `Path` variable: add `%JAVA_HOME%\bin`
 
-2. **配置系统环境变量**
-   - 新建 `JAVA_HOME`：`D:\Java\jdk-17.0.x`
-   - 修改 `Path`：添加 `%JAVA_HOME%\bin`
-
-3. **验证安装**
+3. **Verify Installation**
    ```powershell
    java -version
-   # 应输出：java version "17.x.x"
+   # Expected output: java version "17.x.x"
    ```
 
-#### 3️⃣ 安装 Apache Tomcat 10
+#### 3️⃣ Install Apache Tomcat 10
+1. **Download and Extract**
+   - Tomcat 10: `https://tomcat.apache.org/`
+   - Extract to: `D:\apache-tomcat-10.1.52`
 
-1. **下载并解压**
-   - Tomcat 10：`https://tomcat.apache.org/`
-   - 解压到：`D:\apache-tomcat-10.1.52`
+2. **Configure System Environment Variables**
+   - Create a new system variable `CATALINA_HOME` with value: `D:\apache-tomcat-10.1.52`
+   - Modify the `Path` variable: add `%CATALINA_HOME%\bin`
 
-2. **配置系统环境变量**
-   - 新建 `CATALINA_HOME`：`D:\apache-tomcat-10.1.52`
-   - 修改 `Path`：添加 `%CATALINA_HOME%\bin`
-
-3. **启动 Tomcat**
+3. **Start Tomcat**
    ```powershell
    cd D:\apache-tomcat-10.1.52\bin
    .\startup.bat
    ```
 
-4. **验证运行**
-   - 访问 `http://localhost:8080`
-   - 看到 Tomcat 欢迎页面说明成功
+4. **Verify Running Status**
+   - Visit `http://localhost:8080` in your browser
+   - Installation is successful if the Tomcat welcome page is displayed
 
-#### 4️⃣ 安装 Apache Maven
+#### 4️⃣ Install Apache Maven
+1. **Download and Extract**
+   - Maven 3.9+: `https://maven.apache.org/download.cgi`
+   - Extract to: `D:\apache-maven-3.9.x`
 
-1. **下载并解压**
-   - Maven 3.9+：`https://maven.apache.org/download.cgi`
-   - 解压到：`D:\apache-maven-3.9.x`
+2. **Configure System Environment Variables**
+   - Create a new system variable `MAVEN_HOME` with value: `D:\apache-maven-3.9.x`
+   - Modify the `Path` variable: add `%MAVEN_HOME%\bin`
 
-2. **配置系统环境变量**
-   - 新建 `MAVEN_HOME`：`D:\apache-maven-3.9.x`
-   - 修改 `Path`：添加 `%MAVEN_HOME%\bin`
-
-3. **验证安装**
+3. **Verify Installation**
    ```powershell
    mvn -v
-   # 应输出 Maven 版本和 Java 17 版本信息
+   # Expected output: Maven version and Java 17 version information
    ```
 
-#### 5️⃣ 安装 Git for Windows
-
+#### 5️⃣ Install Git for Windows
 ```powershell
-# 下载并安装 Git for Windows (x64)
-# 验证安装
+# Download and install Git for Windows (x64)
+# Verify installation
 git --version
 ```
 
 ---
 
-## 🚀 快速开始
-
-### 第一步：构建项目
-
-在项目根目录 `ta-webapp/` 下执行：
-
+## 🚀 Quick Start
+### Step 1: Build the Project
+Execute the following command in the project root directory `ta-webapp/`:
 ```powershell
 mvn clean package
 ```
+✅ On success, `BUILD SUCCESS` will be printed, and **`ta-webapp.war`** will be generated in the `target/` directory.
 
-✅ 成功时输出 `BUILD SUCCESS`，在 `target/` 生成 **`ta-webapp.war`**
-
-### 第二步：部署到 Tomcat
-
+### Step 2: Deploy to Tomcat
 ```powershell
-# 复制 WAR 文件到 Tomcat webapps 目录
+# Copy the WAR file to the Tomcat webapps directory
 copy target\ta-webapp.war "D:\apache-tomcat-10.1.52\webapps\"
 ```
 
-### 第三步：启动 Tomcat
-
+### Step 3: Start Tomcat
 ```powershell
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
-如果需要让运行数据写入 Tomcat 外部目录 `D:\apache-tomcat-10.1.52\ta-data`，并同步镜像到本地项目 `ta-webapp\data`，不要直接在 PowerShell 里单独输入 `-Dta.data.dir=...`。  
-正确方式是先设置 `CATALINA_OPTS`，再启动 Tomcat。
+If you need to write runtime data to an external directory `D:\apache-tomcat-10.1.52\ta-data` outside Tomcat, and synchronize it to the local project directory `ta-webapp\data`, **do NOT directly input `-Dta.data.dir=...` alone in PowerShell**.
+The correct approach is to set `CATALINA_OPTS` first, then start Tomcat.
 
-临时方式：仅对当前 PowerShell 窗口生效
-
+Temporary Method: Only effective for the current PowerShell window
 ```powershell
-对应修改为自己的apache-tomcat-10.1.52\ta-data路径和ta-webapp\data（可能是lztinternationallzt/data）
+# Modify to your own apache-tomcat-10.1.52\ta-data path and ta-webapp\data path
 $env:CATALINA_OPTS='-Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data'
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
-更推荐的持久方式：在 `D:\apache-tomcat-10.1.52\bin\setenv.bat` 中加入
-
+Recommended Persistent Method: Add the following content to `D:\apache-tomcat-10.1.52\bin\setenv.bat`
 ```bat
 @echo off
 set "CATALINA_OPTS=%CATALINA_OPTS% -Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data"
 ```
 
-然后正常启动：
-
+Then start Tomcat normally:
 ```powershell
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
-如果需要重新初始化外部数据目录，可以先删除：
-
+If you need to reinitialize the external data directory, you can delete the files first:
 ```powershell
 Remove-Item "D:\apache-tomcat-10.1.52\ta-data\ta_users.csv" -Force -ErrorAction SilentlyContinue
 Remove-Item "D:\apache-tomcat-10.1.52\ta-data\jobs.csv" -Force -ErrorAction SilentlyContinue
 Remove-Item "D:\apache-tomcat-10.1.52\ta-data\applications.csv" -Force -ErrorAction SilentlyContinue
 ```
 
-*若 Tomcat 已运行，会自动检测新 WAR 并重新加载应用*
+*If Tomcat is already running, it will automatically detect the new WAR file and reload the application*
 
-### 第四步：访问应用
-
-在浏览器打开：
-- 首页：`http://localhost:8080/ta-webapp/`
-- 或：`http://localhost:8080/ta-webapp/home`
+### Step 4: Access the Application
+Open the following link in your browser:
+- Home Page: `http://localhost:8080/ta-webapp/`
+- Alternative: `http://localhost:8080/ta-webapp/home`
 
 ---
 
-## 📝 开发工作流
-
-### 日常开发流程（修改后本地验证）
-
+## 📝 Development Workflow
+### Daily Development Workflow (Local Validation After Changes)
 ```
-修改代码
+Modify Code
     ↓
-mvn clean package    （编译构建）
+mvn clean package    (Compile and Build)
     ↓
-copy WAR到 Tomcat    （部署应用）
+Copy WAR to Tomcat    (Deploy Application)
     ↓
-Tomcat 自动重载      （或手动 startup.bat）
+Tomcat Auto Reload      (Or manual startup.bat)
     ↓
-浏览器 F5 刷新验证   （查看效果）
+Browser F5 Refresh to Validate   (Check Results)
 ```
 
-### 详细步骤
-
-1. **修改代码**：在 VSCode 中编辑 JSP、Java、CSS 或 JS 文件
-
-2. **本地构建**：
+### Detailed Steps
+1. **Modify Code**: Edit JSP, Java, CSS or JS files in VSCode
+2. **Local Build**:
    ```powershell
    mvn clean package
    ```
-
-3. **部署到 Tomcat**：
+3. **Deploy to Tomcat**:
    ```powershell
    copy target\ta-webapp.war "D:\apache-tomcat-10.1.52\webapps\"
    ```
-
-4. **启动或重载**（若未启动）：
+4. **Start or Reload** (if Tomcat is not running):
    ```powershell
    cd D:\apache-tomcat-10.1.52\bin
    .\startup.bat
    ```
-
-5. **浏览器检查**：
-   - 打开 `http://localhost:8080/ta-webapp/`
-   - 按 `F5` 刷新查看效果
+5. **Check in Browser**:
+   - Open `http://localhost:8080/ta-webapp/`
+   - Press `F5` to refresh and view changes
 
 ---
 
-## 🔄 Git 版本控制（成员分支工作流）
+## 🔄 Git Version Control (Contributor Branch Workflow)
+This project adopts a **contributor branch** workflow to ensure each developer has an independent branch and complete commit history.
 
-本项目采用 **成员分支** 工作流，确保每人有独立分支与提交记录。
+### Workflow Principles
+| Branch | Rules |
+|--------|-------|
+| **`master`** | Only stores stable, demonstrable versions; direct commits are prohibited; only merged via Pull Request (PR) |
+| **Contributor Branches** | One branch per developer, with tasks assigned by the team lead; submit PR to master after passing self-test |
 
-### 工作原则
-
-| 分支 | 规则 |
-|------|------|
-| **`master`** | 仅存放稳定、可演示的版本；禁止直接提交；只通过 PR 合并 |
-| **成员分支** | 每人一条，任务由组长分配；自测通过后提 PR 到 master |
-
-### 步骤一：组长初始化成员分支（仅一次）
-
+### Step 1: Team Lead Initializes Contributor Branches (One Time Only)
 ```powershell
 git checkout master
 git pull origin master
 
-# 为每个成员创建分支
+# Create branch for each contributor
 git checkout -b zhangsan
 git push -u origin zhangsan
 
 git checkout -b lisi
 git push -u origin lisi
 
-# ... 其他成员类似
+# ... Repeat for other contributors
 
 git checkout master
 ```
 
-### 步骤二：成员日常开发
-
+### Step 2: Daily Development for Contributors
 ```powershell
-# 1. 同步 master 并切到自己的分支
+# 1. Sync master and switch to your own branch
 git checkout master
 git pull origin master
 git checkout zhangsan
 
-# 2. （可选）合并最新 master
+# 2. (Optional) Merge the latest master
 git merge master
 
-# 3. 修改代码（按上面"开发工作流"操作）
-# - 编辑代码
+# 3. Modify code (follow the "Development Workflow" above)
+# - Edit code
 # - mvn clean package
-# - 部署到 Tomcat
-# - 浏览器验证
+# - Deploy to Tomcat
+# - Validate in browser
 
-# 4. 提交并推送
+# 4. Commit and push
 git add .
 git commit -m "feat: add feature description"
 git push origin zhangsan
 
-# 5. 在 GitHub 上发起 Pull Request
-#    从 zhangsan → master
+# 5. Create a Pull Request on GitHub
+#    From zhangsan → master
 ```
 
-### 步骤三：组长 Review 与合并
-
+### Step 3: Team Lead Review and Merge
 ```powershell
-# 1. 在 GitHub 上查看 PR 的 "Files changed"
-# 2. 确认修改与任务一致
+# 1. View "Files changed" of the PR on GitHub
+# 2. Confirm the changes are consistent with the assigned task
 
-# 3. （可选）本地验证
+# 3. (Optional) Local validation
 git fetch origin zhangsan
 git checkout zhangsan
 mvn clean package
-# 部署到 Tomcat 检查
+# Deploy to Tomcat for functional inspection
 
-# 4. 在 GitHub 上点击 "Merge pull request"
+# 4. Click "Merge pull request" on GitHub
 ```
 
-### 步骤四：同步最新 master
-
-合并后其他成员应立即拉取并合并最新 master：
-
+### Step 4: Sync the Latest Master
+After a PR is merged, other contributors should immediately pull and merge the latest master branch:
 ```powershell
 git checkout master
 git pull origin master
@@ -441,13 +399,11 @@ git merge master
 
 ---
 
-## 🤝 处理合并冲突
+## 🤝 Resolving Merge Conflicts
+### Scenario: Two Developers Modified the Same File
+**Developer A's branch has been merged into master, now merging Developer B's branch**
 
-### 情况：两人改了同一文件
-
-**A 的分支已合并到 master，现在合并 B 的分支**
-
-1. **B 的成员在本地处理冲突**：
+1. **Developer B resolves the conflict locally**:
    ```powershell
    git checkout master
    git pull origin master
@@ -455,96 +411,86 @@ git merge master
    git merge master
    ```
 
-2. **手动解决冲突**：
-   - 打开冲突文件
-   - 删除冲突标记：`<<<<<<<`、`=======`、`>>>>>>>`
-   - 保留或合并所需的修改
+2. **Manually Resolve Conflicts**:
+   - Open the conflicted file
+   - Remove conflict markers: `<<<<<<<`, `=======`, `>>>>>>>`
+   - Keep or merge the required code changes
 
-3. **提交冲突解决**：
+3. **Commit Conflict Resolution**:
    ```powershell
    git add .
    git commit -m "chore: resolve merge conflict with master"
    git push origin member-b
    ```
 
-4. **组长在 GitHub 上再次 Merge PR**
+4. **Team Lead Merges the PR Again on GitHub**
 
-### 💡 最佳实践
-
-- **组长**：分配任务时让不同成员负责不同文件或模块，减少冲突
-- **成员**：及时同步 master，避免落后太久
-- **PR 顺序**：按提交时间逐个合并，冲突立即处理
-
----
-
-## 📚 文件功能详解
-
-### Controller 层（HTTP 请求处理）
-
-| Servlet | 功能 |
-|---------|------|
-| `HomeServlet` | 处理 `/home`，跳转到登录首页 |
-| `LoginServlet` | 用户登录验证、角色判断、Session 写入 |
-| `LogoutServlet` | 注销登录、清除 Session |
-| `RegisterServlet` | 新 TA 注册、自动登录 |
-| `TaDashboardServlet` | 加载 TA Dashboard 统计数据 |
-| `JobListServlet` | 展示可申请岗位列表 |
-| `ApplyServlet` | 提交 TA 岗位申请 |
-| `ApplicationStatusServlet` | 显示 TA 申请记录 |
-| `MODashboardServlet` | MO 统计信息展示 |
-| `MOJobServlet` | MO 创建发布岗位 |
-| `MOApplicationServlet` | MO 查看并审核申请 |
-| `AdminDashboardServlet` | 展示工作量统计 |
-
-### Service 层（业务逻辑）
-
-| Service | 职责 |
-|---------|------|
-| `UserService` | 用户认证、注册、查询 |
-| `JobService` | 岗位查询、创建、匹配度计算 |
-| `ApplicationService` | 申请提交、查询、状态更新 |
-| `DashboardService` | 聚合 Dashboard 展示数据 |
-| `AdminService` | 工作量统计 |
-
-### Storage 层（数据持久化）
-
-| 文件 | 说明 |
-|------|------|
-| `FileStorageUtil.java` | CSV 文件加载与保存、运行目录解析 |
-
-### Model 层（数据模型）
-
-| 类 | 说明 |
-|----|------|
-| `User` | 用户实体 |
-| `UserRole` | 用户角色枚举：TA、MO、ADMIN |
-| `Job` | 岗位实体 |
-| `JobStatus` | 岗位状态枚举 |
-| `Application` | 申请实体 |
-| `ApplicationStatus` | 申请状态枚举 |
+### 💡 Best Practices
+- **Team Lead**: Assign tasks to different contributors for separate files or modules to minimize conflicts
+- **Contributors**: Sync the master branch regularly to avoid falling too far behind
+- **PR Order**: Merge PRs one by one according to submission time, and resolve conflicts immediately when they occur
 
 ---
 
-## 📊 数据文件说明
+## 📚 Detailed File Function Description
+### Controller Layer (HTTP Request Handling)
+| Servlet | Function |
+|---------|----------|
+| `HomeServlet` | Handles `/home` requests, redirects to the login home page |
+| `LoginServlet` | User login authentication, role judgment, and Session creation |
+| `LogoutServlet` | User logout, clears Session data |
+| `RegisterServlet` | New TA account registration and automatic login |
+| `TaDashboardServlet` | Loads statistical data for the TA Dashboard |
+| `JobListServlet` | Displays the list of available job positions |
+| `ApplyServlet` | Handles TA job application submission |
+| `ApplicationStatusServlet` | Displays TA's application history and status |
+| `MODashboardServlet` | Displays statistical information for the MO Dashboard |
+| `MOJobServlet` | Handles job position creation and publishing by MOs |
+| `MOApplicationServlet` | Handles application viewing and review by MOs |
+| `AdminDashboardServlet` | Displays system workload statistics for admins |
 
-### `ta_users.csv`（用户数据）
+### Service Layer (Business Logic)
+| Service | Responsibility |
+|---------|----------------|
+| `UserService` | User authentication, registration, and information query |
+| `JobService` | Job position query, creation, and matching degree calculation |
+| `ApplicationService` | Application submission, query, and status update |
+| `DashboardService` | Aggregates data for Dashboard display |
+| `AdminService` | System workload statistics calculation |
 
+### Storage Layer (Data Persistence)
+| File | Description |
+|------|-------------|
+| `FileStorageUtil.java` | CSV file loading and saving, runtime directory resolution |
+
+### Model Layer (Data Models)
+| Class | Description |
+|-------|-------------|
+| `User` | User entity |
+| `UserRole` | User role enum: TA, MO, ADMIN |
+| `Job` | Job position entity |
+| `JobStatus` | Job status enum |
+| `Application` | Application entity |
+| `ApplicationStatus` | Application status enum |
+
+---
+
+## 📊 Data File Description
+### `ta_users.csv` (User Data)
 ```csv
 用户名,密码,姓名,角色,描述
-seele,123456,Seele,TA,TA 申请者账号
-mo1,123456,Module Organiser,MO,课程负责人账号
-admin,123456,Administrator,ADMIN,系统管理员账号
+seele,123456,Seele,TA,TA Applicant Account
+mo1,123456,Module Organiser,MO,Module Organiser Account
+admin,123456,Administrator,ADMIN,System Administrator Account
 ```
 
-### `jobs.csv`（岗位数据）
-
+### `jobs.csv` (Job Position Data)
 ```csv
 岗位ID,标题,课程代码,教师,工时,技能要求,状态
-job001,Python 助教,CS101,Dr. Smith,50,Python/Teaching,OPEN
+job001,Python TA,CS101,Dr. Smith,50,Python/Teaching,OPEN
 ```
 
-### `applications.csv`（申请记录）
-
+### `applications.csv` (Application Records)
 ```csv
 申请ID,申请人,岗位ID,状态,提交时间,备注
 app001,seele,job001,PENDING,2024-03-20 10:30:00,
@@ -552,64 +498,58 @@ app001,seele,job001,PENDING,2024-03-20 10:30:00,
 
 ---
 
-## 🛑 常见问题排查
+## 🛑 Troubleshooting Common Issues
+### Q1: `mvn clean package` Fails
+**Possible Causes**:
+- ❌ JDK version is not 17, switch to JDK 17 and retry
+- ❌ Cannot access Maven Central Repository, check your network connection
+- ❌ Project file encoding issue, check `<project.build.sourceEncoding>` in `pom.xml`
 
-### Q1：`mvn clean package` 失败
-
-**原因可能**：
-- ❌ JDK 不是 17，改成 17 后重试
-- ❌ 网络无法访问 Maven 中央仓库，检查网络连接
-- ❌ 项目文件编码问题，检查 `pom.xml` 中的 `<project.build.sourceEncoding>`
-
-**解决**：
+**Solutions**:
 ```powershell
-# 检查 Java 版本
+# Check Java version
 java -version
 
-# 清空 Maven 缓存后重试
+# Clear Maven local cache and retry
 mvn clean package -U
 ```
 
-### Q2：部署后浏览器访问返回 404
+### Q2: Browser Returns 404 After Deployment
+**Possible Causes**:
+- ❌ Tomcat is not running
+- ❌ WAR file is not extracted by Tomcat (you should see a `ta-webapp` folder under `webapps/` normally)
+- ❌ Incorrect URL path
 
-**原因可能**：
-- ❌ Tomcat 未启动
-- ❌ WAR 文件未被 Tomcat 解压（通常在 `webapps/` 下看到 `ta-webapp` 文件夹）
-- ❌ URL 路径错误
-
-**解决**：
+**Solutions**:
 ```powershell
-# 确保 Tomcat 运行
+# Ensure Tomcat is running
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 
-# 访问正确的 URL
+# Access the correct URL
 http://localhost:8080/ta-webapp/
 
-# 查看 Tomcat 日志（若有错）
+# Check Tomcat logs (if there are errors)
 D:\apache-tomcat-10.1.52\logs\catalina.out
 ```
 
-### Q3：Git 提交后 PR 显示冲突
+### Q3: PR Shows Conflicts After Git Commit
+**Cause**: Your branch is behind the master branch, and two developers have modified the same file.
 
-**原因**：自己的分支落后于 master，两人改了同一文件。
-
-**解决**：按上文"处理合并冲突"部分操作。
-
----
-
-## 📖 相关文档
-
-- [📋 项目计划](docs/project-plan.md)
-- [📝 需求分析](docs/requirements.md)
-- [🏗️ 架构说明](docs/architecture.md)
+**Solution**: Follow the steps in the "Resolving Merge Conflicts" section above.
 
 ---
 
-## 🎓 技术栈
+## 📖 Related Documentation
+- [📋 Project Plan](sslocal://flow/file_open?url=docs%2Fproject-plan.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
+- [📝 Requirements Analysis](sslocal://flow/file_open?url=docs%2Frequirements.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
+- [🏗️ Architecture Description](sslocal://flow/file_open?url=docs%2Farchitecture.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
 
-| 组件 | 版本 |
-|------|------|
+---
+
+## 🎓 Tech Stack
+| Component | Version |
+|-----------|---------|
 | **Java** | 17 |
 | **Servlet/JSP** | Jakarta 10 (Tomcat 10) |
 | **Maven** | 3.9+ |
@@ -619,6 +559,8 @@ D:\apache-tomcat-10.1.52\logs\catalina.out
 
 ---
 
+**Project Status**: ✅ Core features completed, under continuous iteration...
 
-
-**项目状态**：✅ 核心功能完成，持续迭代中...
+---
+### Notes for Git Submission
+This file uses standard UTF-8 encoding and GitHub-flavored Markdown syntax, which will not cause garbled code when submitted to Git. All CSV headers remain consistent with your actual project code to avoid parsing errors.
