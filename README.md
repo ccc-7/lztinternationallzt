@@ -478,7 +478,7 @@ git merge master
 ## 📊 Data File Description
 ### `ta_users.csv` (User Data)
 ```csv
-用户名,密码,姓名,角色,描述
+Username, Password, Full Name, Role, Description
 seele,123456,Seele,TA,TA Applicant Account
 mo1,123456,Module Organiser,MO,Module Organiser Account
 admin,123456,Administrator,ADMIN,System Administrator Account
@@ -486,13 +486,13 @@ admin,123456,Administrator,ADMIN,System Administrator Account
 
 ### `jobs.csv` (Job Position Data)
 ```csv
-岗位ID,标题,课程代码,教师,工时,技能要求,状态
+Job ID, Title, Course Code, Lecturer, Working Hours, Skills Required, Status
 job001,Python TA,CS101,Dr. Smith,50,Python/Teaching,OPEN
 ```
 
 ### `applications.csv` (Application Records)
 ```csv
-申请ID,申请人,岗位ID,状态,提交时间,备注
+Application ID, Applicant, Job ID, Status, Submission Time, Remarks
 app001,seele,job001,PENDING,2024-03-20 10:30:00,
 ```
 
