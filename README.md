@@ -1,6 +1,6 @@
 # TA 招聘系统（TA Recruitment System）
 
-> 一个使用 Maven 管理的 Java Servlet/JSP Web 应用，支持 TA、MO（Module Organiser）、Admin 三类角色的岗位招聘流程。
+> 一个use Maven 管理的 Java Servlet/JSP Web 应用，支持 TA、MO（Module Organiser）、Admin 三类角色的岗位招聘流程。
 
 ## 📋 项目简介
 
