@@ -59,7 +59,7 @@ public class UserService {
                 .findFirst();
 
         if (existed.isPresent()) {
-            throw new IllegalArgumentException("用户名已存在");
+            throw new IllegalArgumentException("existed username, please choose another one.");
         }
 
         String normalizedSkills = normalizeSkills(skills);
@@ -97,7 +97,7 @@ public class UserService {
             }
         }
         if (updated == null) {
-            throw new IllegalArgumentException("用户不存在");
+            throw new IllegalArgumentException("user not found");
         }
         storage.saveUsers(users);
         return updated;
@@ -111,7 +111,7 @@ public class UserService {
                 .findFirst();
 
         if (existed.isPresent()) {
-            throw new IllegalArgumentException("用户名已存在");
+            throw new IllegalArgumentException("existed username, please choose another one.");
         }
 
         if (user.getSkills() != null) {

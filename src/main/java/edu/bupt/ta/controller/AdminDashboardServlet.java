@@ -24,7 +24,7 @@ public class AdminDashboardServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.ADMIN) {
-            req.getSession().setAttribute("flashError", "请先以 Admin 身份登录");
+            req.getSession().setAttribute("flashError", "Please log in as an administrator to access the dashboard.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }

@@ -22,7 +22,7 @@ public class MOJobServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as a MO to create jobs.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -38,7 +38,7 @@ public class MOJobServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as a MO to create jobs.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -64,10 +64,10 @@ public class MOJobServlet extends HttpServlet {
             }
 
             jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
-            req.getSession().setAttribute("flashSuccess", "岗位创建成功");
+            req.getSession().setAttribute("flashSuccess", "Job created successfully");
             resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "岗位创建失败，请检查输入");
+            req.getSession().setAttribute("flashError", "Failed to create job, please check your input");
             resp.sendRedirect(req.getContextPath() + "/mo/jobs/new");
         }
     }

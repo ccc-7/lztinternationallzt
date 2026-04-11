@@ -159,7 +159,7 @@ public class FileStorageUtil {
                 ensureDefaultApplications();
                 syncBaseToMirror();
             } catch (IOException e) {
-                throw new RuntimeException("初始化数据文件失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to initialize files: " + e.getMessage(), e);
             }
         }
     }
@@ -310,7 +310,7 @@ public class FileStorageUtil {
                     users.add(user);
                 }
             } catch (IOException e) {
-                throw new RuntimeException("读取用户数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to load users data: " + e.getMessage(), e);
             }
             return users;
         }
@@ -339,7 +339,7 @@ public class FileStorageUtil {
                 writeLinesAtomically(USERS_FILE, lines);
                 syncFileToMirror(USERS_FILE);
             } catch (IOException e) {
-                throw new RuntimeException("保存用户数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to save users data: " + e.getMessage(), e);
             }
         }
     }
@@ -379,7 +379,7 @@ public class FileStorageUtil {
                     jobs.add(job);
                 }
             } catch (IOException e) {
-                throw new RuntimeException("读取岗位数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to load jobs data: " + e.getMessage(), e);
             }
             return jobs;
         }
@@ -409,7 +409,7 @@ public class FileStorageUtil {
                 writeLinesAtomically(JOBS_FILE, lines);
                 syncFileToMirror(JOBS_FILE);
             } catch (IOException e) {
-                throw new RuntimeException("保存岗位数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to save jobs data: " + e.getMessage(), e);
             }
         }
     }
@@ -444,7 +444,7 @@ public class FileStorageUtil {
                     apps.add(app);
                 }
             } catch (IOException e) {
-                throw new RuntimeException("读取申请数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to load applications data: " + e.getMessage(), e);
             }
             return apps;
         }
@@ -469,7 +469,7 @@ public class FileStorageUtil {
                 writeLinesAtomically(APPLICATIONS_FILE, lines);
                 syncFileToMirror(APPLICATIONS_FILE);
             } catch (IOException e) {
-                throw new RuntimeException("保存申请数据失败: " + e.getMessage(), e);
+                throw new RuntimeException("failed to save applications data: " + e.getMessage(), e);
             }
         }
     }

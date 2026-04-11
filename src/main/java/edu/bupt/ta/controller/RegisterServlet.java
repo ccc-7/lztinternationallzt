@@ -37,7 +37,7 @@ public class RegisterServlet extends HttpServlet {
 
         try {
             if (username == null || username.isBlank() || password == null || password.isBlank()) {
-                req.getSession().setAttribute("flashError", "请填写用户名和密码");
+                req.getSession().setAttribute("flashError", "please fill in both username and password");
                 resp.sendRedirect(req.getContextPath() + "/register");
                 return;
             }
@@ -57,10 +57,10 @@ public class RegisterServlet extends HttpServlet {
                     skills == null ? "" : skills
             );
             req.getSession().setAttribute("currentUser", user);
-            req.getSession().setAttribute("flashSuccess", "注册成功，已自动登录");
+            req.getSession().setAttribute("flashSuccess", "Registration successful, you are now logged in");
             resp.sendRedirect(req.getContextPath() + "/ta/dashboard");
         } catch (NumberFormatException e) {
-            req.getSession().setAttribute("flashError", "年级格式不正确");
+            req.getSession().setAttribute("flashError", "Invalid year format");
             resp.sendRedirect(req.getContextPath() + "/register");
         } catch (IllegalArgumentException e) {
             req.getSession().setAttribute("flashError", e.getMessage());

@@ -30,7 +30,7 @@ public class TaDashboardServlet extends HttpServlet {
 
         User user = getCurrentUser(req);
         if (user == null || user.getRole() != UserRole.TA) {
-            req.getSession().setAttribute("flashError", "请先以 TA 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as a TA to access the dashboard.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }

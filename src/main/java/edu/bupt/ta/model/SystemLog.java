@@ -107,18 +107,18 @@ public class SystemLog {
     }
 
     public String getOperationTypeLabel() {
-        if (operationType == null) return "未知";
+        if (operationType == null) return "unknown";
         switch (operationType) {
-            case "LOGIN": return "登录";
-            case "LOGOUT": return "退出登录";
-            case "CREATE": return "创建";
-            case "UPDATE": return "更新";
-            case "DELETE": return "删除";
-            case "APPROVE": return "审批通过";
-            case "REJECT": return "审批拒绝";
-            case "ENABLE": return "启用";
-            case "DISABLE": return "禁用";
-            case "EXPORT": return "导出";
+            case "LOGIN": return "login";
+            case "LOGOUT": return "logout";
+            case "CREATE": return "create";
+            case "UPDATE": return "update";
+            case "DELETE": return "delete";
+            case "APPROVE": return "approve";
+            case "REJECT": return "reject";
+            case "ENABLE": return "enable";
+            case "DISABLE": return "disable";
+            case "EXPORT": return "export";
             default: return operationType;
         }
     }

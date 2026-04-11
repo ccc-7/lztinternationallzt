@@ -306,7 +306,7 @@ public class AdminServlet extends HttpServlet {
     private void handleApprove(HttpServletRequest req, HttpServletResponse resp, User admin) throws IOException {
         String applicationId = req.getParameter("applicationId");
         if (applicationId == null || applicationId.isBlank()) {
-            req.getSession().setAttribute("flashError", "申请ID不能为空");
+            req.getSession().setAttribute("flashError", "the application ID cannot be empty");
             resp.sendRedirect(req.getContextPath() + "/admin/applications");
             return;
         }
@@ -318,11 +318,11 @@ public class AdminServlet extends HttpServlet {
                     .findFirst().orElse(null);
 
             logService.log(admin.getUserId(), admin.getDisplayName(), "APPROVE", "Application",
-                    applicationId, "批准申请 " + applicationId, getClientIP(req));
+                    applicationId, "approve " + applicationId, getClientIP(req));
 
-            req.getSession().setAttribute("flashSuccess", "申请已批准");
+            req.getSession().setAttribute("flashSuccess", "Application approved");
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "操作失败：" + e.getMessage());
+            req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
         }
 
         resp.sendRedirect(req.getContextPath() + "/admin/applications");
@@ -333,13 +333,13 @@ public class AdminServlet extends HttpServlet {
         String reason = req.getParameter("rejectReason");
 
         if (applicationId == null || applicationId.isBlank()) {
-            req.getSession().setAttribute("flashError", "申请ID不能为空");
+            req.getSession().setAttribute("flashError", "the application ID cannot be empty");
             resp.sendRedirect(req.getContextPath() + "/admin/applications");
             return;
         }
 
         if (reason == null || reason.isBlank()) {
-            req.getSession().setAttribute("flashError", "拒绝理由不能为空");
+            req.getSession().setAttribute("flashError", "the rejection reason cannot be empty");
             resp.sendRedirect(req.getContextPath() + "/admin/applications");
             return;
         }
@@ -348,11 +348,11 @@ public class AdminServlet extends HttpServlet {
             applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED, "Rejected: " + reason);
 
             logService.log(admin.getUserId(), admin.getDisplayName(), "REJECT", "Application",
-                    applicationId, "拒绝申请 " + applicationId + "，原因：" + reason, getClientIP(req));
+                    applicationId, "reject " + applicationId + "，reason：" + reason, getClientIP(req));
 
-            req.getSession().setAttribute("flashSuccess", "申请已拒绝");
+            req.getSession().setAttribute("flashSuccess", "Application rejected");
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "操作失败：" + e.getMessage());
+            req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
         }
 
         resp.sendRedirect(req.getContextPath() + "/admin/applications");
@@ -366,8 +366,8 @@ public class AdminServlet extends HttpServlet {
             if (jobId != null && !jobId.isBlank()) {
                 jobService.deleteJob(jobId);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "DELETE", "Job",
-                        jobId, "删除职位 " + jobId, getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "职位已删除");
+                        jobId, "delete job " + jobId, getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Job deleted");
             }
         } else if ("toggle".equals(action)) {
             String jobId = req.getParameter("jobId");
@@ -375,8 +375,8 @@ public class AdminServlet extends HttpServlet {
                 jobService.toggleJobStatus(jobId);
                 String newStatus = jobService.findById(jobId).getStatus().name();
                 logService.log(admin.getUserId(), admin.getDisplayName(), newStatus.equals("OPEN") ? "ENABLE" : "DISABLE",
-                        "Job", jobId, (newStatus.equals("OPEN") ? "启用" : "禁用") + "职位 " + jobId, getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "职位状态已更新");
+                        "Job", jobId, (newStatus.equals("OPEN") ? "enable" : "disable") + " job " + jobId, getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Job status updated");
             }
         } else if ("create".equals(action) || "update".equals(action)) {
             handleJobSave(req, resp, admin, action);
@@ -407,16 +407,16 @@ public class AdminServlet extends HttpServlet {
             if ("create".equals(action)) {
                 jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "CREATE", "Job",
-                        title, "创建职位：" + title, getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "职位创建成功");
+                        title, "create job：" + title, getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Job created successfully");
             } else {
                 jobService.updateJob(jobId, title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "UPDATE", "Job",
-                        jobId, "更新职位：" + title, getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "职位更新成功");
+                        jobId, "update job：" + title, getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Job updated successfully");
             }
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "操作失败：" + e.getMessage());
+            req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
         }
 
         resp.sendRedirect(req.getContextPath() + "/admin/jobs");
@@ -432,8 +432,8 @@ public class AdminServlet extends HttpServlet {
                 User target = userService.findById(userId);
                 String newStatus = target != null ? target.getStatus() : "UNKNOWN";
                 logService.log(admin.getUserId(), admin.getDisplayName(), newStatus.equals("ACTIVE") ? "ENABLE" : "DISABLE",
-                        "User", userId, (newStatus.equals("ACTIVE") ? "启用" : "禁用") + "用户 " + userId, getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "用户状态已更新");
+                        "User", userId, (newStatus.equals("ACTIVE") ? "enable" : "disable") + " user " + userId, getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "User status updated");
             }
         } else if ("create".equals(action)) {
             try {
@@ -465,10 +465,10 @@ public class AdminServlet extends HttpServlet {
                 userService.registerUser(newUser);
 
                 logService.log(admin.getUserId(), admin.getDisplayName(), "CREATE", "User",
-                        username, "创建用户：" + username + " (角色:" + role + ")", getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "用户创建成功");
+                        username, "create user：" + username + " (role:" + role + ")", getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "User created successfully");
             } catch (Exception e) {
-                req.getSession().setAttribute("flashError", "创建失败：" + e.getMessage());
+                req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
             }
         } else if ("changePassword".equals(action)) {
             try {
@@ -477,13 +477,13 @@ public class AdminServlet extends HttpServlet {
                 String newPassword = req.getParameter("newPassword");
 
                 if (!oldPassword.equals(admin.getPassword())) {
-                    req.getSession().setAttribute("flashError", "原密码错误");
+                    req.getSession().setAttribute("flashError", "Original password is incorrect");
                     resp.sendRedirect(req.getContextPath() + "/admin/users?role=ADMIN");
                     return;
                 }
 
                 if (newPassword == null || newPassword.length() < 6) {
-                    req.getSession().setAttribute("flashError", "新密码至少需要6位");
+                    req.getSession().setAttribute("flashError", "New password must be at least 6 characters long");
                     resp.sendRedirect(req.getContextPath() + "/admin/users?role=ADMIN");
                     return;
                 }
@@ -491,11 +491,11 @@ public class AdminServlet extends HttpServlet {
                 userService.updatePassword(userId, newPassword);
 
                 logService.log(admin.getUserId(), admin.getDisplayName(), "UPDATE", "User",
-                        userId, "修改密码", getClientIP(req));
-                req.getSession().setAttribute("flashSuccess", "密码修改成功");
+                        userId, "update password", getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Password updated successfully");
                 req.getSession().setAttribute("currentUser", userService.findById(userId));
             } catch (Exception e) {
-                req.getSession().setAttribute("flashError", "操作失败：" + e.getMessage());
+                req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
             }
             resp.sendRedirect(req.getContextPath() + "/admin/users?role=ADMIN");
             return;

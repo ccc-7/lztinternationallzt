@@ -17,7 +17,7 @@ public class ApplicationService {
 
         for (Application app : applications) {
             if (app.getUserId().equals(userId) && app.getJobId().equals(jobId)) {
-                throw new IllegalArgumentException("你已经申请过这个岗位了");
+                throw new IllegalArgumentException("you have already applied for this job.");
             }
         }
 
@@ -98,7 +98,7 @@ public class ApplicationService {
         }
 
         if (!found) {
-            throw new IllegalArgumentException("未找到对应申请记录");
+            throw new IllegalArgumentException("Application not found");
         }
 
         storage.saveApplications(applications);

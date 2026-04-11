@@ -32,7 +32,7 @@ public class MOApplicationServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as an MO to view applications.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -61,10 +61,10 @@ public class MOApplicationServlet extends HttpServlet {
         }
 
         Map<String, String> statusLabels = new HashMap<>();
-        statusLabels.put("PENDING", "待审核");
-        statusLabels.put("ACCEPTED", "已录用");
-        statusLabels.put("REJECTED", "已拒绝");
-        statusLabels.put("INTERVIEW", "面试");
+        statusLabels.put("PENDING", "Pending");
+        statusLabels.put("ACCEPTED", "Accepted");
+        statusLabels.put("REJECTED", "Rejected");
+        statusLabels.put("INTERVIEW", "Interview");
 
         req.setAttribute("applications", applications);
         req.setAttribute("jobs", jobs);
@@ -83,7 +83,7 @@ public class MOApplicationServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as an MO to update application status");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -94,9 +94,9 @@ public class MOApplicationServlet extends HttpServlet {
 
         try {
             applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));
-            req.getSession().setAttribute("flashSuccess", "申请状态更新成功");
+            req.getSession().setAttribute("flashSuccess", "Application status updated successfully");
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "更新失败：" + e.getMessage());
+            req.getSession().setAttribute("flashError", "Failed to update status: " + e.getMessage());
         }
 
         if (filterJobId != null && !filterJobId.isBlank()) {

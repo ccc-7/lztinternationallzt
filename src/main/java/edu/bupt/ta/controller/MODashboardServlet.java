@@ -29,7 +29,7 @@ public class MODashboardServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "请先以 MO 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as an MO to view the dashboard");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }

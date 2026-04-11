@@ -38,7 +38,7 @@ public class LogService {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("初始化日志文件失败：" + e.getMessage(), e);
+            throw new RuntimeException("failed to initialize file：" + e.getMessage(), e);
         }
     }
 
@@ -152,7 +152,7 @@ public class LogService {
                 logs.add(log);
             }
         } catch (IOException e) {
-            throw new RuntimeException("读取日志数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("failed to read log data：" + e.getMessage(), e);
         }
         return logs;
     }
@@ -176,7 +176,7 @@ public class LogService {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("保存日志数据失败：" + e.getMessage(), e);
+            throw new RuntimeException("failed to save log data：" + e.getMessage(), e);
         }
     }
 

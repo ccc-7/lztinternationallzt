@@ -21,7 +21,7 @@ public class TaProfileServlet extends HttpServlet {
             throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.TA) {
-            req.getSession().setAttribute("flashError", "请先以 TA 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as a TA to view your profile.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -37,7 +37,7 @@ public class TaProfileServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.TA) {
-            req.getSession().setAttribute("flashError", "请先以 TA 身份登录");
+            req.getSession().setAttribute("flashError", "please log in as a TA to view your profile.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -54,7 +54,7 @@ public class TaProfileServlet extends HttpServlet {
             try {
                 year = Integer.parseInt(yearStr);
             } catch (NumberFormatException e) {
-                req.getSession().setAttribute("flashError", "Year 格式不正确");
+                req.getSession().setAttribute("flashError", "Invalid year format");
                 resp.sendRedirect(req.getContextPath() + "/ta/profile");
                 return;
             }
@@ -63,11 +63,11 @@ public class TaProfileServlet extends HttpServlet {
         try {
             User updated = userService.updateProfile(user.getUserId(), name, email, year, major, skills, availability);
             req.getSession().setAttribute("currentUser", updated);
-            req.getSession().setAttribute("flashSuccess", "资料已保存（已写入 CSV）");
+            req.getSession().setAttribute("flashSuccess", "Profile information saved (written to CSV)");
         } catch (IllegalArgumentException e) {
             req.getSession().setAttribute("flashError", e.getMessage());
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "保存失败，请稍后重试");
+            req.getSession().setAttribute("flashError", "Failed to save profile information, please try again later");
         }
 
         resp.sendRedirect(req.getContextPath() + "/ta/profile");

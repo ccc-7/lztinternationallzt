@@ -36,20 +36,20 @@ public class LoginServlet extends HttpServlet {
 
         User user = userService.authenticate(username, password);
         if (user == null) {
-            setFlash(req, "flashError", "用户名或密码错误");
+            setFlash(req, "flashError", "username or password is incorrect");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
         UserRole expectedRole = UserRole.fromString(roleParam);
         if (user.getRole() != expectedRole) {
-            setFlash(req, "flashError", "登录身份与账号角色不匹配");
+            setFlash(req, "flashError", "login identity does not match the account role");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
         if (!"ACTIVE".equals(user.getStatus())) {
-            setFlash(req, "flashError", "账号已被禁用，请联系管理员");
+            setFlash(req, "flashError", "The account has been disabled. Please contact the administrator.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
@@ -58,9 +58,9 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("currentUser", user);
 
         logService.log(user.getUserId(), user.getDisplayName(), "LOGIN", "User",
-                user.getUserId(), "用户登录", getClientIP(req));
+                user.getUserId(), "User login", getClientIP(req));
 
-        setFlash(req, "flashSuccess", "登录成功，欢迎回来 " + user.getDisplayName());
+        setFlash(req, "flashSuccess", "Login successful, welcome back " + user.getDisplayName());
 
         switch (user.getRole()) {
             case TA -> resp.sendRedirect(req.getContextPath() + "/ta/dashboard");
