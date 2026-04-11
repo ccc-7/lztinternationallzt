@@ -18,13 +18,13 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
-                <span class="nav-icon">&#9651;</span> 职位大厅
+                <span class="nav-icon">&#9651;</span> Job Board
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/applications">
-                <span class="nav-icon">&#9733;</span> 申请状态
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
             <a class="nav-item active" href="${pageContext.request.contextPath}/ta/profile">
                 <span class="nav-icon">&#9679;</span> My Profile
@@ -44,7 +44,7 @@
         <div class="admin-content">
             <section class="panel dashboard-intro">
                 <h1>My Profile</h1>
-                <p>完善个人信息以获得更准确的岗位匹配，并将信息写入 CSV 存档。</p>
+                <p>Complete your profile to get better job matches, and your information will be saved to CSV.</p>
             </section>
 
             <section class="panel">
@@ -82,7 +82,7 @@
                     <div class="full-width">
                         <label>Skills</label>
                         <textarea name="skills" rows="4" placeholder="e.g. Java, SQL, Data Structures">${profileUser.skills}</textarea>
-                        <p class="hint-text" style="text-align:left; margin-top: 8px;">Skills 会自动规范化保存到 CSV（用 “|” 分隔）。</p>
+                        <p class="hint-text" style="text-align:left; margin-top: 8px;">Skills will be automatically normalized and saved to CSV (separated by "|").</p>
                     </div>
 
                     <div class="full-width form-actions">
@@ -96,4 +96,3 @@
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
-

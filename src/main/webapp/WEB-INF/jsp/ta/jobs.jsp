@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    request.setAttribute("pageTitle", "职位大厅");
+    request.setAttribute("pageTitle", "Job Board");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
@@ -18,13 +18,13 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item active" href="${pageContext.request.contextPath}/jobs">
-                <span class="nav-icon">&#9651;</span> 职位大厅
+                <span class="nav-icon">&#9651;</span> Job Board
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/applications">
-                <span class="nav-icon">&#9733;</span> 申请状态
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
         </nav>
     </aside>
@@ -35,13 +35,13 @@
             <div class="topbar-title">Available Positions</div>
             <div class="topbar-right">
                 <a href="${pageContext.request.contextPath}/ta/profile">${sessionScope.currentUser.name}</a>
-                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
+                <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
         <section class="panel">
-            <h1>职位大厅</h1>
-            <p>浏览当前开放岗位，并查看系统推荐的匹配项。</p>
+            <h1>Job Board</h1>
+            <p>Browse open positions and view system-recommended matches.</p>
         </section>
 
         <section class="job-grid">
@@ -52,16 +52,16 @@
                         <span class="badge">${job.status}</span>
                     </div>
 
-                    <p><strong>课程代码：</strong>${job.moduleCode}</p>
-                    <p><strong>发布教师：</strong>${job.organiser}</p>
-                    <p><strong>时长：</strong>${job.hours} 小时</p>
-                    <p><strong>年级要求：</strong>${job.minYear} - ${job.maxYear}</p>
-                    <p><strong>技能要求：</strong>${job.requiredSkills}</p>
-                    <p><strong>AI 匹配分：</strong>${job.matchScore}</p>
+                    <p><strong>Module Code:</strong> ${job.moduleCode}</p>
+                    <p><strong>Organizer:</strong> ${job.organiser}</p>
+                    <p><strong>Hours:</strong> ${job.hours} hours</p>
+                    <p><strong>Year Requirement:</strong> ${job.minYear} - ${job.maxYear}</p>
+                    <p><strong>Required Skills:</strong> ${job.requiredSkills}</p>
+                    <p><strong>AI Match Score:</strong> ${job.matchScore}</p>
 
                     <form action="${pageContext.request.contextPath}/apply" method="post" class="apply-form">
                         <input type="hidden" name="jobId" value="${job.jobId}">
-                        <button type="submit" class="btn btn-primary full-btn">申请该岗位</button>
+                        <button type="submit" class="btn btn-primary full-btn">Apply for This Position</button>
                     </form>
                 </div>
             </c:forEach>

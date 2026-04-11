@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    request.setAttribute("pageTitle", "申请状态");
+    request.setAttribute("pageTitle", "Applications");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
@@ -18,13 +18,13 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item" href="${pageContext.request.contextPath}/ta/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
-                <span class="nav-icon">&#9651;</span> 职位大厅
+                <span class="nav-icon">&#9651;</span> Job Board
             </a>
             <a class="nav-item active" href="${pageContext.request.contextPath}/applications">
-                <span class="nav-icon">&#9733;</span> 申请状态
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
         </nav>
     </aside>
@@ -35,13 +35,13 @@
             <div class="topbar-title">My Applications</div>
             <div class="topbar-right">
                 <a href="${pageContext.request.contextPath}/ta/profile">${sessionScope.currentUser.name}</a>
-                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
+                <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
         <section class="panel">
-            <h1>申请状态</h1>
-            <p>查看你所有申请的处理进度。</p>
+            <h1>My Applications</h1>
+            <p>Track the status of all your applications here.</p>
         </section>
 
         <section class="panel">
@@ -49,11 +49,11 @@
                 <table class="custom-table">
                     <thead>
                     <tr>
-                        <th>申请编号</th>
-                        <th>岗位编号</th>
-                        <th>状态</th>
-                        <th>提交时间</th>
-                        <th>反馈/备注</th>
+                        <th>Application ID</th>
+                        <th>Job ID</th>
+                        <th>Status</th>
+                        <th>Submitted At</th>
+                        <th>Notes</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,8 +63,8 @@
                                 <td colspan="5" class="empty-state">
                                     <div class="empty-content">
                                         <span class="empty-icon">&#128203;</span>
-                                        <p>你还没有提交任何申请</p>
-                                        <a href="${pageContext.request.contextPath}/jobs" class="btn btn-primary btn-small">去浏览职位</a>
+                                        <p>No applications yet</p>
+                                        <a href="${pageContext.request.contextPath}/jobs" class="btn btn-primary btn-small">Browse Positions</a>
                                     </div>
                                 </td>
                             </tr>
@@ -79,7 +79,7 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${empty a.notes}">
-                                                <span class="empty-state-small">暂无</span>
+                                                <span class="empty-state-small">None</span>
                                             </c:when>
                                             <c:otherwise>
                                                 ${a.notes}

@@ -19,13 +19,13 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item active" href="${pageContext.request.contextPath}/ta/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
-                <span class="nav-icon">&#9651;</span> 职位大厅
+                <span class="nav-icon">&#9651;</span> Job Board
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/applications">
-                <span class="nav-icon">&#9733;</span> 申请状态
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
         </nav>
     </aside>
