@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
     "/admin/applications",
     "/admin/applications/approve",
     "/admin/applications/reject",
+    "/admin/jobs",
     "/admin/jobs/*",
+    "/admin/users",
     "/admin/users/*",
     "/admin/logs",
     "/admin/stats"
@@ -38,17 +40,18 @@ public class AdminServlet extends HttpServlet {
             return;
         }
 
+        String servletPath = req.getServletPath();
         String pathInfo = req.getPathInfo();
 
-        if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("/applications")) {
+        if (servletPath.equals("/admin/applications") || "/applications".equals(pathInfo)) {
             showApplications(req, resp);
-        } else if (pathInfo.equals("/jobs") || pathInfo.startsWith("/jobs/")) {
+        } else if (servletPath.equals("/admin/jobs") || "/jobs".equals(pathInfo)) {
             showJobs(req, resp, pathInfo);
-        } else if (pathInfo.equals("/users") || pathInfo.startsWith("/users/")) {
+        } else if (servletPath.equals("/admin/users") || "/users".equals(pathInfo)) {
             showUsers(req, resp, pathInfo);
-        } else if (pathInfo.equals("/logs")) {
+        } else if (servletPath.equals("/admin/logs") || "/logs".equals(pathInfo)) {
             showLogs(req, resp);
-        } else if (pathInfo.equals("/stats")) {
+        } else if (servletPath.equals("/admin/stats") || "/stats".equals(pathInfo)) {
             showStats(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -65,16 +68,17 @@ public class AdminServlet extends HttpServlet {
         }
 
         req.setCharacterEncoding("UTF-8");
+        String servletPath = req.getServletPath();
         String pathInfo = req.getPathInfo();
         String action = req.getParameter("action");
 
-        if (pathInfo != null && pathInfo.equals("/applications/approve") || "approve".equals(action)) {
+        if ("approve".equals(action)) {
             handleApprove(req, resp, user);
-        } else if (pathInfo != null && pathInfo.equals("/applications/reject") || "reject".equals(action)) {
+        } else if ("reject".equals(action)) {
             handleReject(req, resp, user);
-        } else if (pathInfo != null && pathInfo.startsWith("/jobs/")) {
+        } else if (servletPath.equals("/admin/jobs") || (pathInfo != null && pathInfo.startsWith("/jobs"))) {
             handleJobAction(req, resp, user, pathInfo);
-        } else if (pathInfo != null && pathInfo.startsWith("/users/")) {
+        } else if (servletPath.equals("/admin/users") || (pathInfo != null && pathInfo.startsWith("/users"))) {
             handleUserAction(req, resp, user, pathInfo);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
