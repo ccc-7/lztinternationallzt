@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    request.setAttribute("pageTitle", "职位管理");
+    request.setAttribute("pageTitle", "Job Management");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
@@ -18,19 +18,19 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/applications">
-                <span class="nav-icon">&#9733;</span> 应用管理
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
             <a class="nav-item active" href="${pageContext.request.contextPath}/admin/jobs">
-                <span class="nav-icon">&#9651;</span> 职位管理
+                <span class="nav-icon">&#9651;</span> Jobs
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/users">
-                <span class="nav-icon">&#9679;</span> 用户管理
+                <span class="nav-icon">&#9679;</span> Users
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/logs">
-                <span class="nav-icon">&#9633;</span> 系统日志
+                <span class="nav-icon">&#9633;</span> System Logs
             </a>
         </nav>
     </aside>
@@ -38,10 +38,10 @@
     <main class="content">
         <div class="topbar topbar-admin">
             <button class="sidebar-toggle">&#9776;</button>
-            <div class="topbar-title">职位管理</div>
+            <div class="topbar-title">Job Management</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
-                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
+                <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
@@ -49,11 +49,11 @@
             <section class="panel dashboard-intro">
                 <div class="intro-header">
                     <div>
-                        <h1>职位管理</h1>
-                        <p>管理系统中的所有 TA 职位，添加、编辑、启用/禁用职位。</p>
+                        <h1>Job Management</h1>
+                        <p>Manage all TA positions in the system. Add, edit, enable/disable positions.</p>
                     </div>
                     <button class="btn btn-primary" onclick="showJobModal()">
-                        <span class="btn-icon">+</span> 新增职位
+                        <span class="btn-icon">+</span> Add Job
                     </button>
                 </div>
             </section>
@@ -62,15 +62,15 @@
                 <div class="filter-bar">
                     <form method="get" action="${pageContext.request.contextPath}/admin/jobs" class="filter-form">
                         <select name="status" class="filter-select">
-                            <option value="ALL">全部状态</option>
-                            <option value="OPEN" ${currentStatus == 'OPEN' ? 'selected' : ''}>开放</option>
-                            <option value="CLOSED" ${currentStatus == 'CLOSED' ? 'selected' : ''}>关闭</option>
+                            <option value="ALL">All Status</option>
+                            <option value="OPEN" ${currentStatus == 'OPEN' ? 'selected' : ''}>Open</option>
+                            <option value="CLOSED" ${currentStatus == 'CLOSED' ? 'selected' : ''}>Closed</option>
                         </select>
 
-                        <input type="text" name="search" placeholder="搜索职位名称/代码..." value="${currentSearch}" class="filter-input">
+                        <input type="text" name="search" placeholder="Search job title/code..." value="${currentSearch}" class="filter-input">
 
-                        <button type="submit" class="btn btn-primary btn-small">筛选</button>
-                        <a href="${pageContext.request.contextPath}/admin/jobs" class="btn btn-secondary btn-small">重置</a>
+                        <button type="submit" class="btn btn-primary btn-small">Filter</button>
+                        <a href="${pageContext.request.contextPath}/admin/jobs" class="btn btn-secondary btn-small">Reset</a>
                     </form>
                 </div>
 
@@ -78,14 +78,14 @@
                     <table class="custom-table">
                         <thead>
                         <tr>
-                            <th>职位ID</th>
-                            <th>职位名称</th>
-                            <th>课程代码</th>
-                            <th>配额</th>
-                            <th>申请数</th>
-                            <th>截止日期</th>
-                            <th>状态</th>
-                            <th>操作</th>
+                            <th>Job ID</th>
+                            <th>Job Title</th>
+                            <th>Module Code</th>
+                            <th>Vacancies</th>
+                            <th>Applications</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -95,8 +95,8 @@
                                     <td colspan="8" class="empty-state">
                                         <div class="empty-content">
                                             <span class="empty-icon">&#9651;</span>
-                                            <p>暂无职位数据</p>
-                                            <button class="btn btn-primary btn-small" onclick="showJobModal()">创建第一个职位</button>
+                                            <p>No job data available</p>
+                                            <button class="btn btn-primary btn-small" onclick="showJobModal()">Create First Job</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -111,21 +111,21 @@
                                         <td><span class="applicant-count">${applicationCounts[job.jobId]}</span></td>
                                         <td>${job.deadline}</td>
                                         <td>
-                                            <span class="badge ${job.status}">${job.status == 'OPEN' ? '开放' : '关闭'}</span>
+                                            <span class="badge ${job.status}">${job.status == 'OPEN' ? 'Open' : 'Closed'}</span>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn btn-action btn-edit" onclick="editJob('${job.jobId}')" title="编辑">
+                                                <button class="btn btn-action btn-edit" onclick="editJob('${job.jobId}')" title="Edit">
                                                     <span class="btn-icon-svg">&#9998;</span>
                                                 </button>
                                                 <form action="${pageContext.request.contextPath}/admin/jobs/toggle" method="post" class="inline-form">
                                                     <input type="hidden" name="action" value="toggle">
                                                     <input type="hidden" name="jobId" value="${job.jobId}">
-                                                    <button type="submit" class="btn btn-action ${job.status == 'OPEN' ? 'btn-warning' : 'btn-success'}" title="${job.status == 'OPEN' ? '禁用' : '启用'}">
+                                                    <button type="submit" class="btn btn-action ${job.status == 'OPEN' ? 'btn-warning' : 'btn-success'}" title="${job.status == 'OPEN' ? 'Disable' : 'Enable'}">
                                                         ${job.status == 'OPEN' ? '&#10007;' : '&#10003;'}
                                                     </button>
                                                 </form>
-                                                <button class="btn btn-action btn-danger" onclick="confirmDeleteJob('${job.jobId}')" title="删除">
+                                                <button class="btn btn-action btn-danger" onclick="confirmDeleteJob('${job.jobId}')" title="Delete">
                                                     <span class="btn-icon-svg">&#128465;</span>
                                                 </button>
                                             </div>
@@ -145,7 +145,7 @@
 <div class="modal-overlay" id="jobModal">
     <div class="modal modal-large">
         <div class="modal-header">
-            <h3 id="jobModalTitle">新增职位</h3>
+            <h3 id="jobModalTitle">Add Job</h3>
             <button class="modal-close" onclick="closeJobModal()">&times;</button>
         </div>
         <form action="${pageContext.request.contextPath}/admin/jobs/save" method="post" id="jobForm" class="modal-form">
@@ -154,53 +154,53 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>职位名称 <span class="required">*</span></label>
-                    <input type="text" name="title" id="jobTitle" required placeholder="例如：Software Engineering TA">
+                    <label>Job Title <span class="required">*</span></label>
+                    <input type="text" name="title" id="jobTitle" required placeholder="e.g. Software Engineering TA">
                 </div>
                 <div class="form-group">
-                    <label>课程代码 <span class="required">*</span></label>
-                    <input type="text" name="moduleCode" id="jobModuleCode" required placeholder="例如：EBU6304">
+                    <label>Module Code <span class="required">*</span></label>
+                    <input type="text" name="moduleCode" id="jobModuleCode" required placeholder="e.g. EBU6304">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>组织者/教师</label>
-                    <input type="text" name="organiser" id="jobOrganiser" placeholder="例如：Dr.Wang">
+                    <label>Organiser/Instructor</label>
+                    <input type="text" name="organiser" id="jobOrganiser" placeholder="e.g. Dr. Wang">
                 </div>
                 <div class="form-group">
-                    <label>总工时</label>
+                    <label>Total Hours</label>
                     <input type="number" name="hours" id="jobHours" min="1" value="20">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>最低年级</label>
+                    <label>Minimum Year</label>
                     <input type="number" name="minYear" id="jobMinYear" min="1" max="8" value="1">
                 </div>
                 <div class="form-group">
-                    <label>最高年级</label>
+                    <label>Maximum Year</label>
                     <input type="number" name="maxYear" id="jobMaxYear" min="1" max="8" value="4">
                 </div>
                 <div class="form-group">
-                    <label>招聘人数 <span class="required">*</span></label>
+                    <label>Vacancies <span class="required">*</span></label>
                     <input type="number" name="vacancies" id="jobVacancies" min="1" required value="1">
                 </div>
                 <div class="form-group">
-                    <label>截止日期</label>
+                    <label>Deadline</label>
                     <input type="date" name="deadline" id="jobDeadline">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>技能要求</label>
-                <input type="text" name="requiredSkills" id="jobSkills" placeholder="例如：Java, Python, Teamwork">
+                <label>Required Skills</label>
+                <input type="text" name="requiredSkills" id="jobSkills" placeholder="e.g. Java, Python, Teamwork">
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeJobModal()">取消</button>
-                <button type="submit" class="btn btn-primary" id="jobSubmitBtn">创建职位</button>
+                <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="jobSubmitBtn">Create Job</button>
             </div>
         </form>
     </div>
@@ -209,18 +209,18 @@
 <div class="modal-overlay" id="confirmModal">
     <div class="modal modal-small">
         <div class="modal-header">
-            <h3>确认删除</h3>
+            <h3>Confirm Delete</h3>
             <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
         </div>
         <div class="modal-body">
-            <p>确定要删除此职位吗？此操作将同时清理关联的申请记录，且无法恢复。</p>
+            <p>Are you sure you want to delete this job? This will also clean up associated application records and cannot be recovered.</p>
         </div>
         <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+            <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
             <form action="${pageContext.request.contextPath}/admin/jobs/delete" method="post" id="deleteForm" class="inline-form">
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="jobId" id="deleteJobId" value="">
-                <button type="submit" class="btn btn-danger">确认删除</button>
+                <button type="submit" class="btn btn-danger">Confirm Delete</button>
             </form>
         </div>
     </div>
@@ -240,11 +240,11 @@ var jobsData = {
 };
 
 function showJobModal() {
-    document.getElementById('jobModalTitle').textContent = '新增职位';
+    document.getElementById('jobModalTitle').textContent = 'Add Job';
     document.getElementById('jobFormAction').value = 'create';
     document.getElementById('jobId').value = '';
     document.getElementById('jobForm').reset();
-    document.getElementById('jobSubmitBtn').textContent = '创建职位';
+    document.getElementById('jobSubmitBtn').textContent = 'Create Job';
     document.getElementById('jobModal').classList.add('active');
 }
 
@@ -252,7 +252,7 @@ function editJob(jobId) {
     var job = jobsData[jobId];
     if (!job) return;
 
-    document.getElementById('jobModalTitle').textContent = '编辑职位';
+    document.getElementById('jobModalTitle').textContent = 'Edit Job';
     document.getElementById('jobFormAction').value = 'update';
     document.getElementById('jobId').value = jobId;
     document.getElementById('jobTitle').value = job.title || '';
@@ -264,7 +264,7 @@ function editJob(jobId) {
     document.getElementById('jobVacancies').value = job.vacancies || 1;
     document.getElementById('jobDeadline').value = job.deadline || '';
     document.getElementById('jobSkills').value = job.requiredSkills || '';
-    document.getElementById('jobSubmitBtn').textContent = '保存更改';
+    document.getElementById('jobSubmitBtn').textContent = 'Save Changes';
     document.getElementById('jobModal').classList.add('active');
 }
 

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    request.setAttribute("pageTitle", "用户管理");
+    request.setAttribute("pageTitle", "User Management");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
@@ -18,19 +18,19 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/applications">
-                <span class="nav-icon">&#9733;</span> 应用管理
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/jobs">
-                <span class="nav-icon">&#9651;</span> 职位管理
+                <span class="nav-icon">&#9651;</span> Jobs
             </a>
             <a class="nav-item active" href="${pageContext.request.contextPath}/admin/users">
-                <span class="nav-icon">&#9679;</span> 用户管理
+                <span class="nav-icon">&#9679;</span> Users
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/logs">
-                <span class="nav-icon">&#9633;</span> 系统日志
+                <span class="nav-icon">&#9633;</span> System Logs
             </a>
         </nav>
     </aside>
@@ -38,10 +38,10 @@
     <main class="content">
         <div class="topbar topbar-admin">
             <button class="sidebar-toggle">&#9776;</button>
-            <div class="topbar-title">用户管理</div>
+            <div class="topbar-title">User Management</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
-                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
+                <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
@@ -49,11 +49,11 @@
             <section class="panel dashboard-intro">
                 <div class="intro-header">
                     <div>
-                        <h1>用户管理</h1>
-                        <p>管理系统用户账号，支持 TA、MO、Admin 三种角色。</p>
+                        <h1>User Management</h1>
+                        <p>Manage system user accounts. Supports TA, MO, and Admin roles.</p>
                     </div>
                     <button class="btn btn-primary" onclick="showUserModal()">
-                        <span class="btn-icon">+</span> 新增用户
+                        <span class="btn-icon">+</span> Add User
                     </button>
                 </div>
             </section>
@@ -61,10 +61,10 @@
             <section class="panel">
                 <div class="tab-nav">
                     <a href="?role=TA" class="tab-item ${currentRole == 'TA' ? 'active' : ''}">
-                        TA 用户 <span class="tab-count">${taCount}</span>
+                        TA Users <span class="tab-count">${taCount}</span>
                     </a>
                     <a href="?role=MO" class="tab-item ${currentRole == 'MO' ? 'active' : ''}">
-                        MO 用户 <span class="tab-count">${moCount}</span>
+                        MO Users <span class="tab-count">${moCount}</span>
                     </a>
                     <a href="?role=ADMIN" class="tab-item ${currentRole == 'ADMIN' ? 'active' : ''}">
                         Admin <span class="tab-count">${adminCount}</span>
@@ -75,15 +75,15 @@
                     <form method="get" action="${pageContext.request.contextPath}/admin/users" class="filter-form">
                         <input type="hidden" name="role" value="${currentRole}">
                         <select name="status" class="filter-select">
-                            <option value="ALL">全部状态</option>
-                            <option value="ACTIVE" ${currentStatus == 'ACTIVE' ? 'selected' : ''}>活跃</option>
-                            <option value="INACTIVE" ${currentStatus == 'INACTIVE' ? 'selected' : ''}>禁用</option>
+                            <option value="ALL">All Status</option>
+                            <option value="ACTIVE" ${currentStatus == 'ACTIVE' ? 'selected' : ''}>Active</option>
+                            <option value="INACTIVE" ${currentStatus == 'INACTIVE' ? 'selected' : ''}>Disabled</option>
                         </select>
 
-                        <input type="text" name="search" placeholder="搜索用户名/ID..." value="${currentSearch}" class="filter-input">
+                        <input type="text" name="search" placeholder="Search username/ID..." value="${currentSearch}" class="filter-input">
 
-                        <button type="submit" class="btn btn-primary btn-small">筛选</button>
-                        <a href="${pageContext.request.contextPath}/admin/users?role=${currentRole}" class="btn btn-secondary btn-small">重置</a>
+                        <button type="submit" class="btn btn-primary btn-small">Filter</button>
+                        <a href="${pageContext.request.contextPath}/admin/users?role=${currentRole}" class="btn btn-secondary btn-small">Reset</a>
                     </form>
                 </div>
 
@@ -91,12 +91,12 @@
                     <table class="custom-table">
                         <thead>
                         <tr>
-                            <th>用户ID</th>
-                            <th>用户名</th>
-                            <th>姓名</th>
-                            <th>邮箱</th>
-                            <th>状态</th>
-                            <th>操作</th>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -106,7 +106,7 @@
                                     <td colspan="6" class="empty-state">
                                         <div class="empty-content">
                                             <span class="empty-icon">&#9679;</span>
-                                            <p>暂无用户数据</p>
+                                            <p>No user data available</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -120,7 +120,7 @@
                                         <td>${user.email}</td>
                                         <td>
                                             <span class="badge ${user.status == 'ACTIVE' ? 'ACCEPTED' : 'REJECTED'}">
-                                                ${user.status == 'ACTIVE' ? '活跃' : '禁用'}
+                                                ${user.status == 'ACTIVE' ? 'Active' : 'Disabled'}
                                             </span>
                                         </td>
                                         <td>
@@ -129,12 +129,12 @@
                                                     <input type="hidden" name="action" value="toggle">
                                                     <input type="hidden" name="userId" value="${user.userId}">
                                                     <input type="hidden" name="role" value="${currentRole}">
-                                                    <button type="submit" class="btn btn-action ${user.status == 'ACTIVE' ? 'btn-warning' : 'btn-success'}" title="${user.status == 'ACTIVE' ? '禁用' : '启用'}">
-                                                        ${user.status == 'ACTIVE' ? '&#10007; 禁用' : '&#10003; 启用'}
+                                                    <button type="submit" class="btn btn-action ${user.status == 'ACTIVE' ? 'btn-warning' : 'btn-success'}" title="${user.status == 'ACTIVE' ? 'Disable' : 'Enable'}">
+                                                        ${user.status == 'ACTIVE' ? '&#10007; Disable' : '&#10003; Enable'}
                                                     </button>
                                                 </form>
                                                 <c:if test="${currentRole == 'ADMIN'}">
-                                                    <button class="btn btn-action btn-edit" onclick="showPasswordModal('${user.userId}')" title="修改密码">
+                                                    <button class="btn btn-action btn-edit" onclick="showPasswordModal('${user.userId}')" title="Change Password">
                                                         <span class="btn-icon-svg">&#128273;</span>
                                                     </button>
                                                 </c:if>
@@ -155,7 +155,7 @@
 <div class="modal-overlay" id="userModal">
     <div class="modal">
         <div class="modal-header">
-            <h3>新增用户</h3>
+            <h3>Add User</h3>
             <button class="modal-close" onclick="closeUserModal()">&times;</button>
         </div>
         <form action="${pageContext.request.contextPath}/admin/users/create" method="post" id="userForm" class="modal-form">
@@ -164,45 +164,45 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>用户名 <span class="required">*</span></label>
-                    <input type="text" name="username" required placeholder="唯一用户名">
+                    <label>Username <span class="required">*</span></label>
+                    <input type="text" name="username" required placeholder="Unique username">
                 </div>
                 <div class="form-group">
-                    <label>密码 <span class="required">*</span></label>
-                    <input type="password" name="password" required minlength="6" placeholder="至少6位">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>姓名</label>
-                    <input type="text" name="name" placeholder="真实姓名">
-                </div>
-                <div class="form-group">
-                    <label>邮箱</label>
-                    <input type="email" name="email" placeholder="邮箱地址">
+                    <label>Password <span class="required">*</span></label>
+                    <input type="password" name="password" required minlength="6" placeholder="At least 6 characters">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>年级</label>
-                    <input type="number" name="year" min="1" max="8" placeholder="仅TA需要">
+                    <label>Name</label>
+                    <input type="text" name="name" placeholder="Full name">
                 </div>
                 <div class="form-group">
-                    <label>专业</label>
-                    <input type="text" name="major" placeholder="专业方向">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Email address">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" name="year" min="1" max="8" placeholder="Required for TA only">
+                </div>
+                <div class="form-group">
+                    <label>Major</label>
+                    <input type="text" name="major" placeholder="Major field">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>技能（TA用户）</label>
-                <input type="text" name="skills" placeholder="例如：Java, Python">
+                <label>Skills (TA Users)</label>
+                <input type="text" name="skills" placeholder="e.g. Java, Python">
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeUserModal()">取消</button>
-                <button type="submit" class="btn btn-primary">创建用户</button>
+                <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create User</button>
             </div>
         </form>
     </div>
@@ -211,23 +211,23 @@
 <div class="modal-overlay" id="passwordModal">
     <div class="modal modal-small">
         <div class="modal-header">
-            <h3>修改密码</h3>
+            <h3>Change Password</h3>
             <button class="modal-close" onclick="closePasswordModal()">&times;</button>
         </div>
         <form action="${pageContext.request.contextPath}/admin/users/changePassword" method="post" class="modal-form">
             <input type="hidden" name="action" value="changePassword">
             <input type="hidden" name="userId" id="passwordUserId" value="">
             <div class="form-group">
-                <label>原密码 <span class="required">*</span></label>
+                <label>Current Password <span class="required">*</span></label>
                 <input type="password" name="oldPassword" required>
             </div>
             <div class="form-group">
-                <label>新密码 <span class="required">*</span></label>
-                <input type="password" name="newPassword" required minlength="6" placeholder="至少6位，需包含数字和字母">
+                <label>New Password <span class="required">*</span></label>
+                <input type="password" name="newPassword" required minlength="6" placeholder="At least 6 characters with numbers and letters">
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
-                <button type="submit" class="btn btn-primary">确认修改</button>
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm</button>
             </div>
         </form>
     </div>
