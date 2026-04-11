@@ -18,19 +18,19 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item active" href="${pageContext.request.contextPath}/admin/dashboard">
-                <span class="nav-icon">&#9632;</span> 工作台
+                <span class="nav-icon">&#9632;</span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/applications">
-                <span class="nav-icon">&#9733;</span> 应用管理
+                <span class="nav-icon">&#9733;</span> Applications
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/jobs">
-                <span class="nav-icon">&#9651;</span> 职位管理
+                <span class="nav-icon">&#9651;</span> Jobs
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/users">
-                <span class="nav-icon">&#9679;</span> 用户管理
+                <span class="nav-icon">&#9679;</span> Users
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/logs">
-                <span class="nav-icon">&#9633;</span> 系统日志
+                <span class="nav-icon">&#9633;</span> System Logs
             </a>
         </nav>
     </aside>
@@ -38,54 +38,54 @@
     <main class="content">
         <div class="topbar topbar-admin">
             <button class="sidebar-toggle">&#9776;</button>
-            <div class="topbar-title">Admin 工作台</div>
+            <div class="topbar-title">Admin Dashboard</div>
             <div class="topbar-right">
                 <div class="user-menu">
                     <span class="user-name">${sessionScope.currentUser.name}</span>
                     <div class="user-dropdown">
-                        <a href="#" class="dropdown-item" onclick="showPasswordModal()">修改密码</a>
+                        <a href="#" class="dropdown-item" onclick="showPasswordModal()">Change Password</a>
                     </div>
                 </div>
-                <a href="${pageContext.request.contextPath}/logout">退出登录</a>
+                <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
         <div class="admin-dashboard">
             <section class="panel dashboard-intro">
-                <h1>数据统计概览</h1>
-                <p>查看系统整体运行状态和数据统计。</p>
+                <h1>Data Statistics Overview</h1>
+                <p>View the overall system status and statistics.</p>
             </section>
 
             <section class="stats-grid stats-admin">
                 <div class="stat-card stat-card-primary">
                     <div class="stat-icon">TA</div>
                     <div class="stat-content">
-                        <h4>TA 账号总数</h4>
+                        <h4>Total TA Accounts</h4>
                         <div class="stat-value">${stats.totalTA}</div>
-                        <p class="stat-sub">活跃: ${stats.activeTA}</p>
+                        <p class="stat-sub">Active: ${stats.activeTA}</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">MO</div>
                     <div class="stat-content">
-                        <h4>MO 账号总数</h4>
+                        <h4>Total MO Accounts</h4>
                         <div class="stat-value">${stats.totalMO}</div>
                     </div>
                 </div>
                 <div class="stat-card stat-card-success">
                     <div class="stat-icon">&#10003;</div>
                     <div class="stat-content">
-                        <h4>申请总数</h4>
+                        <h4>Total Applications</h4>
                         <div class="stat-value">${stats.totalApplications}</div>
-                        <p class="stat-sub">待审: ${stats.pendingApplications}</p>
+                        <p class="stat-sub">Pending: ${stats.pendingApplications}</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">&#9651;</div>
                     <div class="stat-content">
-                        <h4>职位总数</h4>
+                        <h4>Total Jobs</h4>
                         <div class="stat-value">${stats.totalJobs}</div>
-                        <p class="stat-sub">开放: ${stats.openJobs}</p>
+                        <p class="stat-sub">Open: ${stats.openJobs}</p>
                     </div>
                 </div>
             </section>
@@ -93,19 +93,19 @@
             <div class="dashboard-grid">
                 <section class="panel">
                     <div class="panel-header">
-                        <h2>申请统计</h2>
+                        <h2>Application Statistics</h2>
                     </div>
                     <div class="application-stats">
                         <div class="app-stat-item">
-                            <span class="app-stat-badge pending">待审核</span>
+                            <span class="app-stat-badge pending">Pending</span>
                             <span class="app-stat-count">${stats.pendingApplications}</span>
                         </div>
                         <div class="app-stat-item">
-                            <span class="app-stat-badge accepted">已录用</span>
+                            <span class="app-stat-badge accepted">Accepted</span>
                             <span class="app-stat-count">${stats.acceptedApplications}</span>
                         </div>
                         <div class="app-stat-item">
-                            <span class="app-stat-badge rejected">已拒绝</span>
+                            <span class="app-stat-badge rejected">Rejected</span>
                             <span class="app-stat-count">${stats.rejectedApplications}</span>
                         </div>
                     </div>
@@ -118,36 +118,36 @@
 
                 <section class="panel">
                     <div class="panel-header">
-                        <h2>申请次数 TOP 5 TA</h2>
+                        <h2>TOP 5 TAs by Applications</h2>
                     </div>
                     <div class="ranking-list">
                         <c:forEach var="entry" items="${stats.topTAs}" varStatus="status">
                             <div class="ranking-item">
                                 <span class="ranking-position">${status.index + 1}</span>
                                 <span class="ranking-label">${entry.key}</span>
-                                <span class="ranking-value">${entry.value} 次申请</span>
+                                <span class="ranking-value">${entry.value} applications</span>
                             </div>
                         </c:forEach>
                         <c:if test="${empty stats.topTAs}">
-                            <div class="empty-state-small">暂无数据</div>
+                            <div class="empty-state-small">No data available</div>
                         </c:if>
                     </div>
                 </section>
 
                 <section class="panel">
                     <div class="panel-header">
-                        <h2>热门职位 TOP 3</h2>
+                        <h2>TOP 3 Popular Jobs</h2>
                     </div>
                     <div class="ranking-list">
                         <c:forEach var="entry" items="${stats.topJobs}" varStatus="status">
                             <div class="ranking-item">
                                 <span class="ranking-position">${status.index + 1}</span>
                                 <span class="ranking-label">${entry.key}</span>
-                                <span class="ranking-value">${entry.value} 人申请</span>
+                                <span class="ranking-value">${entry.value} applicants</span>
                             </div>
                         </c:forEach>
                         <c:if test="${empty stats.topJobs}">
-                            <div class="empty-state-small">暂无数据</div>
+                            <div class="empty-state-small">No data available</div>
                         </c:if>
                     </div>
                 </section>
@@ -155,25 +155,25 @@
 
             <section class="panel">
                 <div class="panel-header">
-                    <h2>快捷操作</h2>
+                    <h2>Quick Actions</h2>
                 </div>
                 <div class="quick-actions">
                     <a href="${pageContext.request.contextPath}/admin/applications" class="quick-action-btn">
                         <span class="qa-icon">&#9733;</span>
-                        <span>审核申请</span>
+                        <span>Review Applications</span>
                         <span class="qa-badge">${stats.pendingApplications}</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/jobs" class="quick-action-btn">
                         <span class="qa-icon">&#9651;</span>
-                        <span>职位管理</span>
+                        <span>Manage Jobs</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/users" class="quick-action-btn">
                         <span class="qa-icon">&#9679;</span>
-                        <span>用户管理</span>
+                        <span>Manage Users</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/logs" class="quick-action-btn">
                         <span class="qa-icon">&#9633;</span>
-                        <span>查看日志</span>
+                        <span>View Logs</span>
                     </a>
                 </div>
             </section>
@@ -184,24 +184,24 @@
 <div class="modal-overlay" id="passwordModal">
     <div class="modal">
         <div class="modal-header">
-            <h3>修改密码</h3>
+            <h3>Change Password</h3>
             <button class="modal-close" onclick="closePasswordModal()">&times;</button>
         </div>
         <form action="${pageContext.request.contextPath}/admin/users/changePassword" method="post" class="modal-form">
             <input type="hidden" name="action" value="changePassword">
             <input type="hidden" name="userId" value="${sessionScope.currentUser.userId}">
             <div class="form-group">
-                <label>原密码</label>
+                <label>Current Password</label>
                 <input type="password" name="oldPassword" required>
             </div>
             <div class="form-group">
-                <label>新密码</label>
+                <label>New Password</label>
                 <input type="password" name="newPassword" required minlength="6">
-                <small>至少6位，需包含数字和字母</small>
+                <small>At least 6 characters, must contain numbers and letters</small>
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
-                <button type="submit" class="btn btn-primary">确认修改</button>
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm</button>
             </div>
         </form>
     </div>
