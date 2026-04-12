@@ -30,7 +30,7 @@
 
     <main class="content">
         <div class="topbar topbar-mo">
-            <button class="sidebar-toggle">☰</button>
+            <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">Post Job</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>

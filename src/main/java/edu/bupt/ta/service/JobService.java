@@ -206,7 +206,7 @@ public class JobService {
         if (skills == null || skills.isBlank()) {
             return "";
         }
-        return skills.replace("锛?, ", ",").replace(",", "|").trim();
+        return skills.replace(",", "|").trim();
     }
 
     private String nextJobId(List<Job> jobs) {
