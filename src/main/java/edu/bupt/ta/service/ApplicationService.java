@@ -7,6 +7,7 @@ import edu.bupt.ta.storage.FileStorageUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 public class ApplicationService {
 
@@ -38,6 +39,13 @@ public class ApplicationService {
         return storage.loadApplications();
     }
 
+    public Application findById(String applicationId) {
+        return storage.loadApplications().stream()
+                .filter(app -> app.getApplicationId().equals(applicationId))
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<Application> getApplicationsByUserId(String userId) {
         List<Application> result = new ArrayList<>();
         for (Application app : storage.loadApplications()) {
@@ -58,10 +66,52 @@ public class ApplicationService {
         return result;
     }
 
+    public List<Application> getApplicationsByJobIds(Set<String> jobIds) {
+        List<Application> result = new ArrayList<>();
+        if (jobIds == null || jobIds.isEmpty()) {
+            return result;
+        }
+
+        for (Application app : storage.loadApplications()) {
+            if (jobIds.contains(app.getJobId())) {
+                result.add(app);
+            }
+        }
+        return result;
+    }
+
     public int countApplicationsByJobId(String jobId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
             if (app.getJobId().equals(jobId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countApplicationsByJobIds(Set<String> jobIds) {
+        if (jobIds == null || jobIds.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        for (Application app : storage.loadApplications()) {
+            if (jobIds.contains(app.getJobId())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countApplicationsByJobIdsAndStatus(Set<String> jobIds, ApplicationStatus status) {
+        if (jobIds == null || jobIds.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        for (Application app : storage.loadApplications()) {
+            if (jobIds.contains(app.getJobId()) && app.getStatus() == status) {
                 count++;
             }
         }

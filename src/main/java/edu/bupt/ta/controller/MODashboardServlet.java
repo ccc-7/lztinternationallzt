@@ -14,8 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @WebServlet("/mo/dashboard")
 public class MODashboardServlet extends HttpServlet {
@@ -34,18 +36,23 @@ public class MODashboardServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("jobCount", jobService.countJobsByOrganiser(user.getDisplayName()));
-        req.setAttribute("pendingCount", applicationService.countAllByStatus(ApplicationStatus.PENDING));
-        req.setAttribute("acceptedCount", applicationService.countAllByStatus(ApplicationStatus.ACCEPTED));
+        List<Job> myJobs = jobService.getJobsByOrganiser(user.getDisplayName());
+        Set<String> myJobIds = new HashSet<>();
+        for (Job job : myJobs) {
+            myJobIds.add(job.getJobId());
+        }
 
-        req.setAttribute("totalJobs", jobService.countTotalJobs());
-        req.setAttribute("activeJobs", jobService.countActiveJobs());
-        req.setAttribute("totalApplicants", applicationService.countTotalApplications());
-        req.setAttribute("jobs", jobService.getAllJobs());
+        req.setAttribute("jobCount", myJobs.size());
+        req.setAttribute("pendingCount", applicationService.countApplicationsByJobIdsAndStatus(myJobIds, ApplicationStatus.PENDING));
+        req.setAttribute("acceptedCount", applicationService.countApplicationsByJobIdsAndStatus(myJobIds, ApplicationStatus.ACCEPTED));
 
-        List<Job> jobs = jobService.getAllJobs();
+        req.setAttribute("totalJobs", myJobs.size());
+        req.setAttribute("activeJobs", jobService.countActiveJobsByOrganiser(user.getDisplayName()));
+        req.setAttribute("totalApplicants", applicationService.countApplicationsByJobIds(myJobIds));
+        req.setAttribute("jobs", myJobs);
+
         Map<String, Integer> applicationCounts = new HashMap<>();
-        for (Job job : jobs) {
+        for (Job job : myJobs) {
             applicationCounts.put(job.getJobId(), applicationService.countApplicationsByJobId(job.getJobId()));
         }
         req.setAttribute("applicationCounts", applicationCounts);

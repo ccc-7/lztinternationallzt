@@ -29,6 +29,30 @@ public class JobService {
         return result;
     }
 
+    public List<Job> getJobsByOrganiser(String organiser) {
+        List<Job> result = new ArrayList<>();
+        if (organiser == null || organiser.isBlank()) {
+            return result;
+        }
+
+        for (Job job : storage.loadJobs()) {
+            if (job.getOrganiser() != null && job.getOrganiser().equalsIgnoreCase(organiser)) {
+                result.add(job);
+            }
+        }
+        return result;
+    }
+
+    public List<Job> getOpenJobsByOrganiser(String organiser) {
+        List<Job> result = new ArrayList<>();
+        for (Job job : getJobsByOrganiser(organiser)) {
+            if (job.getStatus() == JobStatus.OPEN) {
+                result.add(job);
+            }
+        }
+        return result;
+    }
+
     public List<Job> getOpenJobsForUser(User user) {
         List<Job> jobs = getOpenJobs();
         for (Job job : jobs) {
@@ -136,6 +160,16 @@ public class JobService {
         return count;
     }
 
+    public int countActiveJobsByOrganiser(String organiser) {
+        int count = 0;
+        for (Job job : getJobsByOrganiser(organiser)) {
+            if (job.getStatus() == JobStatus.OPEN) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public int calculateMatchScore(String userSkills, String requiredSkills) {
         Set<String> userSet = tokenize(userSkills);
         Set<String> jobSet = tokenize(requiredSkills);
@@ -172,7 +206,7 @@ public class JobService {
         if (skills == null || skills.isBlank()) {
             return "";
         }
-        return skills.replace("，", ",").replace(",", "|").trim();
+        return skills.replace("锛?, ", ",").replace(",", "|").trim();
     }
 
     private String nextJobId(List<Job> jobs) {
