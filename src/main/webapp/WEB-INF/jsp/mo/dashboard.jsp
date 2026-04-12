@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     request.setAttribute("pageTitle", "MO Dashboard");
@@ -31,7 +31,7 @@
 
     <main class="content">
         <div class="topbar topbar-mo">
-            <button class="sidebar-toggle">☰</button>
+            <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">MO Dashboard</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
@@ -46,24 +46,24 @@
 
         <section class="stats-grid">
             <div class="stat-card">
-                <h4>Total Jobs</h4>
+                <h4>My Jobs</h4>
                 <div class="stat-value">${totalJobs}</div>
-                <p>All posted positions in the system</p>
+                <p>Jobs posted by you</p>
             </div>
             <div class="stat-card stat-card-highlight">
-                <h4>Open Positions</h4>
+                <h4>My Open Jobs</h4>
                 <div class="stat-value">${activeJobs}</div>
-                <p>Currently accepting applications</p>
+                <p>Your jobs currently accepting applications</p>
             </div>
             <div class="stat-card">
-                <h4>Total Applications</h4>
+                <h4>Applications Received</h4>
                 <div class="stat-value">${totalApplicants}</div>
-                <p>All TA applications received</p>
+                <p>Applications for your posted jobs</p>
             </div>
             <div class="stat-card">
                 <h4>Pending Review</h4>
                 <div class="stat-value">${pendingCount}</div>
-                <p>Applications awaiting your review</p>
+                <p>Pending applications for your jobs</p>
             </div>
         </section>
 
@@ -141,3 +141,5 @@
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+

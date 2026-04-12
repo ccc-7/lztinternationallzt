@@ -1,7 +1,7 @@
 applicationId,userId,jobId,status,submittedAt,notes,availability
 A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,
 A002,U001,J002,PENDING,2026-04-09 23:26:52,Submitted from TA portal,
-A003,U001,J003,INTERVIEW,2026-04-09 23:27:03,Moved to interview,
+A003,U001,J003,ACCEPTED,2026-04-09 23:27:03,Accepted,
 A004,U007,J004,PENDING,2026-04-09 23:27:20,Submitted from TA portal,
 A005,U007,J003,PENDING,2026-04-09 23:27:21,Submitted from TA portal,
 A006,U007,J001,PENDING,2026-04-09 23:27:22,Submitted from TA portal,

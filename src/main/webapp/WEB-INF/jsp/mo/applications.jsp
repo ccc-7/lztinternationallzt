@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     request.setAttribute("pageTitle", "Applications");
@@ -31,7 +31,7 @@
 
     <main class="content">
         <div class="topbar topbar-mo">
-            <button class="sidebar-toggle">☰</button>
+            <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">Applications</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.name}</span>
@@ -41,7 +41,7 @@
 
         <section class="panel dashboard-intro">
             <h1>Applications</h1>
-            <p>Review all applications and accept or reject candidates.</p>
+            <p>Review applications for the jobs you posted and update candidate decisions.</p>
         </section>
 
         <section class="panel">
@@ -127,3 +127,5 @@
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+

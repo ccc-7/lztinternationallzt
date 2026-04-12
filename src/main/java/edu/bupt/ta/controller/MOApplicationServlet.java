@@ -16,8 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @WebServlet(urlPatterns = {"/mo/applications", "/mo/applications/update"})
 public class MOApplicationServlet extends HttpServlet {
@@ -37,22 +39,32 @@ public class MOApplicationServlet extends HttpServlet {
             return;
         }
 
-        List<Application> applications;
-        if (req.getParameter("jobId") != null && !req.getParameter("jobId").isBlank()) {
-            applications = applicationService.getApplicationsByJobId(req.getParameter("jobId"));
-            req.setAttribute("filterJobId", req.getParameter("jobId"));
-        } else {
-            applications = applicationService.getAllApplications();
+        List<Job> jobs = jobService.getJobsByOrganiser(user.getDisplayName());
+        Set<String> myJobIds = new HashSet<>();
+        for (Job job : jobs) {
+            myJobIds.add(job.getJobId());
         }
 
-        List<Job> jobs = jobService.getAllJobs();
+        String filterJobId = req.getParameter("jobId");
+        List<Application> applications;
+        if (filterJobId != null && !filterJobId.isBlank()) {
+            if (!myJobIds.contains(filterJobId)) {
+                req.getSession().setAttribute("flashError", "you can only view applications for your own jobs.");
+                resp.sendRedirect(req.getContextPath() + "/mo/applications");
+                return;
+            }
+            applications = applicationService.getApplicationsByJobId(filterJobId);
+            req.setAttribute("filterJobId", filterJobId);
+        } else {
+            applications = applicationService.getApplicationsByJobIds(myJobIds);
+        }
+
         Map<String, String> jobTitles = new HashMap<>();
         for (Job job : jobs) {
             jobTitles.put(job.getJobId(), job.getTitle());
         }
 
         Map<String, String> applicantNames = new HashMap<>();
-        Map<String, Integer> applicantCounts = new HashMap<>();
         for (Application app : applications) {
             User applicant = userService.findById(app.getUserId());
             if (applicant != null) {
@@ -93,6 +105,16 @@ public class MOApplicationServlet extends HttpServlet {
         String filterJobId = req.getParameter("filterJobId");
 
         try {
+            Application application = applicationService.findById(applicationId);
+            if (application == null) {
+                throw new IllegalArgumentException("application not found");
+            }
+
+            Job job = jobService.findById(application.getJobId());
+            if (job == null || job.getOrganiser() == null || !job.getOrganiser().equalsIgnoreCase(user.getDisplayName())) {
+                throw new IllegalArgumentException("you can only update applications for your own jobs");
+            }
+
             applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));
             req.getSession().setAttribute("flashSuccess", "Application status updated successfully");
         } catch (Exception e) {
