@@ -53,6 +53,7 @@ public class MOJobServlet extends HttpServlet {
             String requiredSkills = req.getParameter("requiredSkills");
             String deadline = req.getParameter("deadline");
             String vacanciesStr = req.getParameter("vacancies");
+            String description = req.getParameter("description");
 
             int hours = Integer.parseInt(hoursStr);
             int minYear = Integer.parseInt(minYearStr);
@@ -63,7 +64,7 @@ public class MOJobServlet extends HttpServlet {
                 organiser = user.getDisplayName();
             }
 
-            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
+            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies, description);
             req.getSession().setAttribute("flashSuccess", "Job created successfully");
             resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
         } catch (Exception e) {

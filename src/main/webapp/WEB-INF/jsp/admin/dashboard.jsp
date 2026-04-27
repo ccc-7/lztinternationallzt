@@ -41,7 +41,7 @@
             <div class="topbar-title">Admin Dashboard</div>
             <div class="topbar-right">
                 <div class="user-menu">
-                    <span class="user-name">${sessionScope.currentUser.name}</span>
+                    <span class="user-name">${sessionScope.currentUser.username}</span>
                     <div class="user-dropdown">
                         <a href="#" class="dropdown-item" onclick="showPasswordModal()">Change Password</a>
                     </div>

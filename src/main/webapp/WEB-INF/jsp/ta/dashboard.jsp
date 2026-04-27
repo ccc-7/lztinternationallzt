@@ -47,7 +47,7 @@
                 <div class="portal-main">
                     <section class="panel portal-header-panel">
                         <h1>Dashboard</h1>
-                        <p class="portal-greeting">Hi, ${sessionScope.currentUser.name}!</p>
+                        <p class="portal-greeting">Hi, ${sessionScope.currentUser.username}!</p>
                     </section>
 
                     <section class="stats-grid stats-ta">
