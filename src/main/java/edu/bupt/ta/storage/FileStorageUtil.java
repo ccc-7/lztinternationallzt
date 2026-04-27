@@ -27,7 +27,7 @@ public class FileStorageUtil {
     private static final String USERS_HEADER =
             "userId,username,password,name,email,role,year,major,skills,status,availability";
     private static final String JOBS_HEADER =
-            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
+            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies,description";
     private static final String APPLICATIONS_HEADER =
             "applicationId,userId,jobId,status,submittedAt,notes,availability";
 
@@ -359,8 +359,9 @@ public class FileStorageUtil {
                         continue;
                     }
                     List<String> f = parseCsvLine(line);
-                    if (f.size() < 12) {
-                        continue;
+                    if (f.size() < 13) {
+                        // For backward compatibility with old data
+                        f.add("");
                     }
                     Job job = new Job(
                             f.get(0),
@@ -374,7 +375,8 @@ public class FileStorageUtil {
                             f.get(8),
                             parseInt(f.get(9), 0),
                             f.get(10),
-                            parseInt(f.get(11), 1)
+                            parseInt(f.get(11), 1),
+                            f.get(12)
                     );
                     jobs.add(job);
                 }
@@ -403,7 +405,8 @@ public class FileStorageUtil {
                             job.getRequiredSkills(),
                             String.valueOf(job.getMatchScore()),
                             job.getDeadline() == null ? "" : job.getDeadline(),
-                            String.valueOf(job.getVacancies())
+                            String.valueOf(job.getVacancies()),
+                            job.getDescription() == null ? "" : job.getDescription()
                     ));
                 }
                 writeLinesAtomically(JOBS_FILE, lines);

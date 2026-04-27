@@ -34,7 +34,7 @@
             <button type="button" class="sidebar-toggle">&#9776;</button>
             <div class="topbar-title">Applications</div>
             <div class="topbar-right">
-                <span>${sessionScope.currentUser.name}</span>
+                <span>${sessionScope.currentUser.username}</span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
