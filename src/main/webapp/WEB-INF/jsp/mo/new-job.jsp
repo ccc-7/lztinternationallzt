@@ -135,30 +135,6 @@
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3 class="section-title">
-                        <span class="section-icon">&#128221;</span>
-                        Job Responsibilities <span class="optional">(Optional)</span>
-                    </h3>
-                    <div class="form-group">
-                        <label for="description">Work Description</label>
-                        <textarea id="description" name="description" rows="6" placeholder="Describe the key responsibilities and requirements for this TA position..."></textarea>
-                        <span class="hint">You can include information about:
-                            <br>- Number of lab sessions per week
-                            <br>- Whether there are final projects/exams
-                            <br>- Grading responsibilities
-                            <br>- Other specific duties</span>
-                    </div>
-                    
-                    <div class="description-templates">
-                        <span class="template-label">Quick Templates:</span>
-                        <button type="button" class="template-btn" onclick="insertTemplate('lab')">With Labs</button>
-                        <button type="button" class="template-btn" onclick="insertTemplate('project')">With Project</button>
-                        <button type="button" class="template-btn" onclick="insertTemplate('grading')">With Grading</button>
-                        <button type="button" class="template-btn" onclick="insertTemplate('full')">Full Description</button>
-                    </div>
-                </div>
-
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-large">
                         <span class="btn-icon">&#10003;</span>
@@ -172,29 +148,5 @@
         </section>
     </main>
 </div>
-
-<script>
-function insertTemplate(type) {
-    const textarea = document.getElementById('description');
-    let template = '';
-    
-    switch(type) {
-        case 'lab':
-            template = 'Responsibilities:\n- Assist with weekly lab sessions (2 hours each)\n- Help students with lab assignments and debugging\n- Prepare lab materials in advance';
-            break;
-        case 'project':
-            template = 'Responsibilities:\n- Support final project groups during the semester\n- Hold weekly office hours for project consultation\n- Assist in final project evaluation';
-            break;
-        case 'grading':
-            template = 'Responsibilities:\n- Grade assignments and homework weekly\n- Provide feedback on student submissions\n- Help with exam invigilation and grading';
-            break;
-        case 'full':
-            template = 'Responsibilities:\n- Assist with weekly lectures and prepare teaching materials\n- Conduct 2 lab sessions per week (2 hours each)\n- Hold 1 office hour per week for student consultations\n- Grade weekly assignments and provide constructive feedback\n- Assist with final exam invigilation and grading\n- Support final project evaluation\n\nRequirements:\n- Available for the entire semester\n- Good communication skills\n- Patient and helpful attitude';
-            break;
-    }
-    
-    textarea.value = template;
-}
-</script>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>

@@ -131,7 +131,7 @@ public class JobService {
     }
 
     public Job createJob(String title, String moduleCode, String organiser, int minYear,
-                         int maxYear, int hours, String requiredSkills, String deadline, int vacancies, String description) {
+                         int maxYear, int hours, String requiredSkills, String deadline, int vacancies) {
         List<Job> jobs = storage.loadJobs();
 
         Job job = new Job();
@@ -147,7 +147,6 @@ public class JobService {
         job.setMatchScore(0);
         job.setDeadline(deadline);
         job.setVacancies(vacancies);
-        job.setDescription(description);
 
         jobs.add(job);
         storage.saveJobs(jobs);
@@ -170,7 +169,7 @@ public class JobService {
 
     public void updateJob(String jobId, String title, String moduleCode, String organiser,
                          int minYear, int maxYear, int hours, String requiredSkills,
-                         String deadline, int vacancies, String description) {
+                         String deadline, int vacancies) {
         List<Job> jobs = storage.loadJobs();
         for (Job job : jobs) {
             if (job.getJobId().equals(jobId)) {
@@ -183,7 +182,6 @@ public class JobService {
                 job.setRequiredSkills(normalizeSkills(requiredSkills));
                 job.setDeadline(deadline);
                 job.setVacancies(vacancies);
-                job.setDescription(description);
                 break;
             }
         }

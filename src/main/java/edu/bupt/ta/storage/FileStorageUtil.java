@@ -27,7 +27,7 @@ public class FileStorageUtil {
     private static final String USERS_HEADER =
             "userId,username,password,name,email,role,year,major,skills,status,availability";
     private static final String JOBS_HEADER =
-            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies,description";
+            "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
     private static final String APPLICATIONS_HEADER =
             "applicationId,userId,jobId,status,submittedAt,notes,availability";
 
@@ -52,6 +52,14 @@ public class FileStorageUtil {
 
     static {
         initFiles();
+    }
+
+    public static FileStorageUtil getInstance() {
+        return new FileStorageUtil();
+    }
+
+    public Path getBaseDir() {
+        return BASE_DIR;
     }
 
     private static Path resolveBaseDir() {
@@ -359,9 +367,11 @@ public class FileStorageUtil {
                         continue;
                     }
                     List<String> f = parseCsvLine(line);
-                    if (f.size() < 13) {
+                    if (f.size() < 12) {
                         // For backward compatibility with old data
-                        f.add("");
+                        while (f.size() < 12) {
+                            f.add("");
+                        }
                     }
                     Job job = new Job(
                             f.get(0),
@@ -375,8 +385,7 @@ public class FileStorageUtil {
                             f.get(8),
                             parseInt(f.get(9), 0),
                             f.get(10),
-                            parseInt(f.get(11), 1),
-                            f.get(12)
+                            parseInt(f.get(11), 1)
                     );
                     jobs.add(job);
                 }
@@ -405,8 +414,7 @@ public class FileStorageUtil {
                             job.getRequiredSkills(),
                             String.valueOf(job.getMatchScore()),
                             job.getDeadline() == null ? "" : job.getDeadline(),
-                            String.valueOf(job.getVacancies()),
-                            job.getDescription() == null ? "" : job.getDescription()
+                            String.valueOf(job.getVacancies())
                     ));
                 }
                 writeLinesAtomically(JOBS_FILE, lines);

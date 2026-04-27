@@ -13,14 +13,13 @@ public class Job {
     private int matchScore;
     private String deadline;
     private int vacancies;
-    private String description;  // New field for job responsibilities
 
     public Job() {
     }
 
     public Job(String jobId, String title, String moduleCode, String organiser,
                int minYear, int maxYear, int hours, JobStatus status,
-               String requiredSkills, int matchScore, String deadline, int vacancies, String description) {
+               String requiredSkills, int matchScore, String deadline, int vacancies) {
         this.jobId = jobId;
         this.title = title;
         this.moduleCode = moduleCode;
@@ -33,7 +32,6 @@ public class Job {
         this.matchScore = matchScore;
         this.deadline = deadline;
         this.vacancies = vacancies;
-        this.description = description;
     }
 
     public String getJobId() {
@@ -130,13 +128,5 @@ public class Job {
 
     public void setVacancies(int vacancies) {
         this.vacancies = vacancies;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }
