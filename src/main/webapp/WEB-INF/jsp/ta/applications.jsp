@@ -50,17 +50,18 @@
                     <thead>
                     <tr>
                         <th>Application ID</th>
-                        <th>Job ID</th>
+                        <th>Job Title</th>
+                        <th>Module</th>
+                        <th>Organiser</th>
                         <th>Status</th>
                         <th>Submitted At</th>
-                        <th>Notes</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
                         <c:when test="${empty applications}">
                             <tr>
-                                <td colspan="5" class="empty-state">
+                                <td colspan="6" class="empty-state">
                                     <div class="empty-content">
                                         <span class="empty-icon">&#128203;</span>
                                         <p>No applications yet</p>
@@ -73,19 +74,11 @@
                             <c:forEach var="a" items="${applications}">
                                 <tr>
                                     <td><span class="app-id">${a.applicationId}</span></td>
-                                    <td><span class="job-id">${a.jobId}</span></td>
+                                    <td><strong>${a.jobTitle}</strong></td>
+                                    <td><span class="module-code">${a.moduleCode}</span></td>
+                                    <td>${a.organiser}</td>
                                     <td><span class="badge ${a.status}">${a.status}</span></td>
                                     <td>${a.submittedAt}</td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${empty a.notes}">
-                                                <span class="empty-state-small">None</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                ${a.notes}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
