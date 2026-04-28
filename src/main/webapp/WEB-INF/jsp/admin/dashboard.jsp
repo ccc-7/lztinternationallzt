@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="admin-dashboard">
+        <div class="admin-content">
             <section class="panel dashboard-intro">
                 <h1>Data Statistics Overview</h1>
                 <p>View the overall system status and statistics.</p>

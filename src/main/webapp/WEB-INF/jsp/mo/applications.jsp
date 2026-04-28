@@ -39,12 +39,13 @@
             </div>
         </div>
 
-        <section class="panel dashboard-intro">
-            <h1>Applications</h1>
-            <p>Review applications for the jobs you posted and update candidate decisions.</p>
-        </section>
+        <div class="mo-content">
+            <section class="panel dashboard-intro">
+                <h1>Applications</h1>
+                <p>Review applications for the jobs you posted and update candidate decisions.</p>
+            </section>
 
-        <section class="panel">
+            <section class="panel">
             <div class="panel-header">
                 <h2>Applicant List</h2>
                 <c:if test="${not empty filterJobId}">
@@ -115,14 +116,32 @@
                                             </form>
                                         </div>
                                     </td>
-                                </tr>
+                                    </tr>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
                     </tbody>
                 </table>
             </div>
+
+            <c:if test="${totalPages > 1}">
+                <div class="pagination">
+                    <c:if test="${currentPage > 1}">
+                        <a href="?page=${currentPage - 1}<c:if test='${not empty filterJobId}'>&jobId=${filterJobId}</c:if>" class="page-link">Previous</a>
+                    </c:if>
+
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <a href="?page=${i}<c:if test='${not empty filterJobId}'>&jobId=${filterJobId}</c:if>"
+                           class="page-link ${i == currentPage ? 'active' : ''}">${i}</a>
+                    </c:forEach>
+
+                    <c:if test="${currentPage < totalPages}">
+                        <a href="?page=${currentPage + 1}<c:if test='${not empty filterJobId}'>&jobId=${filterJobId}</c:if>" class="page-link">Next</a>
+                    </c:if>
+                </div>
+            </c:if>
         </section>
+        </div>
     </main>
 </div>
 

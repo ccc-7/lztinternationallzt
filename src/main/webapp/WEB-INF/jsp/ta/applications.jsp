@@ -39,12 +39,13 @@
             </div>
         </div>
 
-        <section class="panel">
-            <h1>My Applications</h1>
-            <p>Track the status of all your applications here.</p>
-        </section>
+        <div class="ta-content">
+            <section class="panel dashboard-intro">
+                <h1>My Applications</h1>
+                <p>Track the status of all your applications here.</p>
+            </section>
 
-        <section class="panel">
+            <section class="panel">
             <div class="table-responsive">
                 <table class="custom-table">
                     <thead>
@@ -87,6 +88,7 @@
                 </table>
             </div>
         </section>
+        </div>
     </main>
 </div>
 

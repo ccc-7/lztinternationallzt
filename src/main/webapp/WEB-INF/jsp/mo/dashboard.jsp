@@ -39,31 +39,44 @@
             </div>
         </div>
 
-        <section class="panel dashboard-intro">
-            <h1>MO Dashboard</h1>
-            <p>Post jobs, review applicants, and complete your TA recruitment for this semester.</p>
-        </section>
+        <div class="mo-content">
+            <section class="panel dashboard-intro">
+                <h1>MO Dashboard</h1>
+                <p>Post jobs, review applicants, and complete your TA recruitment for this semester.</p>
+            </section>
 
-        <section class="stats-grid">
+            <section class="stats-grid stats-mo">
             <div class="stat-card">
-                <h4>My Jobs</h4>
-                <div class="stat-value">${totalJobs}</div>
-                <p>Jobs posted by you</p>
+                <div class="stat-icon">&#128196;</div>
+                <div class="stat-content">
+                    <h4>My Jobs</h4>
+                    <div class="stat-value">${totalJobs}</div>
+                    <p>Jobs posted by you</p>
+                </div>
             </div>
             <div class="stat-card stat-card-highlight">
-                <h4>My Open Jobs</h4>
-                <div class="stat-value">${activeJobs}</div>
-                <p>Your jobs currently accepting applications</p>
+                <div class="stat-icon">&#10004;</div>
+                <div class="stat-content">
+                    <h4>My Open Jobs</h4>
+                    <div class="stat-value">${activeJobs}</div>
+                    <p>Your jobs currently accepting applications</p>
+                </div>
             </div>
             <div class="stat-card">
-                <h4>Applications Received</h4>
-                <div class="stat-value">${totalApplicants}</div>
-                <p>Applications for your posted jobs</p>
+                <div class="stat-icon">&#9733;</div>
+                <div class="stat-content">
+                    <h4>Applications Received</h4>
+                    <div class="stat-value">${totalApplicants}</div>
+                    <p>Applications for your posted jobs</p>
+                </div>
             </div>
             <div class="stat-card">
-                <h4>Pending Review</h4>
-                <div class="stat-value">${pendingCount}</div>
-                <p>Pending applications for your jobs</p>
+                <div class="stat-icon">&#9203;</div>
+                <div class="stat-content">
+                    <h4>Pending Review</h4>
+                    <div class="stat-value">${pendingCount}</div>
+                    <p>Pending applications for your jobs</p>
+                </div>
             </div>
         </section>
 
@@ -92,7 +105,14 @@
                     <c:choose>
                         <c:when test="${empty jobs}">
                             <tr>
-                                <td colspan="8" class="empty-state">No job data available</td>
+                                <td colspan="8" class="empty-state">
+                                    <div class="empty-state-illustration">
+                                        <div class="empty-illustration-icon">&#128196;</div>
+                                        <p class="empty-illustration-title">No jobs posted yet</p>
+                                        <p class="empty-illustration-desc">Start by posting a new job position for TA recruitment</p>
+                                        <a href="${pageContext.request.contextPath}/mo/jobs/new" class="btn btn-primary btn-small">Post First Job</a>
+                                    </div>
+                                </td>
                             </tr>
                         </c:when>
                         <c:otherwise>
@@ -137,6 +157,7 @@
                 </table>
             </div>
         </section>
+        </div>
     </main>
 </div>
 

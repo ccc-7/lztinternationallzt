@@ -39,14 +39,15 @@
             </div>
         </div>
 
-        <section class="panel">
-            <div class="page-header">
-                <h1>Job Board</h1>
-                <p>Find your ideal teaching assistant position</p>
-            </div>
-        </section>
+        <div class="ta-content">
+            <section class="panel">
+                <div class="page-header">
+                    <h1>Job Board</h1>
+                    <p>Find your ideal teaching assistant position</p>
+                </div>
+            </section>
 
-        <section class="job-grid-simple">
+            <section class="job-grid-simple">
             <c:forEach var="job" items="${jobs}">
                 <div class="job-card-simple ${job.matchScore >= 60 ? 'high-match' : ''}" onclick="showJobDetail('${job.jobId}')">
                     <div class="job-card-header">
@@ -69,6 +70,7 @@
                 </div>
             </c:forEach>
         </section>
+        </div>
     </main>
 </div>
 

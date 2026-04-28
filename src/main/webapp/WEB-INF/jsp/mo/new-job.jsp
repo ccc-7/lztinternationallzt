@@ -38,7 +38,8 @@
             </div>
         </div>
 
-        <section class="panel form-panel">
+        <div class="mo-content">
+            <section class="panel form-panel">
             <div class="form-header">
                 <div class="form-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -146,6 +147,7 @@
                 </div>
             </form>
         </section>
+        </div>
     </main>
 </div>
 

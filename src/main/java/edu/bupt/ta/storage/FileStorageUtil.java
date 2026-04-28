@@ -485,6 +485,12 @@ public class FileStorageUtil {
         }
     }
 
+    public void deleteApplications(List<String> applicationIds) {
+        List<Application> apps = loadApplications();
+        apps.removeIf(app -> applicationIds.contains(app.getApplicationId()));
+        saveApplications(apps);
+    }
+
     public String nowText() {
         return LocalDateTime.now().withNano(0).toString().replace('T', ' ');
     }
