@@ -101,6 +101,20 @@ public class AdminServlet extends HttpServlet {
         String jobFilter = req.getParameter("jobId");
 
         List<Application> applications = applicationService.getAllApplications();
+        List<Job> allJobs = jobService.getAllJobs();
+        Set<String> validJobIds = allJobs.stream().map(Job::getJobId).collect(Collectors.toSet());
+
+        // Remove applications that reference deleted jobs
+        List<Application> orphanedApplications = applications.stream()
+                .filter(a -> !validJobIds.contains(a.getJobId()))
+                .collect(Collectors.toList());
+        if (!orphanedApplications.isEmpty()) {
+            applicationService.deleteApplications(orphanedApplications.stream()
+                    .map(Application::getApplicationId).collect(Collectors.toList()));
+            applications = applications.stream()
+                    .filter(a -> validJobIds.contains(a.getJobId()))
+                    .collect(Collectors.toList());
+        }
 
         if (statusFilter != null && !statusFilter.isBlank() && !statusFilter.equals("ALL")) {
             ApplicationStatus status = ApplicationStatus.fromString(statusFilter);
@@ -142,7 +156,7 @@ public class AdminServlet extends HttpServlet {
         }
 
         req.setAttribute("applications", applications);
-        req.setAttribute("jobs", jobs);
+        req.setAttribute("jobs", allJobs);
         req.setAttribute("applicantNames", applicantNames);
         req.setAttribute("jobTitles", jobTitles);
         req.setAttribute("currentStatus", statusFilter);
@@ -305,6 +319,7 @@ public class AdminServlet extends HttpServlet {
 
     private void handleApprove(HttpServletRequest req, HttpServletResponse resp, User admin) throws IOException {
         String applicationId = req.getParameter("applicationId");
+
         if (applicationId == null || applicationId.isBlank()) {
             req.getSession().setAttribute("flashError", "the application ID cannot be empty");
             resp.sendRedirect(req.getContextPath() + "/admin/applications");
@@ -320,9 +335,11 @@ public class AdminServlet extends HttpServlet {
             logService.log(admin.getUserId(), admin.getDisplayName(), "APPROVE", "Application",
                     applicationId, "approve " + applicationId, getClientIP(req));
 
-            req.getSession().setAttribute("flashSuccess", "Application approved");
+            req.getSession().setAttribute("flashSuccess", "Application " + applicationId + " approved successfully");
         } catch (Exception e) {
             req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
+            resp.sendRedirect(req.getContextPath() + "/admin/applications");
+            return;
         }
 
         resp.sendRedirect(req.getContextPath() + "/admin/applications");
