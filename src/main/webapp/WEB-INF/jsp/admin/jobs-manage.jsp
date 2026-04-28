@@ -108,7 +108,7 @@
                                         <td>${job.title}</td>
                                         <td><span class="module-code">${job.moduleCode}</span></td>
                                         <td>${job.vacancies}</td>
-                                        <td><span class="applicant-count">${applicationCounts[job.jobId]}</span></td>
+                                        <td><span class="applicant-count">${applicantCounts[job.jobId]}</span></td>
                                         <td>${job.deadline}</td>
                                         <td>
                                             <span class="badge ${job.status}">${job.status == 'OPEN' ? 'Open' : 'Closed'}</span>
@@ -231,11 +231,19 @@
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
 <script>
+function jsStr(s) {
+    if (s == null) return '';
+    return String(s)
+        .replace(/\\/g, '\\\\')
+        .replace(/\n/g, '\\n')
+        .replace(/'/g, "\\'");
+}
+
 var jobsData = {
 <c:forEach var="job" items="${jobs}" varStatus="status">
-    '${job.jobId}': { title: '${job.title}', moduleCode: '${job.moduleCode}', organiser: '${job.organiser}',
+    '${job.jobId}': { title: jsStr('${job.title}'), moduleCode: jsStr('${job.moduleCode}'), organiser: jsStr('${job.organiser}'),
         hours: ${job.hours}, minYear: ${job.minYear}, maxYear: ${job.maxYear}, vacancies: ${job.vacancies},
-        deadline: '${job.deadline}', requiredSkills: '${job.requiredSkills}'}${status.last ? '' : ','}
+        deadline: jsStr('${job.deadline}'), requiredSkills: jsStr('${job.requiredSkills}')}${status.last ? '' : ','}
 </c:forEach>
 };
 

@@ -41,13 +41,13 @@
             </div>
         </div>
 
-        <div class="admin-content">
+        <div class="ta-content">
             <section class="panel dashboard-intro">
                 <h1>My Profile</h1>
                 <p>Complete your profile to get better job matches, and your information will be saved to CSV.</p>
             </section>
 
-            <section class="panel">
+            <section class="panel profile-form-panel">
                 <form action="${pageContext.request.contextPath}/ta/profile" method="post" class="grid-form">
                     <div>
                         <label>Username</label>

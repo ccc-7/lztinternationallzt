@@ -788,7 +788,7 @@
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </div>
-                            <div>
+			<div>
                                 <h2 class="step-title">Account Details</h2>
                                 <p class="step-subtitle">Choose your login credentials</p>
                             </div>
@@ -855,8 +855,8 @@
                                 <div class="strength-bar" id="bar1"></div>
                                 <div class="strength-bar" id="bar2"></div>
                                 <div class="strength-bar" id="bar3"></div>
-                            </div>
-                        </div>
+			</div>
+		</div>
 
                         <!-- Confirm Password -->
                         <div class="field-group has-prefix-icon" style="margin-top: 24px;">
@@ -880,7 +880,7 @@
                         <div class="match-status" id="matchStatus">
                             <span class="match-icon" id="matchIcon"></span>
                             <span id="matchText"></span>
-                        </div>
+			</div>
 
                         <div class="form-actions">
                             <button type="button" class="btn btn-prev" style="visibility: hidden;"></button>
@@ -891,7 +891,7 @@
                                 </svg>
                             </button>
                         </div>
-                    </div>
+			</div>
 
                     <!-- Step 2: Profile -->
                     <div class="step-section" data-section="2">
@@ -905,11 +905,11 @@
                                     <polyline points="10 9 9 9 8 9"></polyline>
                                 </svg>
                             </div>
-                            <div>
+			<div>
                                 <h2 class="step-title">Personal Info</h2>
                                 <p class="step-subtitle">Tell us about yourself</p>
                             </div>
-                        </div>
+			</div>
 
                         <div class="form-row">
                             <div class="field-group">
@@ -918,7 +918,7 @@
                             </div>
                             <div class="field-group">
                                 <input type="email" id="email" name="email" placeholder=" " autocomplete="email">
-                                <label for="email">Email</label>
+				<label for="email">Email</label>
                             </div>
                         </div>
 
@@ -947,7 +947,7 @@
                                 </svg>
                             </button>
                         </div>
-                    </div>
+			</div>
 
                     <!-- Step 3: Skills -->
                     <div class="step-section" data-section="3">
@@ -957,7 +957,7 @@
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                 </svg>
                             </div>
-                            <div>
+			<div>
                                 <h2 class="step-title">Your Skills</h2>
                                 <p class="step-subtitle">Show us what you can do</p>
                             </div>
@@ -985,17 +985,17 @@
                                 <div class="skill-tag" data-skill="React"><span class="tag-icon">⚛️</span> React</div>
                                 <div class="skill-tag" data-skill="Node.js"><span class="tag-icon">🟢</span> Node.js</div>
                             </div>
-                        </div>
+			</div>
 
                         <div class="field-group textarea">
                             <textarea id="skills" name="skills" placeholder=" " rows="4"></textarea>
                             <label for="skills">Skills & Expertise</label>
-                        </div>
+			</div>
 
                         <div class="terms-checkbox">
                             <input type="checkbox" id="terms" name="terms" required>
                             <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-                        </div>
+			</div>
 
                         <div class="form-actions">
                             <button type="button" class="btn btn-prev" onclick="prevStep(3)">
@@ -1012,8 +1012,8 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </form>
+			</div>
+		</form>
 
             <div class="reg-footer">
                 <a href="${pageContext.request.contextPath}/home">

@@ -398,7 +398,6 @@ public class AdminServlet extends HttpServlet {
             String requiredSkills = req.getParameter("requiredSkills");
             String deadline = req.getParameter("deadline");
             String vacanciesStr = req.getParameter("vacancies");
-            String description = req.getParameter("description");
 
             int hours = Integer.parseInt(hoursStr);
             int minYear = Integer.parseInt(minYearStr);
@@ -406,12 +405,12 @@ public class AdminServlet extends HttpServlet {
             int vacancies = Integer.parseInt(vacanciesStr);
 
             if ("create".equals(action)) {
-                jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies, description);
+                jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "CREATE", "Job",
                         title, "create job：" + title, getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "Job created successfully");
             } else {
-                jobService.updateJob(jobId, title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies, description);
+                jobService.updateJob(jobId, title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "UPDATE", "Job",
                         jobId, "update job：" + title, getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "Job updated successfully");

@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class ApplicationService {
 
+    private static final int MAX_APPLICATIONS_PER_TA = 3;
+
     private final FileStorageUtil storage = new FileStorageUtil();
 
     public Application apply(String userId, String jobId) {
@@ -20,6 +22,17 @@ public class ApplicationService {
             if (app.getUserId().equals(userId) && app.getJobId().equals(jobId)) {
                 throw new IllegalArgumentException("you have already applied for this job.");
             }
+        }
+
+        int userApplicationCount = 0;
+        for (Application app : applications) {
+            if (app.getUserId().equals(userId)) {
+                userApplicationCount++;
+            }
+        }
+
+        if (userApplicationCount >= MAX_APPLICATIONS_PER_TA) {
+            throw new IllegalArgumentException("You can only have up to " + MAX_APPLICATIONS_PER_TA + " active applications at a time.");
         }
 
         Application application = new Application();
