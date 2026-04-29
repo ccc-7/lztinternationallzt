@@ -167,6 +167,12 @@ public class ApplicationService {
         storage.saveApplications(applications);
     }
 
+    public void deleteApplications(List<String> applicationIds) {
+        List<Application> applications = storage.loadApplications();
+        applications.removeIf(a -> applicationIds.contains(a.getApplicationId()));
+        storage.saveApplications(applications);
+    }
+
     public int countUserPendingAndInterview(String userId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {

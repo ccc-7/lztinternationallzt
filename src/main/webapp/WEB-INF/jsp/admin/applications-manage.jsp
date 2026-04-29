@@ -122,6 +122,7 @@
                                             <div class="action-buttons">
                                                 <c:if test="${a.status == 'PENDING'}">
                                                     <form action="${pageContext.request.contextPath}/admin/applications/approve" method="post" class="inline-form">
+                                                        <input type="hidden" name="action" value="approve">
                                                         <input type="hidden" name="applicationId" value="${a.applicationId}">
                                                         <button type="submit" class="btn btn-action btn-approve" onclick="return confirmAction(this, 'Approve this application?')">
                                                             <span class="btn-icon-svg">&#10003;</span> Approve
@@ -155,6 +156,7 @@
             <button class="modal-close" onclick="closeRejectModal()">&times;</button>
         </div>
         <form action="${pageContext.request.contextPath}/admin/applications/reject" method="post" class="modal-form">
+            <input type="hidden" name="action" value="reject">
             <input type="hidden" name="applicationId" id="rejectApplicationId" value="">
             <div class="form-group">
                 <label>Rejection Reason <span class="required">*</span></label>
