@@ -282,13 +282,26 @@ p { font-size: 0.9375rem; line-height: 1.6; color: var(--text-secondary); }
     width: 18px;
     height: 18px;
     flex-shrink: 0;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
 }
 
 .nav-icon {
-    font-size: 1rem;
     width: 20px;
-    text-align: center;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+}
+
+.nav-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
 }
 
 /* Content area */
@@ -344,7 +357,6 @@ p { font-size: 0.9375rem; line-height: 1.6; color: var(--text-secondary); }
     border: none;
     background: transparent;
     color: #fff;
-    font-size: 1.25rem;
     cursor: pointer;
     border-radius: var(--radius-sm);
     display: flex;
@@ -354,6 +366,14 @@ p { font-size: 0.9375rem; line-height: 1.6; color: var(--text-secondary); }
 
 .sidebar-toggle:hover {
     background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
 }
 
 .topbar-title {

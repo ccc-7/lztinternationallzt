@@ -18,26 +18,38 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item active" href="${pageContext.request.contextPath}/admin/dashboard">
-                <span class="nav-icon">&#9632;</span> Dashboard
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/applications">
-                <span class="nav-icon">&#9733;</span> Applications
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </span> Applications
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/jobs">
-                <span class="nav-icon">&#9651;</span> Jobs
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12"/></svg>
+                </span> Jobs
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/users">
-                <span class="nav-icon">&#9679;</span> Users
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span> Users
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/admin/logs">
-                <span class="nav-icon">&#9633;</span> System Logs
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                </span> System Logs
             </a>
         </nav>
     </aside>
 
     <main class="content">
         <div class="topbar topbar-admin">
-            <button class="sidebar-toggle">&#9776;</button>
+            <button class="sidebar-toggle">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
             <div class="topbar-title">Admin Dashboard</div>
             <div class="topbar-right">
                 <div class="user-menu">
@@ -81,7 +93,7 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">&#9651;</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
                     <div class="stat-content">
                         <h4>Total Jobs</h4>
                         <div class="stat-value">${stats.totalJobs}</div>
@@ -159,20 +171,20 @@
                 </div>
                 <div class="quick-actions">
                     <a href="${pageContext.request.contextPath}/admin/applications" class="quick-action-btn">
-                        <span class="qa-icon">&#9733;</span>
+                        <span class="qa-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
                         <span>Review Applications</span>
                         <span class="qa-badge">${stats.pendingApplications}</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/jobs" class="quick-action-btn">
-                        <span class="qa-icon">&#9651;</span>
+                        <span class="qa-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
                         <span>Manage Jobs</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/users" class="quick-action-btn">
-                        <span class="qa-icon">&#9679;</span>
+                        <span class="qa-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                         <span>Manage Users</span>
                     </a>
                     <a href="${pageContext.request.contextPath}/admin/logs" class="quick-action-btn">
-                        <span class="qa-icon">&#9633;</span>
+                        <span class="qa-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
                         <span>View Logs</span>
                     </a>
                 </div>
