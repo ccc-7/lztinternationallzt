@@ -17,7 +17,7 @@
 
         .reg-page {
             min-height: 100vh;
-            background: var(--gray-100, #f8f9fa);
+            background: linear-gradient(135deg, #e7f1ff 0%, #f8f9fa 50%, #e7f1ff 100%);
             position: relative;
             display: flex;
             align-items: center;
