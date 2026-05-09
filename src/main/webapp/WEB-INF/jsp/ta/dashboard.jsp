@@ -21,20 +21,28 @@
 
         <nav class="sidebar-nav">
             <a class="nav-item active" href="${pageContext.request.contextPath}/ta/dashboard">
-                <span class="nav-icon">&#9632;</span> Dashboard
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </span> Dashboard
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/jobs">
-                <span class="nav-icon">&#9651;</span> Job Board
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12"/></svg>
+                </span> Job Board
             </a>
             <a class="nav-item" href="${pageContext.request.contextPath}/applications">
-                <span class="nav-icon">&#9733;</span> Applications
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </span> Applications
             </a>
         </nav>
     </aside>
 
     <main class="content content-ta">
         <div class="topbar topbar-ta">
-            <button type="button" class="sidebar-toggle">&#9776;</button>
+            <button type="button" class="sidebar-toggle">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
             <div class="topbar-title">TA Dashboard</div>
             <div class="topbar-right">
                 <div class="user-menu">
@@ -80,7 +88,7 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">&#9651;</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
                     <div class="stat-content">
                         <h4>Total Open</h4>
                         <div class="stat-value">${totalOpenPositions}</div>
