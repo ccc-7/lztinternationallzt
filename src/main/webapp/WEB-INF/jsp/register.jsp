@@ -911,7 +911,7 @@
 			</div>
 
                         <div class="terms-checkbox">
-                            <input type="checkbox" id="terms" name="terms" required>
+                            <input type="checkbox" id="terms" name="terms">
                             <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
 			</div>
 
@@ -1205,7 +1205,7 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
 
     var terms = document.getElementById('terms');
     if (!terms.checked) {
-        alert('Please agree to the Terms of Service');
+        alert('Please check the box to agree to the Terms of Service and Privacy Policy before continuing.');
         e.preventDefault();
         return;
     }

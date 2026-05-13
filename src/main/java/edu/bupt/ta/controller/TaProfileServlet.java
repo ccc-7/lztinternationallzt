@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * TA 个人资料：GET 展示、POST 保存。表单在 {@code profile.jsp} 的 {@code .profile-form-panel} 内。
+ * 通过 {@code taProfileFieldRings} 请求属性启用「常显蓝色描边、聚焦时浅绿色描边」的栏位样式（见 {@code style.css} 中 {@code .profile-field-rings}）。
+ */
 @WebServlet(urlPatterns = {"/ta/profile"})
 public class TaProfileServlet extends HttpServlet {
 
@@ -27,6 +31,7 @@ public class TaProfileServlet extends HttpServlet {
         }
 
         req.setAttribute("profileUser", userService.findById(user.getUserId()));
+        req.setAttribute("taProfileFieldRings", Boolean.TRUE);
         req.getRequestDispatcher("/WEB-INF/jsp/ta/profile.jsp").forward(req, resp);
     }
 

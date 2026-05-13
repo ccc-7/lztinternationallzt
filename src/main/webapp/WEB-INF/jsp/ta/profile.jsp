@@ -57,8 +57,8 @@
                 <p>Complete your profile to get better job matches, and your information will be saved to CSV.</p>
             </section>
 
-            <section class="panel profile-form-panel">
-                <form action="${pageContext.request.contextPath}/ta/profile" method="post" class="grid-form">
+            <section class="panel profile-form-panel<c:if test="${taProfileFieldRings}"> profile-field-rings</c:if>">
+                <form id="taProfileForm" action="${pageContext.request.contextPath}/ta/profile" method="post" class="grid-form">
                     <div>
                         <label>Username</label>
                         <input type="text" value="${profileUser.username}" disabled>
@@ -97,12 +97,90 @@
 
                     <div class="full-width form-actions">
                         <button type="submit" class="btn btn-primary">Save</button>
-                        <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary">Back</a>
+                        <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary" id="profileBackLink">Back</a>
                     </div>
                 </form>
             </section>
         </div>
     </main>
 </div>
+
+<div class="modal-overlay" id="unsavedProfileModal" aria-hidden="true">
+    <div class="modal modal-small" role="dialog" aria-labelledby="unsavedProfileTitle" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="unsavedProfileTitle">Warning</h3>
+            <button type="button" class="modal-close" id="unsavedProfileModalClose" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>The current modifications have not been saved. Are you sure to go back?</p>
+            <div class="modal-actions modal-actions-split">
+                <button type="button" class="btn btn-primary" id="unsavedProfileConfirm">confirm</button>
+                <button type="button" class="btn btn-secondary" id="unsavedProfileCancel">cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var form = document.getElementById('taProfileForm');
+    var backLink = document.getElementById('profileBackLink');
+    var modal = document.getElementById('unsavedProfileModal');
+    if (!form || !backLink || !modal) return;
+
+    function snapshot() {
+        function v(name) {
+            var el = form.querySelector('[name="' + name + '"]');
+            return el ? el.value : '';
+        }
+        return [v('name'), v('email'), v('year'), v('major'), v('availability'), v('skills')].join('\x1e');
+    }
+
+    var initial = snapshot();
+    var isDirty = false;
+
+    function refreshDirty() {
+        isDirty = snapshot() !== initial;
+    }
+
+    form.addEventListener('input', refreshDirty);
+    form.addEventListener('change', refreshDirty);
+
+    function openModal() {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    backLink.addEventListener('click', function (e) {
+        refreshDirty();
+        if (isDirty) {
+            e.preventDefault();
+            openModal();
+        }
+    });
+
+    document.getElementById('unsavedProfileConfirm').addEventListener('click', function () {
+        window.location.href = backLink.getAttribute('href');
+    });
+
+    document.getElementById('unsavedProfileCancel').addEventListener('click', closeModal);
+    document.getElementById('unsavedProfileModalClose').addEventListener('click', closeModal);
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
+})();
+</script>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>

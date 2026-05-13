@@ -1315,12 +1315,6 @@ select:focus {
 .match-medium .match-number { color: var(--status-orange); }
 .match-low .match-number { color: var(--text-tertiary); }
 
-.view-details {
-    font-size: 0.8125rem;
-    color: var(--enterprise-blue);
-    font-weight: 500;
-}
-
 /* ===== Job Detail Modal ===== */
 .job-modal-overlay {
     position: fixed;
@@ -2234,6 +2228,10 @@ select:focus {
     border-top: 1px solid var(--border-color);
 }
 
+.modal-actions.modal-actions-split {
+    justify-content: space-between;
+}
+
 /* Form Groups */
 .form-group { margin-bottom: var(--space-lg); }
 
@@ -2930,6 +2928,49 @@ code {
     border-color: rgba(255, 255, 255, 0.5);
     background: #fff;
     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+/* TA My Profile: form sits on white panel — faint white borders are invisible; use normal chrome */
+.content-ta .profile-form-panel .grid-form input,
+.content-ta .profile-form-panel .grid-form textarea {
+    border: 1px solid var(--border-color);
+    background: var(--white);
+}
+
+.content-ta .profile-form-panel .grid-form input:focus,
+.content-ta .profile-form-panel .grid-form textarea:focus {
+    border-color: var(--enterprise-blue);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.content-ta .profile-form-panel .grid-form input:disabled {
+    border-color: var(--border-color);
+    background: var(--gray-100);
+    color: var(--text-secondary);
+}
+
+/* TA My Profile：可编辑栏常显蓝色描边；聚焦时浅绿描边，失焦后由 :focus 自动恢复蓝（切换栏位即切换颜色） */
+.content-ta .profile-form-panel.profile-field-rings .grid-form input:not(:disabled),
+.content-ta .profile-form-panel.profile-field-rings .grid-form textarea {
+    border: 2px solid var(--enterprise-blue);
+    background: var(--white);
+    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.12);
+}
+
+.content-ta .profile-form-panel.profile-field-rings .grid-form input:not(:disabled):focus,
+.content-ta .profile-form-panel.profile-field-rings .grid-form textarea:focus {
+    border-color: #5dbe8a;
+    background: #f2fbf5;
+    box-shadow: 0 0 0 3px rgba(93, 190, 138, 0.35);
+    outline: none;
+}
+
+.content-ta .profile-form-panel.profile-field-rings .grid-form input:disabled {
+    border: 2px solid var(--gray-400);
+    background: var(--gray-100);
+    color: var(--text-secondary);
+    box-shadow: none;
 }
 
 /* Dashboard grid */

@@ -127,7 +127,8 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="deadline">Application Deadline <span class="required">*</span></label>
-                            <input type="date" id="deadline" name="deadline" required>
+                            <input type="date" id="deadline" name="deadline" required lang="en">
+                            <span class="hint">yyyy/mm/dd</span>
                         </div>
                     </div>
                 </div>
