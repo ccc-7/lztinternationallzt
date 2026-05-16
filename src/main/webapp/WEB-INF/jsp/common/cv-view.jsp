@@ -368,6 +368,9 @@
     <div class="summary-toolbar">
         <div class="summary-toolbar-note">Candidate Summary view for TA/MO/Admin review</div>
         <div class="summary-toolbar-actions">
+            <c:if test="${cvFileAvailable}">
+                <a href="${cvDownloadHref}" target="_blank" class="summary-btn summary-btn-secondary">Open Original PDF</a>
+            </c:if>
             <button type="button" class="summary-btn summary-btn-secondary" onclick="window.history.length > 1 ? window.history.back() : window.close()">Back</button>
             <button type="button" class="summary-btn summary-btn-primary" onclick="window.print()">Print Summary</button>
         </div>
@@ -534,14 +537,31 @@
 
                     <section class="summary-section">
                         <h2>Original CV File</h2>
-                        <div class="summary-phase-box">
-                            <span class="phase-state">Phase 1 only</span>
-                            <strong>Structured Candidate Summary is available now</strong>
-                            <p>
-                                Real original CV upload, replacement, deletion, and file preview are planned for the next CV iteration.
-                                MO and Admin currently review the structured summary generated from the profile.
-                            </p>
-                        </div>
+                        <c:choose>
+                            <c:when test="${cvFileAvailable}">
+                                <div class="summary-phase-box">
+                                    <span class="phase-state" style="background:#e9f8ef;color:#137a3a;">Uploaded PDF ready</span>
+                                    <strong>${empty cvUser.cvOriginalName ? 'Original CV available' : cvUser.cvOriginalName}</strong>
+                                    <p>
+                                        This candidate has uploaded a separate PDF CV.
+                                        Use the “Open Original PDF” action to review the original file alongside this summary.
+                                    </p>
+                                    <p style="margin-top:10px;color:#51627d;">
+                                        Uploaded at: ${empty cvUser.cvUploadedAt ? 'Unknown' : cvUser.cvUploadedAt}
+                                    </p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-phase-box">
+                                    <span class="phase-state">PDF missing</span>
+                                    <strong>Only structured Candidate Summary is available</strong>
+                                    <p>
+                                        No original PDF CV has been uploaded yet.
+                                        Reviewers can still use this structured summary for first-pass screening.
+                                    </p>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </section>
                 </div>
             </div>

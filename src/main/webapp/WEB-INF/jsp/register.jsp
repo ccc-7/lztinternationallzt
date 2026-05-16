@@ -971,7 +971,7 @@
                         </div>
 
                         <p class="step-subtitle" style="margin-top: 8px;">
-                            You can skip this step and complete it later in My Profile. Real CV upload will be added in a later iteration.
+                            You can skip this step and complete it later in My Profile. PDF CV upload is now available after registration in the Profile page.
                         </p>
 
                         <div class="terms-checkbox">

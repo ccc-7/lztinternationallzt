@@ -2,6 +2,7 @@ package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
+import edu.bupt.ta.service.CvFileService;
 import edu.bupt.ta.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class TaProfileServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
+    private final CvFileService cvFileService = new CvFileService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -30,7 +32,10 @@ public class TaProfileServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("profileUser", userService.findById(user.getUserId()));
+        User profileUser = userService.findById(user.getUserId());
+        req.setAttribute("profileUser", profileUser);
+        req.setAttribute("profileHasCv", userService.hasUploadedCv(profileUser));
+        req.setAttribute("cvMaxSizeMb", cvFileService.getMaxCvSizeBytes() / (1024 * 1024));
         req.setAttribute("taProfileFieldRings", Boolean.TRUE);
         req.getRequestDispatcher("/WEB-INF/jsp/ta/profile.jsp").forward(req, resp);
     }

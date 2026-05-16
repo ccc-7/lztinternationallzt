@@ -56,7 +56,7 @@
                 <div class="profile-hero">
                     <div>
                         <h1>Profile & Candidate Summary</h1>
-                        <p>Complete your profile, build a structured candidate summary, and preview how MO/Admin will review your information.</p>
+                        <p>Complete your profile, build a structured candidate summary, and manage the original PDF CV that MO/Admin will review.</p>
                     </div>
                     <div class="profile-status-block">
                         <span class="summary-status-label">Summary Status</span>
@@ -75,10 +75,13 @@
                 <div class="profile-panel-head">
                     <div>
                         <h2>Candidate Summary Builder</h2>
-                        <p>Phase 1 uses structured profile data to generate a formal candidate summary. Real CV upload will be added later.</p>
+                        <p>Summary and original PDF CV are now managed as two separate reviewer-facing artifacts.</p>
                     </div>
                     <div class="summary-preview-actions">
                         <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" target="_blank">Preview Candidate Summary</a>
+                        <c:if test="${profileHasCv}">
+                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">View Uploaded CV</a>
+                        </c:if>
                     </div>
                 </div>
 
@@ -166,11 +169,53 @@
                     <section class="profile-section-card profile-phase-note">
                         <div class="profile-section-header">
                             <h3>Original CV File</h3>
-                            <p>Real file upload is not part of Phase 1. For now, MO/Admin will review your structured candidate summary.</p>
+                            <p>Upload a PDF resume for MO/Admin review. This file is stored separately from your structured Candidate Summary.</p>
                         </div>
-                        <div class="profile-placeholder-box">
-                            <strong>Current Phase:</strong> Candidate Summary only
-                            <span>PDF upload, replacement, deletion, and original CV preview will be added in the next CV iteration.</span>
+                        <div class="profile-cv-card ${profileHasCv ? 'has-file' : 'missing-file'}">
+                            <div class="profile-cv-status-row">
+                                <div>
+                                    <strong>CV Status</strong>
+                                    <span class="cv-status-badge ${profileHasCv ? 'uploaded' : 'missing'}">
+                                        <c:choose>
+                                            <c:when test="${profileHasCv}">Uploaded</c:when>
+                                            <c:otherwise>Missing</c:otherwise>
+                                        </c:choose>
+                                    </span>
+                                </div>
+                                <c:if test="${profileHasCv}">
+                                    <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Open PDF</a>
+                                </c:if>
+                            </div>
+
+                            <c:choose>
+                                <c:when test="${profileHasCv}">
+                                    <div class="profile-cv-meta">
+                                        <div><strong>Current file:</strong> ${profileUser.cvOriginalName}</div>
+                                        <div><strong>Uploaded at:</strong> ${empty profileUser.cvUploadedAt ? 'Unknown' : profileUser.cvUploadedAt}</div>
+                                        <div><strong>File type:</strong> ${empty profileUser.cvContentType ? 'application/pdf' : profileUser.cvContentType}</div>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="profile-placeholder-box">
+                                        <strong>No original CV uploaded yet</strong>
+                                        <span>Upload one PDF file up to ${cvMaxSizeMb}MB. Your Candidate Summary remains available even before file upload.</span>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <form action="${pageContext.request.contextPath}/ta/profile/cv/upload" method="post" enctype="multipart/form-data" class="profile-cv-upload-form">
+                                <div class="profile-cv-upload-row">
+                                    <input type="file" name="cvFile" accept="application/pdf,.pdf" required>
+                                    <button type="submit" class="btn btn-primary">${profileHasCv ? 'Replace PDF CV' : 'Upload PDF CV'}</button>
+                                </div>
+                                <p class="hint-text profile-inline-hint">Only PDF files are supported. Maximum size: ${cvMaxSizeMb}MB.</p>
+                            </form>
+
+                            <c:if test="${profileHasCv}">
+                                <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post" class="profile-cv-delete-form" onsubmit="return confirm('Delete the currently uploaded PDF CV?');">
+                                    <button type="submit" class="btn btn-secondary">Delete Uploaded CV</button>
+                                </form>
+                            </c:if>
                         </div>
                     </section>
 

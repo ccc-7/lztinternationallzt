@@ -135,6 +135,9 @@
                                                 <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-action btn-edit" target="_blank">
                                                     <span class="btn-icon-svg">&#128196;</span> Summary
                                                 </a>
+                                                <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-action btn-edit" target="_blank">
+                                                    <span class="btn-icon-svg">&#128462;</span> CV
+                                                </a>
                                                 <c:if test="${a.status == 'PENDING'}">
                                                     <form action="${pageContext.request.contextPath}/admin/applications/approve" method="post" class="inline-form">
                                                         <input type="hidden" name="action" value="approve">

@@ -141,6 +141,9 @@
                                                     <a href="${pageContext.request.contextPath}/files/cv-summary/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Candidate Summary">
                                                         <span class="btn-icon-svg">&#128196;</span>
                                                     </a>
+                                                    <a href="${pageContext.request.contextPath}/files/cv/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Uploaded CV">
+                                                        <span class="btn-icon-svg">&#128462;</span>
+                                                    </a>
                                                 </c:if>
                                                 <form action="${pageContext.request.contextPath}/admin/users/toggle" method="post" class="inline-form">
                                                     <input type="hidden" name="action" value="toggle">
