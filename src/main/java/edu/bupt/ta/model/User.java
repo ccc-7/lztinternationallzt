@@ -12,6 +12,11 @@ public class User {
     private String skills;
     private String status;
     private String availability;
+    private String personalStatement;
+    private String relevantCourses;
+    private String projectExperience;
+    private String preferredRole;
+    private String summaryStatus;
 
     public User() {
     }
@@ -121,5 +126,45 @@ public class User {
 
     public void setAvailability(String availability) {
         this.availability = availability;
+    }
+
+    public String getPersonalStatement() {
+        return personalStatement;
+    }
+
+    public void setPersonalStatement(String personalStatement) {
+        this.personalStatement = personalStatement;
+    }
+
+    public String getRelevantCourses() {
+        return relevantCourses;
+    }
+
+    public void setRelevantCourses(String relevantCourses) {
+        this.relevantCourses = relevantCourses;
+    }
+
+    public String getProjectExperience() {
+        return projectExperience;
+    }
+
+    public void setProjectExperience(String projectExperience) {
+        this.projectExperience = projectExperience;
+    }
+
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
+    }
+
+    public String getSummaryStatus() {
+        return summaryStatus;
+    }
+
+    public void setSummaryStatus(String summaryStatus) {
+        this.summaryStatus = summaryStatus;
     }
 }
