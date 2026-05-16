@@ -100,9 +100,16 @@
                                             <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-outline btn-small" target="_blank">
                                                 View Summary
                                             </a>
-                                            <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-outline btn-small" target="_blank">
-                                                View CV
-                                            </a>
+                                            <c:choose>
+                                                <c:when test="${applicantHasCv[a.userId]}">
+                                                    <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-outline btn-small" target="_blank">
+                                                        View CV
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="hint-text">PDF Missing</span>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </td>
                                     <td><span class="badge ${a.status}">${statusLabels[a.status]}</span></td>

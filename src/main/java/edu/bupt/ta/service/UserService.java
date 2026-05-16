@@ -12,6 +12,7 @@ import java.util.Optional;
 public class UserService {
 
     private final FileStorageUtil storage = new FileStorageUtil();
+    private final CvFileService cvFileService = new CvFileService();
 
     public User authenticate(String username, String password) {
         User user = storage.loadUsers().stream()
@@ -272,7 +273,8 @@ public class UserService {
         return user != null
                 && notBlank(user.getCvStoredName())
                 && notBlank(user.getCvOriginalName())
-                && !"MISSING".equalsIgnoreCase(user.getCvStatus());
+                && !"MISSING".equalsIgnoreCase(user.getCvStatus())
+                && cvFileService.resolveExistingCvPath(user.getCvStoredName()) != null;
     }
 
     public boolean isApplicationReady(User user) {
@@ -303,9 +305,7 @@ public class UserService {
             return null;
         }
         user.setSummaryStatus(calculateSummaryStatus(user));
-        if (!notBlank(user.getCvStatus())) {
-            user.setCvStatus(hasUploadedCv(user) ? "UPLOADED" : "MISSING");
-        }
+        user.setCvStatus(hasUploadedCv(user) ? "UPLOADED" : "MISSING");
         return user;
     }
 

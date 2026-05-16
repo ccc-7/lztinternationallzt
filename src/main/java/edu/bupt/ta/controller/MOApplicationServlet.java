@@ -65,10 +65,12 @@ public class MOApplicationServlet extends HttpServlet {
         }
 
         Map<String, String> applicantNames = new HashMap<>();
+        Map<String, Boolean> applicantHasCv = new HashMap<>();
         for (Application app : applications) {
             User applicant = userService.findById(app.getUserId());
             if (applicant != null) {
                 applicantNames.put(app.getUserId(), applicant.getDisplayName());
+                applicantHasCv.put(app.getUserId(), userService.hasUploadedCv(applicant));
             }
         }
 
@@ -82,6 +84,7 @@ public class MOApplicationServlet extends HttpServlet {
         req.setAttribute("jobs", jobs);
         req.setAttribute("jobTitles", jobTitles);
         req.setAttribute("applicantNames", applicantNames);
+        req.setAttribute("applicantHasCv", applicantHasCv);
         req.setAttribute("statusLabels", statusLabels);
 
         req.getRequestDispatcher("/WEB-INF/jsp/mo/applications.jsp").forward(req, resp);
