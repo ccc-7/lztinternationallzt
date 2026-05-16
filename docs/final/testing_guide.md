@@ -150,32 +150,32 @@ Each time the application starts, if a CSV file contains only a header row (no d
 
 ## 6. Expected Outputs Summary
 
-Test Scenario: Login with valid credentials
+1.Test Scenario: Login with valid credentials
 Expected Output: Redirect to role-specific dashboard; system_logs.csv gets a LOGIN entry.
 
-Test Scenario: Login with wrong password
+2.Test Scenario: Login with wrong password
 Expected Output: Redirect to login page with error message; no log entry.
 
-Test Scenario: TA applies to open job
+3.Test Scenario: TA applies to open job
 Expected Output: New A{NNN} row in applications.csv with PENDING status; success flash message displayed.
 
-Test Scenario: MO closes a job
+4.Test Scenario: MO closes a job
 Expected Output: jobs.csv status column changes from OPEN to CLOSED; the job disappears from the TA board.
 
-Test Scenario: TA uploads CV
+5.Test Scenario: TA uploads CV
 Expected Output: File data/cvs/{userId}.pdf is written; 5 CV-related columns in ta_users.csv are populated.
 
-Test Scenario: TA exceeds 3 active applications
+6.Test Scenario: TA exceeds 3 active applications
 Expected Output: Error message displayed: "You have too many active applications"; no new row is added to the CSV file.
 
-Test Scenario: Admin approves application
+7.Test Scenario: Admin approves application
 Expected Output: applications.csv status changes to ACCEPTED; system_logs.csv gets an APPROVE entry.
 
-Test Scenario: Duplicate application
+8.Test Scenario: Duplicate application
 Expected Output: Error message displayed: "You have already applied for this job"; no duplicate row is added to the CSV file.
 
-Test Scenario: MO tries to see another MO's job's applications
+9.Test Scenario: MO tries to see another MO's job's applications
 Expected Output: Applications are filtered out; only the job organiser's own jobs' applications are shown.
 
-Test Scenario: FileStorageUtil first-run
+10.Test Scenario: FileStorageUtil first-run
 Expected Output: 4 CSV files are created with headers, plus seed data rows if the files are empty.
