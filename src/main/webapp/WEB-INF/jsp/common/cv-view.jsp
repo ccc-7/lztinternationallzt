@@ -5,213 +5,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV - ${cvUser.name} - TA Recruitment System</title>
+    <title>Candidate Summary - ${cvUser.displayName}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            color-scheme: light;
+            --summary-blue: #1d5fe9;
+            --summary-blue-soft: #eaf2ff;
+            --summary-purple: #5f4acb;
+            --summary-bg: #eef4fb;
+            --summary-text: #1f2a37;
+            --summary-muted: #6b7280;
+            --summary-border: #d9e3f0;
+            --summary-card: #ffffff;
+            --summary-success: #e9f8ef;
+            --summary-success-text: #137a3a;
+            --summary-warn: #fff7e8;
+            --summary-warn-text: #a45a00;
+            --summary-danger: #fff0f0;
+            --summary-danger-text: #b42318;
         }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #f7fbff 0%, var(--summary-bg) 100%);
+            color: var(--summary-text);
+            padding: 32px 18px 48px;
         }
-        .cv-container {
-            max-width: 800px;
+
+        .summary-page {
+            max-width: 1080px;
             margin: 0 auto;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
         }
-        .cv-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
+
+        .summary-toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
         }
-        .cv-header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+
+        .summary-toolbar-note {
+            color: var(--summary-muted);
+            font-size: 0.95rem;
         }
-        .cv-header .user-id {
-            font-size: 0.9em;
-            opacity: 0.8;
+
+        .summary-toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .cv-header .email {
-            margin-top: 15px;
-            font-size: 1.1em;
-        }
-        .cv-body {
-            padding: 40px;
-        }
-        .cv-section {
-            margin-bottom: 30px;
-        }
-        .cv-section h2 {
-            color: #667eea;
-            font-size: 1.4em;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .info-item {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 6px;
-        }
-        .info-item label {
-            display: block;
+
+        .summary-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 11px 18px;
+            font-size: 0.92rem;
             font-weight: 600;
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
-        .info-item span {
-            font-size: 1.1em;
-            color: #333;
+
+        .summary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(29, 95, 233, 0.14);
         }
-        .skills-list {
+
+        .summary-btn-primary {
+            background: var(--summary-blue);
+            color: #fff;
+        }
+
+        .summary-btn-secondary {
+            background: #fff;
+            color: var(--summary-blue);
+            border: 1px solid var(--summary-border);
+        }
+
+        .summary-shell {
+            background: rgba(255, 255, 255, 0.74);
+            border: 1px solid rgba(217, 227, 240, 0.9);
+            border-radius: 28px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 22px 60px rgba(65, 94, 148, 0.12);
+        }
+
+        .summary-hero {
+            background: linear-gradient(135deg, var(--summary-blue) 0%, var(--summary-purple) 100%);
+            color: #fff;
+            padding: 42px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 28px;
+            align-items: end;
+        }
+
+        .summary-eyebrow {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            opacity: 0.84;
+            margin-bottom: 12px;
+        }
+
+        .summary-hero h1 {
+            margin: 0 0 10px;
+            font-size: 2.7rem;
+            line-height: 1.05;
+        }
+
+        .summary-hero p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.84);
+            max-width: 540px;
+            line-height: 1.65;
+        }
+
+        .summary-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .summary-meta-card {
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 18px;
+            padding: 16px 18px;
+        }
+
+        .summary-meta-label {
+            display: block;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.76;
+            margin-bottom: 8px;
+        }
+
+        .summary-meta-value {
+            font-size: 1.02rem;
+            font-weight: 600;
+        }
+
+        .summary-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .summary-status-badge.INCOMPLETE {
+            background: rgba(255, 206, 167, 0.2);
+            color: #fff6eb;
+            border: 1px solid rgba(255, 230, 204, 0.26);
+        }
+
+        .summary-status-badge.BASIC_COMPLETE {
+            background: rgba(255, 243, 205, 0.22);
+            color: #fff7db;
+            border: 1px solid rgba(255, 248, 225, 0.24);
+        }
+
+        .summary-status-badge.SUMMARY_COMPLETE {
+            background: rgba(219, 252, 230, 0.18);
+            color: #f4fff7;
+            border: 1px solid rgba(231, 255, 239, 0.24);
+        }
+
+        .summary-body {
+            padding: 32px;
+        }
+
+        .summary-notice {
+            margin-bottom: 24px;
+            border-radius: 18px;
+            padding: 16px 18px;
+            border: 1px solid #cfe0ff;
+            background: #eef5ff;
+            color: #244a90;
+            line-height: 1.6;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+        }
+
+        .summary-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .summary-section {
+            background: var(--summary-card);
+            border: 1px solid var(--summary-border);
+            border-radius: 22px;
+            padding: 24px;
+        }
+
+        .summary-section h2 {
+            margin: 0 0 16px;
+            font-size: 1.2rem;
+            color: #20304d;
+        }
+
+        .summary-section p {
+            margin: 0;
+            line-height: 1.72;
+            color: var(--summary-text);
+        }
+
+        .summary-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .summary-info-card {
+            background: #f8fbff;
+            border: 1px solid #dde8f5;
+            border-radius: 18px;
+            padding: 16px 18px;
+        }
+
+        .summary-info-card strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #51627d;
+            font-size: 0.86rem;
+        }
+
+        .summary-chip-list {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .skill-chip {
-            background: #e7e9fc;
-            color: #667eea;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.95em;
-            font-weight: 500;
-        }
-        .availability-box {
-            background: #f0f9f0;
-            border: 1px solid #c3e6cb;
-            border-radius: 6px;
-            padding: 15px 20px;
-        }
-        .availability-box label {
-            display: block;
+
+        .summary-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 14px;
+            border-radius: 999px;
+            background: var(--summary-blue-soft);
+            color: var(--summary-blue);
             font-weight: 600;
-            color: #28a745;
-            margin-bottom: 5px;
+            font-size: 0.9rem;
         }
-        .no-availability {
-            color: #999;
-            font-style: italic;
+
+        .summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .cv-footer {
-            text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #666;
-            font-size: 0.9em;
+
+        .summary-list-item {
+            padding: 14px 16px;
+            background: #fafcff;
+            border: 1px solid #dde8f5;
+            border-radius: 16px;
+            line-height: 1.6;
         }
-        .print-btn {
+
+        .summary-placeholder {
+            border-radius: 18px;
+            border: 1px dashed #bfd0ea;
+            background: #fbfdff;
+            padding: 18px;
+            color: var(--summary-muted);
+            line-height: 1.7;
+        }
+
+        .summary-phase-box {
+            border-radius: 18px;
+            border: 1px solid #dde8f5;
+            background: linear-gradient(180deg, #fcfdff 0%, #f6faff 100%);
+            padding: 18px;
+        }
+
+        .summary-phase-box strong {
             display: block;
-            margin: 20px auto;
-            padding: 12px 30px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.3s;
+            margin-bottom: 10px;
+            color: #20304d;
         }
-        .print-btn:hover {
-            background: #5568d3;
+
+        .summary-phase-box .phase-state {
+            display: inline-flex;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: var(--summary-warn);
+            color: var(--summary-warn-text);
+            font-weight: 700;
+            margin-bottom: 10px;
         }
+
+        .summary-section-subtitle {
+            margin: -6px 0 16px;
+            color: var(--summary-muted);
+            line-height: 1.55;
+            font-size: 0.95rem;
+        }
+
+        .summary-availability {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: var(--summary-success);
+            color: var(--summary-success-text);
+            border: 1px solid #bfe6cd;
+        }
+
+        .summary-availability strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
         @media print {
-            body {
-                background: white;
-                padding: 0;
+            body { background: #fff; padding: 0; }
+            .summary-toolbar { display: none; }
+            .summary-shell { box-shadow: none; border: none; }
+        }
+
+        @media (max-width: 900px) {
+            .summary-hero,
+            .summary-grid {
+                grid-template-columns: 1fr;
             }
-            .cv-container {
-                box-shadow: none;
+        }
+
+        @media (max-width: 640px) {
+            .summary-hero,
+            .summary-body {
+                padding: 22px;
             }
-            .print-btn {
-                display: none;
+
+            .summary-info-grid,
+            .summary-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-hero h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <button class="print-btn" onclick="window.print()">Print CV</button>
-    
-    <div class="cv-container">
-        <div class="cv-header">
-            <h1>${cvUser.name}</h1>
-            <div class="user-id">TA ID: ${cvUser.userId}</div>
-            <div class="email">${cvUser.email}</div>
-        </div>
-
-        <div class="cv-body">
-            <div class="cv-section">
-                <h2>Basic Information</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Username</label>
-                        <span>${cvUser.username}</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Year</label>
-                        <span>Year ${cvUser.year}</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Major</label>
-                        <span>${cvUser.major}</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Status</label>
-                        <span>${cvUser.status}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cv-section">
-                <h2>Skills</h2>
-                <div class="skills-list">
-                    <c:choose>
-                        <c:when test="${not empty cvUser.skills}">
-                            <c:forTokens items="${cvUser.skills}" delims="|" var="skill">
-                                <span class="skill-chip">${skill}</span>
-                            </c:forTokens>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="no-availability">No skills added yet</span>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </div>
-
-            <div class="cv-section">
-                <h2>Availability</h2>
-                <div class="availability-box">
-                    <label>Available Time:</label>
-                    <c:choose>
-                        <c:when test="${not empty cvUser.availability}">
-                            <span>${cvUser.availability}</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="no-availability">Not specified</span>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </div>
-        </div>
-
-        <div class="cv-footer">
-            Generated from TA Recruitment System | ${pageContext.request.contextPath}
+<div class="summary-page">
+    <div class="summary-toolbar">
+        <div class="summary-toolbar-note">Candidate Summary view for TA/MO/Admin review</div>
+        <div class="summary-toolbar-actions">
+            <button type="button" class="summary-btn summary-btn-secondary" onclick="window.history.length > 1 ? window.history.back() : window.close()">Back</button>
+            <button type="button" class="summary-btn summary-btn-primary" onclick="window.print()">Print Summary</button>
         </div>
     </div>
+
+    <div class="summary-shell">
+        <header class="summary-hero">
+            <div>
+                <div class="summary-eyebrow">Generated Candidate Summary</div>
+                <h1>${cvUser.displayName}</h1>
+                <p>
+                    Structured candidate information prepared from the TA profile and summary builder fields.
+                    This page is intended for recruiter review and does not represent an uploaded original CV file.
+                </p>
+            </div>
+            <div class="summary-meta-grid">
+                <div class="summary-meta-card">
+                    <span class="summary-meta-label">TA ID</span>
+                    <span class="summary-meta-value">${cvUser.userId}</span>
+                </div>
+                <div class="summary-meta-card">
+                    <span class="summary-meta-label">Summary Status</span>
+                    <span class="summary-status-badge ${cvUser.summaryStatus}">
+                        <c:choose>
+                            <c:when test="${cvUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
+                            <c:when test="${cvUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
+                            <c:otherwise>Incomplete</c:otherwise>
+                        </c:choose>
+                    </span>
+                </div>
+                <div class="summary-meta-card">
+                    <span class="summary-meta-label">Email</span>
+                    <span class="summary-meta-value">${empty cvUser.email ? 'Not provided' : cvUser.email}</span>
+                </div>
+                <div class="summary-meta-card">
+                    <span class="summary-meta-label">Preferred Role</span>
+                    <span class="summary-meta-value">${empty cvUser.preferredRole ? 'Not specified' : cvUser.preferredRole}</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="summary-body">
+            <c:if test="${not empty summaryNotice}">
+                <div class="summary-notice">${summaryNotice}</div>
+            </c:if>
+
+            <div class="summary-grid">
+                <div class="summary-column">
+                    <section class="summary-section">
+                        <h2>Basic Information</h2>
+                        <div class="summary-info-grid">
+                            <div class="summary-info-card">
+                                <strong>Username</strong>
+                                <span>${cvUser.username}</span>
+                            </div>
+                            <div class="summary-info-card">
+                                <strong>Year of Study</strong>
+                                <span><c:choose><c:when test="${cvUser.year > 0}">Year ${cvUser.year}</c:when><c:otherwise>Not specified</c:otherwise></c:choose></span>
+                            </div>
+                            <div class="summary-info-card">
+                                <strong>Major</strong>
+                                <span>${empty cvUser.major ? 'Not specified' : cvUser.major}</span>
+                            </div>
+                            <div class="summary-info-card">
+                                <strong>Account Status</strong>
+                                <span>${empty cvUser.status ? 'Unknown' : cvUser.status}</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Skills</h2>
+                        <p class="summary-section-subtitle">These tags are used for matching and recruiter review.</p>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.skills}">
+                                <div class="summary-chip-list">
+                                    <c:forTokens items="${cvUser.skills}" delims="|" var="skill">
+                                        <span class="summary-chip">${skill}</span>
+                                    </c:forTokens>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">No skills have been added yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Personal Statement</h2>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.personalStatement}">
+                                <p>${cvUser.personalStatement}</p>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">No personal statement has been provided yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Project / Teaching Experience</h2>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.projectExperience}">
+                                <div class="summary-list">
+                                    <c:forTokens items="${cvUser.projectExperience}" delims="|" var="item">
+                                        <div class="summary-list-item">${item}</div>
+                                    </c:forTokens>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">No project or teaching experience has been added yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+                </div>
+
+                <div class="summary-column">
+                    <section class="summary-section">
+                        <h2>Availability</h2>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.availability}">
+                                <div class="summary-availability">
+                                    <strong>Available Time</strong>
+                                    <span>${cvUser.availability}</span>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">Availability has not been provided yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Relevant Courses</h2>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.relevantCourses}">
+                                <div class="summary-list">
+                                    <c:forTokens items="${cvUser.relevantCourses}" delims="|" var="course">
+                                        <div class="summary-list-item">${course}</div>
+                                    </c:forTokens>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">Relevant courses have not been listed yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Preferred Role</h2>
+                        <c:choose>
+                            <c:when test="${not empty cvUser.preferredRole}">
+                                <div class="summary-chip-list">
+                                    <c:forTokens items="${cvUser.preferredRole}" delims="|" var="role">
+                                        <span class="summary-chip">${role}</span>
+                                    </c:forTokens>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="summary-placeholder">No preferred role has been selected yet.</div>
+                            </c:otherwise>
+                        </c:choose>
+                    </section>
+
+                    <section class="summary-section">
+                        <h2>Original CV File</h2>
+                        <div class="summary-phase-box">
+                            <span class="phase-state">Phase 1 only</span>
+                            <strong>Structured Candidate Summary is available now</strong>
+                            <p>
+                                Real original CV upload, replacement, deletion, and file preview are planned for the next CV iteration.
+                                MO and Admin currently review the structured summary generated from the profile.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 </body>
 </html>

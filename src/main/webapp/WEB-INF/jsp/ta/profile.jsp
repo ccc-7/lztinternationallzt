@@ -53,50 +53,130 @@
 
         <div class="ta-content">
             <section class="panel dashboard-intro">
-                <h1>My Profile</h1>
-                <p>Complete your profile to get better job matches, and your information will be saved to CSV.</p>
+                <div class="profile-hero">
+                    <div>
+                        <h1>Profile & Candidate Summary</h1>
+                        <p>Complete your profile, build a structured candidate summary, and preview how MO/Admin will review your information.</p>
+                    </div>
+                    <div class="profile-status-block">
+                        <span class="summary-status-label">Summary Status</span>
+                        <span class="summary-status-badge ${profileUser.summaryStatus}">
+                            <c:choose>
+                                <c:when test="${profileUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
+                                <c:when test="${profileUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
+                                <c:otherwise>Incomplete</c:otherwise>
+                            </c:choose>
+                        </span>
+                    </div>
+                </div>
             </section>
 
             <section class="panel profile-form-panel<c:if test="${taProfileFieldRings}"> profile-field-rings</c:if>">
-                <form id="taProfileForm" action="${pageContext.request.contextPath}/ta/profile" method="post" class="grid-form">
+                <div class="profile-panel-head">
                     <div>
-                        <label>Username</label>
-                        <input type="text" value="${profileUser.username}" disabled>
+                        <h2>Candidate Summary Builder</h2>
+                        <p>Phase 1 uses structured profile data to generate a formal candidate summary. Real CV upload will be added later.</p>
                     </div>
-
-                    <div>
-                        <label>Name</label>
-                        <input type="text" name="name" value="${profileUser.name}" placeholder="Your full name">
+                    <div class="summary-preview-actions">
+                        <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" target="_blank">Preview Candidate Summary</a>
                     </div>
+                </div>
 
-                    <div>
-                        <label>Email</label>
-                        <input type="email" name="email" value="${profileUser.email}" placeholder="you@example.com">
-                    </div>
+                <form id="taProfileForm" action="${pageContext.request.contextPath}/ta/profile" method="post" class="grid-form profile-builder-form">
+                    <section class="profile-section-card">
+                        <div class="profile-section-header">
+                            <h3>Basic Profile</h3>
+                            <p>These fields support account identity, contact information, and matching logic.</p>
+                        </div>
+                        <div class="profile-section-grid">
+                            <div>
+                                <label>Username</label>
+                                <input type="text" value="${profileUser.username}" disabled>
+                            </div>
 
-                    <div>
-                        <label>Year</label>
-                        <input type="number" name="year" min="1" max="8" value="${profileUser.year}" placeholder="e.g. 2">
-                    </div>
+                            <div>
+                                <label>Full Name</label>
+                                <input type="text" name="name" value="${profileUser.name}" placeholder="Your full name">
+                            </div>
 
-                    <div>
-                        <label>Major</label>
-                        <input type="text" name="major" value="${profileUser.major}" placeholder="e.g. Computer Science">
-                    </div>
+                            <div>
+                                <label>Email</label>
+                                <input type="email" name="email" value="${profileUser.email}" placeholder="you@example.com">
+                            </div>
 
-                    <div>
-                        <label>Availability</label>
-                        <input type="text" name="availability" value="${profileUser.availability}" placeholder="e.g. Mon/Wed afternoons">
-                    </div>
+                            <div>
+                                <label>Year</label>
+                                <input type="number" name="year" min="1" max="8" value="${profileUser.year}" placeholder="e.g. 2">
+                            </div>
 
-                    <div class="full-width">
-                        <label>Skills</label>
-                        <textarea name="skills" rows="4" placeholder="e.g. Java, SQL, Data Structures">${profileUser.skills}</textarea>
-                        <p class="hint-text" style="text-align:left; margin-top: 8px;">Skills will be automatically normalized and saved to CSV (separated by "|").</p>
-                    </div>
+                            <div class="full-width">
+                                <label>Major</label>
+                                <input type="text" name="major" value="${profileUser.major}" placeholder="e.g. Computer Science">
+                            </div>
+                        </div>
+                    </section>
 
-                    <div class="full-width form-actions">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                    <section class="profile-section-card">
+                        <div class="profile-section-header">
+                            <h3>Skills & Availability</h3>
+                            <p>These fields help the system rank jobs and help MO compare applicants quickly.</p>
+                        </div>
+                        <div class="profile-section-grid">
+                            <div>
+                                <label>Availability</label>
+                                <input type="text" name="availability" value="${profileUser.availability}" placeholder="e.g. Mon/Wed afternoons">
+                            </div>
+
+                            <div>
+                                <label>Preferred Role</label>
+                                <input type="text" name="preferredRole" value="${profileUser.preferredRole}" placeholder="e.g. Lab Support | Tutorial Support">
+                            </div>
+
+                            <div class="full-width">
+                                <label>Skills</label>
+                                <textarea name="skills" rows="4" placeholder="e.g. Java, SQL, Data Structures">${profileUser.skills}</textarea>
+                                <p class="hint-text profile-inline-hint">Skills are normalized to `|` for CSV storage.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="profile-section-card">
+                        <div class="profile-section-header">
+                            <h3>Candidate Summary Builder</h3>
+                            <p>Use these structured fields to generate a richer summary for reviewers. Line breaks are compacted for CSV compatibility.</p>
+                        </div>
+                        <div class="profile-section-grid">
+                            <div class="full-width">
+                                <label>Personal Statement</label>
+                                <textarea name="personalStatement" rows="4" placeholder="Short self-introduction or motivation">${profileUser.personalStatement}</textarea>
+                            </div>
+
+                            <div class="full-width">
+                                <label>Relevant Courses</label>
+                                <textarea name="relevantCourses" rows="3" placeholder="Use commas, semicolons, or | to separate items">${profileUser.relevantCourses}</textarea>
+                            </div>
+
+                            <div class="full-width">
+                                <label>Project / Teaching Experience</label>
+                                <textarea name="projectExperience" rows="5" placeholder="Summarize projects, teaching experience, teamwork, or lab support">${profileUser.projectExperience}</textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="profile-section-card profile-phase-note">
+                        <div class="profile-section-header">
+                            <h3>Original CV File</h3>
+                            <p>Real file upload is not part of Phase 1. For now, MO/Admin will review your structured candidate summary.</p>
+                        </div>
+                        <div class="profile-placeholder-box">
+                            <strong>Current Phase:</strong> Candidate Summary only
+                            <span>PDF upload, replacement, deletion, and original CV preview will be added in the next CV iteration.</span>
+                        </div>
+                    </section>
+
+                    <div class="full-width form-actions profile-form-actions">
+                        <button type="submit" class="btn btn-primary">Save Profile & Summary</button>
+                        <a href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" class="btn btn-secondary" target="_blank">Preview Summary</a>
                         <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary" id="profileBackLink">Back</a>
                     </div>
                 </form>
@@ -114,8 +194,8 @@
         <div class="modal-body">
             <p>The current modifications have not been saved. Are you sure to go back?</p>
             <div class="modal-actions modal-actions-split">
-                <button type="button" class="btn btn-primary" id="unsavedProfileConfirm">confirm</button>
-                <button type="button" class="btn btn-secondary" id="unsavedProfileCancel">cancel</button>
+                <button type="button" class="btn btn-primary" id="unsavedProfileConfirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" id="unsavedProfileCancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -133,7 +213,18 @@
             var el = form.querySelector('[name="' + name + '"]');
             return el ? el.value : '';
         }
-        return [v('name'), v('email'), v('year'), v('major'), v('availability'), v('skills')].join('\x1e');
+        return [
+            v('name'),
+            v('email'),
+            v('year'),
+            v('major'),
+            v('availability'),
+            v('preferredRole'),
+            v('skills'),
+            v('personalStatement'),
+            v('relevantCourses'),
+            v('projectExperience')
+        ].join('\x1e');
     }
 
     var initial = snapshot();
