@@ -13,6 +13,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * Handles user login. GET redirects to home; POST authenticates credentials and
+ * creates a session if valid. Validates that the selected role matches the account role.
+ * Logs the login event via {@link edu.bupt.ta.service.LogService}.
+ *
+ * @see edu.bupt.ta.service.UserService#authenticate
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 

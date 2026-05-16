@@ -1,5 +1,11 @@
 package edu.bupt.ta.model;
 
+/**
+ * A read-only view object that combines an {@link Application} with denormalized
+ * job details (title, module code, and organiser). Used by JSP pages to display
+ * application rows without needing to perform a join. This class is not persisted
+ * to CSV; it is assembled at query time.
+ */
 public class ApplicationWithJob {
     private Application application;
     private String jobTitle;

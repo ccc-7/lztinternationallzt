@@ -12,6 +12,22 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Central Admin controller handling all admin-panel routes.
+ * Routes are:
+ * <ul>
+ *   <li>{@code /admin/applications} — list and approve/reject applications</li>
+ *   <li>{@code /admin/jobs} — manage jobs (create, update, delete, toggle)</li>
+ *   <li>{@code /admin/users} — manage users (create, toggle status, change password)</li>
+ *   <li>{@code /admin/logs} — view paginated system audit logs</li>
+ *   <li>{@code /admin/stats} — raw statistics JSON</li>
+ * </ul>
+ *
+ * <p>GET requests display pages; POST requests perform actions.
+ * Every action is logged via {@link edu.bupt.ta.service.LogService}.
+ *
+ * @see edu.bupt.ta.service.AdminService
+ */
 @WebServlet(urlPatterns = {
     "/admin/applications",
     "/admin/applications/approve",

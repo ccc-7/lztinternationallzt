@@ -16,6 +16,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays the current TA's submitted applications, enriched with job details
+ * (title, module code, organiser) via {@link edu.bupt.ta.model.ApplicationWithJob}.
+ *
+ * @see edu.bupt.ta.service.ApplicationService#getApplicationsByUserId
+ */
 @WebServlet("/applications")
 public class ApplicationStatusServlet extends HttpServlet {
 

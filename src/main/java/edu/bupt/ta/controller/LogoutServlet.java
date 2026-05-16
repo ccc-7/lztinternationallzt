@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Destroys the current session and redirects to the home page.
+ */
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 

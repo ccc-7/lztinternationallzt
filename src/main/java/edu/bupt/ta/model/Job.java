@@ -1,5 +1,11 @@
 package edu.bupt.ta.model;
 
+/**
+ * Represents a job posting in the TA Recruitment System.
+ * Jobs are created by Module Organisers (MOs) and contain requirements
+ * such as required skills, working hours, and a deadline for applications.
+ * Maps to the {@code jobs.csv} file.
+ */
 public class Job {
     private String jobId;
     private String title;

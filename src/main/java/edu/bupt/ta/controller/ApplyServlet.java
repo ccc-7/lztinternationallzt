@@ -10,6 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Handles TA job application submissions. POST creates an application via
+ * {@link edu.bupt.ta.service.ApplicationService#apply}. GET redirects to the jobs page.
+ *
+ * @see edu.bupt.ta.service.ApplicationService
+ */
 @WebServlet("/apply")
 public class ApplyServlet extends HttpServlet {
 

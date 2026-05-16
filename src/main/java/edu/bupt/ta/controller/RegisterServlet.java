@@ -10,6 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Handles TA registration. GET shows the registration form; POST creates a new TA account.
+ * On success the user is automatically logged in and redirected to the TA dashboard.
+ *
+ * @see edu.bupt.ta.service.UserService#registerTa
+ */
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 

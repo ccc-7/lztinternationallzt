@@ -9,11 +9,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides business-logic operations for user accounts and TA profiles.
+ * All data access is delegated to {@link FileStorageUtil}. This class does not
+ * perform any direct file I/O.
+ */
 public class UserService {
 
     private final FileStorageUtil storage = new FileStorageUtil();
     private final CvFileService cvFileService = new CvFileService();
 
+    /**
+     * Authenticates a user by username and password.
+     *
+     * @param username the login name
+     * @param password the plain-text password
+     * @return the authenticated User, or null if credentials are invalid
+     */
     public User authenticate(String username, String password) {
         User user = storage.loadUsers().stream()
                 .filter(u -> u.getUsername().equals(username))
@@ -23,6 +35,12 @@ public class UserService {
         return hydrateUser(user);
     }
 
+    /**
+     * Looks up a user by username.
+     *
+     * @param username the login name
+     * @return the User, or null if not found
+     */
     public User findByUsername(String username) {
         User user = storage.loadUsers().stream()
                 .filter(u -> u.getUsername().equals(username))
@@ -31,6 +49,12 @@ public class UserService {
         return hydrateUser(user);
     }
 
+    /**
+     * Looks up a user by their unique ID (e.g. "U001").
+     *
+     * @param userId the user ID
+     * @return the User, or null if not found
+     */
     public User findById(String userId) {
         User user = storage.loadUsers().stream()
                 .filter(u -> u.getUserId().equals(userId))
@@ -39,6 +63,11 @@ public class UserService {
         return hydrateUser(user);
     }
 
+    /**
+     * Returns all users, with summaryStatus and cvStatus recalculated for each.
+     *
+     * @return a list of all users
+     */
     public List<User> getAllUsers() {
         List<User> users = storage.loadUsers();
         for (User user : users) {
@@ -47,6 +76,11 @@ public class UserService {
         return users;
     }
 
+    /**
+     * Returns all users whose role is TA.
+     *
+     * @return a list of TA users
+     */
     public List<User> getAllTaUsers() {
         List<User> all = getAllUsers();
         List<User> tas = new ArrayList<>();
@@ -58,6 +92,26 @@ public class UserService {
         return tas;
     }
 
+    /**
+     * Registers a new TA account. The username must be unique (case-insensitive check).
+     * Assigns the next sequential user ID and sets the role to TA with ACTIVE status.
+     * CV-related fields are initialised to empty/MISSING.
+     *
+     * @param username          login name (must be unique)
+     * @param password          plain-text password
+     * @param name              display name
+     * @param email             contact email
+     * @param year              academic year
+     * @param major             academic major
+     * @param skills            pipe-separated skill list (normalised)
+     * @param availability      free-text availability description
+     * @param personalStatement candidate's motivation text
+     * @param relevantCourses   pipe-separated course list
+     * @param projectExperience free-text project experience description
+     * @param preferredRole     pipe-separated preferred role list
+     * @return the newly created User
+     * @throws IllegalArgumentException if the username already exists
+     */
     public User registerTa(String username, String password, String name, String email,
                            int year, String major, String skills, String availability,
                            String personalStatement, String relevantCourses,
@@ -100,6 +154,24 @@ public class UserService {
         return hydrateUser(user);
     }
 
+    /**
+     * Updates the editable profile fields for an existing user. Recalculates summaryStatus
+     * and cvStatus after the update.
+     *
+     * @param userId             the ID of the user to update
+     * @param name               display name
+     * @param email              contact email
+     * @param year               academic year
+     * @param major              academic major
+     * @param skills             pipe-separated skill list
+     * @param availability       free-text availability
+     * @param personalStatement  motivation text
+     * @param relevantCourses    pipe-separated course list
+     * @param projectExperience  project experience text
+     * @param preferredRole      pipe-separated preferred role list
+     * @return the updated User
+     * @throws IllegalArgumentException if the user is not found
+     */
     public User updateProfile(String userId, String name, String email, int year, String major,
                               String skills, String availability, String personalStatement,
                               String relevantCourses, String projectExperience, String preferredRole) {
@@ -132,6 +204,17 @@ public class UserService {
         return hydrateUser(updated);
     }
 
+    /**
+     * Updates the five CV-related columns in a user's record after a successful file upload.
+     *
+     * @param userId      the user ID
+     * @param storedName  the filename stored on disk (e.g. "U001.pdf")
+     * @param originalName the original filename submitted by the user
+     * @param contentType the MIME type of the file
+     * @param uploadedAt  the upload timestamp
+     * @return the updated User
+     * @throws IllegalArgumentException if the user is not found
+     */
     public User updateCvMetadata(String userId, String storedName, String originalName,
                                  String contentType, String uploadedAt) {
         List<User> users = storage.loadUsers();
@@ -154,6 +237,14 @@ public class UserService {
         return hydrateUser(updated);
     }
 
+    /**
+     * Clears the CV metadata for a user, setting cvStatus to MISSING and all related
+     * columns to empty strings.
+     *
+     * @param userId the user ID
+     * @return the updated User
+     * @throws IllegalArgumentException if the user is not found
+     */
     public User clearCvMetadata(String userId) {
         List<User> users = storage.loadUsers();
         User updated = null;
@@ -175,6 +266,13 @@ public class UserService {
         return hydrateUser(updated);
     }
 
+    /**
+     * Saves an externally-constructed User to the CSV. Normalises all text fields,
+     * assigns a new userId, and checks for duplicate username (case-insensitive).
+     *
+     * @param user the User to save (userId will be overwritten with the next sequential ID)
+     * @throws IllegalArgumentException if the username already exists
+     */
     public void registerUser(User user) {
         List<User> users = storage.loadUsers();
 
@@ -214,6 +312,11 @@ public class UserService {
         storage.saveUsers(users);
     }
 
+    /**
+     * Toggles a user's account status between ACTIVE and INACTIVE.
+     *
+     * @param userId the ID of the user to toggle
+     */
     public void toggleUserStatus(String userId) {
         List<User> users = storage.loadUsers();
         for (User user : users) {
@@ -225,6 +328,12 @@ public class UserService {
         storage.saveUsers(users);
     }
 
+    /**
+     * Updates the password for a user.
+     *
+     * @param userId      the ID of the user
+     * @param newPassword the new plain-text password
+     */
     public void updatePassword(String userId, String newPassword) {
         List<User> users = storage.loadUsers();
         for (User user : users) {
@@ -236,10 +345,25 @@ public class UserService {
         storage.saveUsers(users);
     }
 
+    /**
+     * Directly persists a list of users to CSV, replacing all existing records.
+     * Used primarily by AdminService.
+     *
+     * @param users the complete user list to save
+     */
     public void saveUsersDirect(List<User> users) {
         storage.saveUsers(users);
     }
 
+    /**
+     * Calculates the completeness of a TA's profile.
+     * Scores the presence of 9 fields (name, email, year, major, skills, availability,
+     * personalStatement, relevantCourses, projectExperience) and returns:
+     * SUMMARY_COMPLETE if score &ge; 8, BASIC_COMPLETE if score &ge; 5, otherwise INCOMPLETE.
+     *
+     * @param user the User to evaluate (may be null)
+     * @return one of SUMMARY_COMPLETE, BASIC_COMPLETE, or INCOMPLETE
+     */
     public String calculateSummaryStatus(User user) {
         if (user == null) {
             return "INCOMPLETE";
@@ -265,10 +389,24 @@ public class UserService {
         return "INCOMPLETE";
     }
 
+    /**
+     * Checks whether the specified user has uploaded a CV, by userId lookup.
+     *
+     * @param userId the user ID
+     * @return true if a CV file exists on disk and all CV metadata columns are populated
+     */
     public boolean hasUploadedCv(String userId) {
         return hasUploadedCv(findById(userId));
     }
 
+    /**
+     * Checks whether the user has a CV file uploaded. The check verifies that cvStoredName
+     * and cvOriginalName are non-blank, cvStatus is not MISSING, and the file actually
+     * exists on disk.
+     *
+     * @param user the User to check (may be null)
+     * @return true if all conditions are met
+     */
     public boolean hasUploadedCv(User user) {
         return user != null
                 && notBlank(user.getCvStoredName())
@@ -277,6 +415,14 @@ public class UserService {
                 && cvFileService.resolveExistingCvPath(user.getCvStoredName()) != null;
     }
 
+    /**
+     * Determines whether a user is eligible to apply for jobs.
+     * A user is application-ready if their summaryStatus is SUMMARY_COMPLETE
+     * or they have uploaded a CV file.
+     *
+     * @param user the User to check (may be null)
+     * @return true if the user meets the minimum requirements for applying
+     */
     public boolean isApplicationReady(User user) {
         if (user == null) {
             return false;
@@ -284,6 +430,11 @@ public class UserService {
         return "SUMMARY_COMPLETE".equals(user.getSummaryStatus()) || hasUploadedCv(user);
     }
 
+    /**
+     * Generates the next sequential user ID (e.g. "U007").
+     * Parses the numeric suffix of all existing IDs starting with 'U' and returns
+     * the next integer formatted as "U{NNN}".
+     */
     private String nextUserId(List<User> users) {
         int max = users.stream()
                 .map(User::getUserId)
@@ -300,6 +451,13 @@ public class UserService {
         return String.format("U%03d", max + 1);
     }
 
+    /**
+     * Recalculates and updates the summaryStatus and cvStatus fields of a User
+     * in memory. Does not persist the change.
+     *
+     * @param user the User to update (may be null, in which case null is returned)
+     * @return the same User, or null if input was null
+     */
     private User hydrateUser(User user) {
         if (user == null) {
             return null;
@@ -309,6 +467,10 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Normalises a skills string: replaces Chinese comma with pipe, then replaces
+     * all commas with pipes, and trims whitespace.
+     */
     private String normalizeSkills(String skills) {
         if (skills == null || skills.isBlank()) {
             return "";
@@ -318,6 +480,10 @@ public class UserService {
                 .trim();
     }
 
+    /**
+     * Normalises a free-text field: replaces newlines and carriage returns with " | ",
+     * collapses multiple whitespace, and trims. Used for availability and personalStatement.
+     */
     private String normalizeSingleLineText(String value) {
         if (value == null || value.isBlank()) {
             return "";
@@ -330,6 +496,10 @@ public class UserService {
                 .trim();
     }
 
+    /**
+     * Normalises a list-type field: replaces newlines, commas, and semicolons with
+     * pipes, collapses duplicate pipes, and trims. Used for relevantCourses and preferredRole.
+     */
     private String normalizeListText(String value) {
         if (value == null || value.isBlank()) {
             return "";
@@ -344,6 +514,9 @@ public class UserService {
                 .trim();
     }
 
+    /**
+     * Returns true if the value is neither null nor blank.
+     */
     private boolean notBlank(String value) {
         return value != null && !value.isBlank();
     }

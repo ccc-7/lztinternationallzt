@@ -1,5 +1,10 @@
 package edu.bupt.ta.model;
 
+/**
+ * Represents a TA's application for a specific job posting.
+ * Tracks the application status, submission timestamp, and the applicant's
+ * availability at the time of submission. Maps to {@code applications.csv}.
+ */
 public class Application {
     private String applicationId;
     private String userId;

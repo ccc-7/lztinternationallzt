@@ -9,6 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * Handles physical file operations for TA CV PDFs.
+ * Provides upload validation, storage to the {@code data/cvs/} directory,
+ * and deletion. Does not update CSV records; callers must update
+ * {@link edu.bupt.ta.model.User} CSV metadata separately.
+ */
 public class CvFileService {
 
     private static final long MAX_CV_SIZE_BYTES = 5L * 1024 * 1024;
@@ -16,6 +22,18 @@ public class CvFileService {
 
     private final FileStorageUtil storage = FileStorageUtil.getInstance();
 
+    /**
+     * Saves an uploaded PDF file to the {@code data/cvs/} directory.
+     * The file is stored as "{userId}.pdf" (e.g., "U001.pdf"), regardless of
+     * the original filename. Validates size (&le;5 MB), file extension (.pdf),
+     * and Content-Type.
+     *
+     * @param userId   the user ID, used as the stored filename
+     * @param filePart the uploaded file part from the HTTP request
+     * @return a {@link SavedCvFile} containing metadata about the saved file
+     * @throws IllegalArgumentException if validation fails (size, extension, or Content-Type)
+     * @throws IOException             if the file cannot be written to disk
+     */
     public SavedCvFile savePdf(String userId, Part filePart) throws IOException {
         if (filePart == null || filePart.getSize() <= 0) {
             throw new IllegalArgumentException("Please choose a PDF file to upload.");
@@ -51,6 +69,13 @@ public class CvFileService {
         return new SavedCvFile(storedName, originalName, "application/pdf", filePart.getSize(), target);
     }
 
+    /**
+     * Deletes the CV file from disk. No-op if storedName is null or blank.
+     *
+     * @param storedName the filename on disk (e.g. "U001.pdf")
+     * @return true if the file was deleted, false if it did not exist
+     * @throws IOException if the deletion fails
+     */
     public boolean deleteCv(String storedName) throws IOException {
         if (storedName == null || storedName.isBlank()) {
             return false;
@@ -59,6 +84,10 @@ public class CvFileService {
         return Files.deleteIfExists(target);
     }
 
+    /**
+     * Returns the absolute path to the CV file on disk, or null if the file
+     * does not exist or storedName is blank.
+     */
     public Path resolveExistingCvPath(String storedName) {
         if (storedName == null || storedName.isBlank()) {
             return null;
@@ -70,6 +99,9 @@ public class CvFileService {
         return null;
     }
 
+    /**
+     * Formats a file size in bytes to a human-readable string (e.g. "1.5 MB").
+     */
     public String formatFileSize(long sizeBytes) {
         double sizeKb = sizeBytes / 1024.0;
         if (sizeKb < 1024) {
@@ -78,10 +110,12 @@ public class CvFileService {
         return String.format("%.2f MB", sizeKb / 1024.0);
     }
 
+    /** Returns the maximum allowed CV file size in bytes (5 MB). */
     public long getMaxCvSizeBytes() {
         return MAX_CV_SIZE_BYTES;
     }
 
+    /** Returns the absolute path to the CV directory. */
     private Path getCvDir() {
         return storage.getBaseDir().resolve(CV_DIR);
     }
@@ -95,6 +129,11 @@ public class CvFileService {
         return slash >= 0 ? submitted.substring(slash + 1) : submitted;
     }
 
+    /**
+     * Holds metadata about a successfully saved CV file.
+     * Note: the constructor here takes `sizeBytes` as a `long` (the field type)
+     * but the method `savePdf` passes `filePart.getSize()` which may be a `long`.
+     */
     public static class SavedCvFile {
         private final String storedName;
         private final String originalName;

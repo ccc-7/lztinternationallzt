@@ -7,6 +7,11 @@ import edu.bupt.ta.storage.FileStorageUtil;
 
 import java.util.*;
 
+/**
+ * Provides business-logic operations for job postings.
+ * Handles job CRUD, filtering by organiser, and the skill-match scoring algorithm
+ * used to rank jobs for TA users.
+ */
 public class JobService {
 
     private final FileStorageUtil storage = new FileStorageUtil();
@@ -74,10 +79,20 @@ public class JobService {
         SKILL_ALIASES.put("sklearn", "scikit-learn");
     }
 
+    /**
+     * Returns all jobs from the CSV, regardless of status.
+     *
+     * @return a list of all jobs
+     */
     public List<Job> getAllJobs() {
         return storage.loadJobs();
     }
 
+    /**
+     * Returns all jobs whose status is OPEN.
+     *
+     * @return a list of open jobs
+     */
     public List<Job> getOpenJobs() {
         List<Job> result = new ArrayList<>();
         for (Job job : storage.loadJobs()) {
@@ -88,6 +103,12 @@ public class JobService {
         return result;
     }
 
+    /**
+     * Returns all jobs whose organiser matches the given name (case-insensitive).
+     *
+     * @param organiser the MO's display name
+     * @return a list of jobs created by that organiser
+     */
     public List<Job> getJobsByOrganiser(String organiser) {
         List<Job> result = new ArrayList<>();
         if (organiser == null || organiser.isBlank()) {
@@ -102,6 +123,9 @@ public class JobService {
         return result;
     }
 
+    /**
+     * Returns all OPEN jobs whose organiser matches the given name.
+     */
     public List<Job> getOpenJobsByOrganiser(String organiser) {
         List<Job> result = new ArrayList<>();
         for (Job job : getJobsByOrganiser(organiser)) {
@@ -112,6 +136,14 @@ public class JobService {
         return result;
     }
 
+    /**
+     * Returns all OPEN jobs with a matchScore for the given TA user, sorted by score
+     * descending. The matchScore is calculated by {@link #calculateMatchScore} and set
+     * directly on each Job object before sorting.
+     *
+     * @param user the TA user (may be null; all jobs will have score 0 in that case)
+     * @return open jobs sorted by match score descending
+     */
     public List<Job> getOpenJobsForUser(User user) {
         List<Job> jobs = getOpenJobs();
         for (Job job : jobs) {
@@ -123,6 +155,12 @@ public class JobService {
         return jobs;
     }
 
+    /**
+     * Looks up a job by its ID.
+     *
+     * @param jobId the job ID (e.g. "J001")
+     * @return the Job, or null if not found
+     */
     public Job findById(String jobId) {
         return storage.loadJobs().stream()
                 .filter(j -> j.getJobId().equals(jobId))
@@ -130,6 +168,21 @@ public class JobService {
                 .orElse(null);
     }
 
+    /**
+     * Creates and persists a new job posting. Assigns the next sequential job ID,
+     * sets status to OPEN, and normalises the requiredSkills field.
+     *
+     * @param title          job title
+     * @param moduleCode     course module code
+     * @param organiser      the MO's display name (must match their user record)
+     * @param minYear        minimum academic year required (1-based)
+     * @param maxYear        maximum academic year allowed (1-based)
+     * @param hours          expected weekly working hours
+     * @param requiredSkills pipe-separated skill list
+     * @param deadline       application deadline in "yyyy-MM-dd" format
+     * @param vacancies      number of open positions
+     * @return the newly created Job
+     */
     public Job createJob(String title, String moduleCode, String organiser, int minYear,
                          int maxYear, int hours, String requiredSkills, String deadline, int vacancies) {
         List<Job> jobs = storage.loadJobs();
@@ -153,10 +206,16 @@ public class JobService {
         return job;
     }
 
+    /**
+     * Counts all jobs in the CSV.
+     */
     public int countTotalJobs() {
         return storage.loadJobs().size();
     }
 
+    /**
+     * Counts all OPEN jobs.
+     */
     public int countActiveJobs() {
         int count = 0;
         for (Job job : storage.loadJobs()) {
@@ -167,6 +226,21 @@ public class JobService {
         return count;
     }
 
+    /**
+     * Updates the editable fields of an existing job. The jobId, organiser, and status
+     * fields are not changed by this method.
+     *
+     * @param jobId          the ID of the job to update
+     * @param title          new title
+     * @param moduleCode     new module code
+     * @param organiser      new organiser name
+     * @param minYear        new minimum year
+     * @param maxYear        new maximum year
+     * @param hours          new weekly hours
+     * @param requiredSkills new skill requirements
+     * @param deadline       new deadline
+     * @param vacancies      new vacancy count
+     */
     public void updateJob(String jobId, String title, String moduleCode, String organiser,
                          int minYear, int maxYear, int hours, String requiredSkills,
                          String deadline, int vacancies) {
@@ -188,12 +262,22 @@ public class JobService {
         storage.saveJobs(jobs);
     }
 
+    /**
+     * Permanently removes a job from the CSV by ID.
+     *
+     * @param jobId the ID of the job to delete
+     */
     public void deleteJob(String jobId) {
         List<Job> jobs = storage.loadJobs();
         jobs.removeIf(job -> job.getJobId().equals(jobId));
         storage.saveJobs(jobs);
     }
 
+    /**
+     * Toggles a job's status between OPEN and CLOSED.
+     *
+     * @param jobId the ID of the job to toggle
+     */
     public void toggleJobStatus(String jobId) {
         List<Job> jobs = storage.loadJobs();
         for (Job job : jobs) {
@@ -229,6 +313,25 @@ public class JobService {
         return count;
     }
 
+    /**
+     * Calculates a match score (0-100) between a TA's skills and a job's required skills.
+     * The score is computed as a weighted category match plus a Jaccard similarity bonus.
+     *
+     * <p>Supported match types (in order of priority):
+     * <ol>
+     *   <li>Direct match: user skill exactly equals required skill</li>
+     *   <li>Alias match: user skill matches a canonical alias of the required skill</li>
+     *   <li>Partial match: user and required skills are in the same category and share a substring (70% weight)</li>
+     *   <li>Reverse alias match: required skill matches a canonical alias of a user skill (80% weight)</li>
+     * </ol>
+     *
+     * <p>Category weights: concept (1.5) &gt; language (1.3) &gt; ml (1.2) &gt; database (1.1) &gt; framework (1.0) &gt; tools (0.9).
+     * Jaccard bonus: up to 15 points for overlap between user and required skill sets.
+     *
+     * @param userSkills     pipe-separated TA skill list
+     * @param requiredSkills pipe-separated job skill requirements
+     * @return an integer score from 0 to 100, or 0 if requiredSkills is blank
+     */
     public int calculateMatchScore(String userSkills, String requiredSkills) {
         if (requiredSkills == null || requiredSkills.isBlank()) {
             return 0;
@@ -306,6 +409,10 @@ public class JobService {
         return finalScore;
     }
 
+    /**
+     * Converts a skill string to a normalised lowercase set, and also adds the
+     * canonical alias target for each skill if applicable.
+     */
     private Set<String> normalizeSkillSet(Set<String> skills) {
         Set<String> normalized = new HashSet<>();
         for (String skill : skills) {
@@ -319,6 +426,10 @@ public class JobService {
         return normalized;
     }
 
+    /**
+     * Looks up the category of a skill by checking which pre-defined skill set contains it.
+     * Returns "other" if the skill does not belong to any known category.
+     */
     private String getSkillCategory(String skill) {
         String lower = skill.toLowerCase();
         for (Map.Entry<String, Set<String>> entry : SKILL_CATEGORIES.entrySet()) {
@@ -329,6 +440,7 @@ public class JobService {
         return "other";
     }
 
+    /** Returns the multiplier weight for a skill category. */
     private double getCategoryWeight(String category) {
         switch (category) {
             case "concept": return 1.5;  // Core concepts most important
@@ -341,6 +453,9 @@ public class JobService {
         }
     }
 
+    /**
+     * Splits a pipe/comma-separated skill string into a deduplicated lowercase set.
+     */
     private Set<String> tokenize(String skills) {
         Set<String> result = new HashSet<>();
         if (skills == null || skills.isBlank()) {
@@ -355,6 +470,7 @@ public class JobService {
         return result;
     }
 
+    /** Normalises a skill list by replacing commas with pipes and trimming. */
     private String normalizeSkills(String skills) {
         if (skills == null || skills.isBlank()) {
             return "";
@@ -362,6 +478,7 @@ public class JobService {
         return skills.replace(",", "|").trim();
     }
 
+    /** Generates the next sequential job ID (e.g. "J005"). */
     private String nextJobId(List<Job> jobs) {
         int max = jobs.stream()
                 .map(Job::getJobId)

@@ -2,6 +2,12 @@ package edu.bupt.ta.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents an entry in the system audit log.
+ * Each log record captures who performed an action, what type of action it was,
+ * on which entity, and when and from which IP address it occurred.
+ * Maps to the {@code system_logs.csv} file via {@link edu.bupt.ta.service.LogService}.
+ */
 public class SystemLog {
     private String logId;
     private String operatorId;
@@ -102,10 +108,22 @@ public class SystemLog {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Returns the creation timestamp formatted as "yyyy-MM-dd HH:mm:ss".
+     *
+     * @return formatted timestamp string, or empty string if createdAt is null
+     */
     public String getCreatedAtText() {
         return createdAt != null ? createdAt.toString().replace("T", " ") : "";
     }
 
+    /**
+     * Returns a human-readable label for the operation type,
+     * in lowercase (e.g., "create", "approve", "login").
+     * Returns "unknown" if operationType is null.
+     *
+     * @return a lowercase label or "unknown"
+     */
     public String getOperationTypeLabel() {
         if (operationType == null) return "unknown";
         switch (operationType) {

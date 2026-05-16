@@ -9,12 +9,22 @@ import edu.bupt.ta.model.UserRole;
 
 import java.util.*;
 
+/**
+ * Provides administrative operations: dashboard statistics, user workload analysis,
+ * and bulk user management. Delegates to UserService, ApplicationService, and JobService.
+ */
 public class AdminService {
 
     private final UserService userService = new UserService();
     private final ApplicationService applicationService = new ApplicationService();
     private final JobService jobService = new JobService();
 
+    /**
+     * Returns a map of TA user IDs to the total number of applications they have submitted.
+     * Used by the Admin dashboard to display per-TA workload statistics.
+     *
+     * @return a map from userId to application count
+     */
     public Map<String, Integer> calculateUserWorkloads() {
         List<User> users = userService.getAllUsers();
         List<Application> applications = applicationService.getAllApplications();
@@ -36,6 +46,13 @@ public class AdminService {
         return workloads;
     }
 
+    /**
+     * Returns a comprehensive set of dashboard statistics:
+     * TA/MO counts, application counts by status, job counts, and the top 5 TAs
+     * and top 3 jobs ranked by application count.
+     *
+     * @return a map of statistic name to value
+     */
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
 
@@ -111,6 +128,11 @@ public class AdminService {
         return stats;
     }
 
+    /**
+     * Toggles a user's status between ACTIVE and INACTIVE.
+     *
+     * @param userId the user ID to toggle
+     */
     public void toggleUserStatus(String userId) {
         User user = userService.findById(userId);
         if (user != null) {
@@ -126,6 +148,12 @@ public class AdminService {
         }
     }
 
+    /**
+     * Directly persists a user list to CSV, bypassing individual field updates.
+     * Used by the Admin user management page.
+     *
+     * @param users the complete user list to save
+     */
     public void saveUsersDirect(List<User> users) {
         userService.saveUsersDirect(users);
     }

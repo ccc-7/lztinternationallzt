@@ -13,14 +13,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Provides business-logic operations for job applications.
+ * Handles TA application submission, status transitions, and application queries.
+ */
 public class ApplicationService {
 
+    /** Maximum number of active (PENDING or INTERVIEW) applications a single TA can hold. */
     private static final int MAX_APPLICATIONS_PER_TA = 3;
 
     private final FileStorageUtil storage = new FileStorageUtil();
     private final UserService userService = new UserService();
     private final JobService jobService = new JobService();
 
+    /**
+     * Submits a new job application for a TA user.
+     * Performs multiple validations before accepting the application:
+     * user exists, user is application-ready, job exists, job is OPEN,
+     * user's year is within [minYear, maxYear], deadline not passed,
+     * vacancy not exceeded, no duplicate application, and active-app limit not exceeded.
+     *
+     * @param userId the applying TA's user ID
+     * @param jobId  the target job ID
+     * @return the newly created Application record
+     * @throws IllegalArgumentException if any validation check fails
+     */
     public Application apply(String userId, String jobId) {
         User user = userService.findById(userId);
         if (user == null) {
@@ -77,10 +94,12 @@ public class ApplicationService {
         return application;
     }
 
+    /** Returns all applications from the CSV. */
     public List<Application> getAllApplications() {
         return storage.loadApplications();
     }
 
+    /** Looks up an application by its ID. Returns null if not found. */
     public Application findById(String applicationId) {
         return storage.loadApplications().stream()
                 .filter(app -> app.getApplicationId().equals(applicationId))
@@ -88,6 +107,7 @@ public class ApplicationService {
                 .orElse(null);
     }
 
+    /** Returns all applications submitted by the given user. */
     public List<Application> getApplicationsByUserId(String userId) {
         List<Application> result = new ArrayList<>();
         for (Application app : storage.loadApplications()) {
@@ -98,6 +118,7 @@ public class ApplicationService {
         return result;
     }
 
+    /** Returns all applications for the given job. */
     public List<Application> getApplicationsByJobId(String jobId) {
         List<Application> result = new ArrayList<>();
         for (Application app : storage.loadApplications()) {
@@ -108,6 +129,7 @@ public class ApplicationService {
         return result;
     }
 
+    /** Returns all applications whose jobId is in the given set. */
     public List<Application> getApplicationsByJobIds(Set<String> jobIds) {
         List<Application> result = new ArrayList<>();
         if (jobIds == null || jobIds.isEmpty()) {
@@ -122,6 +144,7 @@ public class ApplicationService {
         return result;
     }
 
+    /** Counts how many applications reference the given job. */
     public int countApplicationsByJobId(String jobId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
@@ -132,6 +155,7 @@ public class ApplicationService {
         return count;
     }
 
+    /** Counts how many applications reference any job in the given set. */
     public int countApplicationsByJobIds(Set<String> jobIds) {
         if (jobIds == null || jobIds.isEmpty()) {
             return 0;
@@ -146,6 +170,13 @@ public class ApplicationService {
         return count;
     }
 
+    /**
+     * Counts applications for any job in the given set that have the specified status.
+     *
+     * @param jobIds the set of job IDs to consider
+     * @param status the status to match
+     * @return the count of matching applications
+     */
     public int countApplicationsByJobIdsAndStatus(Set<String> jobIds, ApplicationStatus status) {
         if (jobIds == null || jobIds.isEmpty()) {
             return 0;
@@ -160,14 +191,31 @@ public class ApplicationService {
         return count;
     }
 
+    /** Returns the total number of applications in the CSV. */
     public int countTotalApplications() {
         return storage.loadApplications().size();
     }
 
+    /**
+     * Updates the status of an application, using a default note based on the new status.
+     *
+     * @param applicationId the application to update
+     * @param newStatus    the new status
+     * @throws IllegalArgumentException if the application is not found
+     */
     public void updateStatus(String applicationId, ApplicationStatus newStatus) {
         updateStatus(applicationId, newStatus, null);
     }
 
+    /**
+     * Updates the status and optionally the notes of an application.
+     * Sets a default note based on the new status if no override is provided.
+     *
+     * @param applicationId  the application to update
+     * @param newStatus     the new status
+     * @param notesOverride optional note to replace the default; if null, a default is set
+     * @throws IllegalArgumentException if the application is not found
+     */
     public void updateStatus(String applicationId, ApplicationStatus newStatus, String notesOverride) {
         List<Application> applications = storage.loadApplications();
         boolean found = false;
@@ -196,12 +244,21 @@ public class ApplicationService {
         storage.saveApplications(applications);
     }
 
+    /**
+     * Removes all applications whose IDs are in the given list from the CSV.
+     *
+     * @param applicationIds the IDs to delete
+     */
     public void deleteApplications(List<String> applicationIds) {
         List<Application> applications = storage.loadApplications();
         applications.removeIf(a -> applicationIds.contains(a.getApplicationId()));
         storage.saveApplications(applications);
     }
 
+    /**
+     * Counts the number of active (PENDING or INTERVIEW) applications for a user.
+     * Used to enforce the per-TA application limit.
+     */
     public int countUserPendingAndInterview(String userId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
@@ -213,6 +270,7 @@ public class ApplicationService {
         return count;
     }
 
+    /** Counts all applications with the given status. */
     public int countAllByStatus(ApplicationStatus status) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
@@ -223,6 +281,7 @@ public class ApplicationService {
         return count;
     }
 
+    /** Counts applications for the given job that have been ACCEPTED. */
     private int countAcceptedApplications(String jobId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
@@ -233,6 +292,13 @@ public class ApplicationService {
         return count;
     }
 
+    /**
+     * Checks whether the application deadline has passed. Returns false if deadline
+     * is null or blank, or if parsing fails.
+     *
+     * @param deadline the deadline string in "yyyy-MM-dd" format
+     * @return true if the deadline is before today
+     */
     private boolean isDeadlinePassed(String deadline) {
         if (deadline == null || deadline.isBlank()) {
             return false;
@@ -244,6 +310,7 @@ public class ApplicationService {
         }
     }
 
+    /** Generates the next sequential application ID (e.g. "A007"). */
     private String nextApplicationId(List<Application> applications) {
         int max = applications.stream()
                 .map(Application::getApplicationId)
