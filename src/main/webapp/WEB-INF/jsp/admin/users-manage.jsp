@@ -137,6 +137,11 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
+                                                <c:if test="${currentRole == 'TA'}">
+                                                    <a href="${pageContext.request.contextPath}/files/cv-summary/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Candidate Summary">
+                                                        <span class="btn-icon-svg">&#128196;</span>
+                                                    </a>
+                                                </c:if>
                                                 <form action="${pageContext.request.contextPath}/admin/users/toggle" method="post" class="inline-form">
                                                     <input type="hidden" name="action" value="toggle">
                                                     <input type="hidden" name="userId" value="${user.userId}">

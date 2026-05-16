@@ -96,8 +96,8 @@
                                     <td><span class="module-code">${jobTitles[a.jobId]}</span></td>
                                     <td><span class="availability">${a.availability}</span></td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-outline btn-small" target="_blank">
-                                            View CV
+                                        <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-outline btn-small" target="_blank">
+                                            View Summary
                                         </a>
                                     </td>
                                     <td><span class="badge ${a.status}">${statusLabels[a.status]}</span></td>
