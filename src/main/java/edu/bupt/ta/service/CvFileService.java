@@ -85,8 +85,8 @@ public class CvFileService {
     }
 
     /**
-     * Returns the absolute path to the CV file on disk, or null if the file
-     * does not exist or storedName is blank.
+     * @param storedName the stored filename (e.g. "U001.pdf")
+     * @return the absolute path to the file, or null if not found or storedName is blank
      */
     public Path resolveExistingCvPath(String storedName) {
         if (storedName == null || storedName.isBlank()) {
@@ -100,7 +100,8 @@ public class CvFileService {
     }
 
     /**
-     * Formats a file size in bytes to a human-readable string (e.g. "1.5 MB").
+     * @param sizeBytes the file size in bytes
+     * @return a human-readable size string (e.g. "1.5 MB")
      */
     public String formatFileSize(long sizeBytes) {
         double sizeKb = sizeBytes / 1024.0;
@@ -110,7 +111,7 @@ public class CvFileService {
         return String.format("%.2f MB", sizeKb / 1024.0);
     }
 
-    /** Returns the maximum allowed CV file size in bytes (5 MB). */
+    /** @return the maximum allowed CV file size in bytes (5 MB) */
     public long getMaxCvSizeBytes() {
         return MAX_CV_SIZE_BYTES;
     }
@@ -131,8 +132,6 @@ public class CvFileService {
 
     /**
      * Holds metadata about a successfully saved CV file.
-     * Note: the constructor here takes `sizeBytes` as a `long` (the field type)
-     * but the method `savePdf` passes `filePart.getSize()` which may be a `long`.
      */
     public static class SavedCvFile {
         private final String storedName;
@@ -141,6 +140,14 @@ public class CvFileService {
         private final long sizeBytes;
         private final Path path;
 
+        /**
+         * Constructs a SavedCvFile with all metadata fields.
+         * @param storedName   the filename stored on disk (e.g. "U001.pdf")
+         * @param originalName the original submitted filename
+         * @param contentType the MIME type
+         * @param sizeBytes  the file size in bytes
+         * @param path       the absolute path to the file on disk
+         */
         public SavedCvFile(String storedName, String originalName, String contentType, long sizeBytes, Path path) {
             this.storedName = storedName;
             this.originalName = originalName;
@@ -149,22 +156,27 @@ public class CvFileService {
             this.path = path;
         }
 
+        /** @return the stored filename */
         public String getStoredName() {
             return storedName;
         }
 
+        /** @return the original submitted filename */
         public String getOriginalName() {
             return originalName;
         }
 
+        /** @return the MIME content type */
         public String getContentType() {
             return contentType;
         }
 
+        /** @return the file size in bytes */
         public long getSizeBytes() {
             return sizeBytes;
         }
 
+        /** @return the absolute path to the file on disk */
         public Path getPath() {
             return path;
         }

@@ -94,12 +94,15 @@ public class ApplicationService {
         return application;
     }
 
-    /** Returns all applications from the CSV. */
+    /** @return all applications from the CSV */
     public List<Application> getAllApplications() {
         return storage.loadApplications();
     }
 
-    /** Looks up an application by its ID. Returns null if not found. */
+    /**
+     * @param applicationId the application ID to look up
+     * @return the Application, or null if not found
+     */
     public Application findById(String applicationId) {
         return storage.loadApplications().stream()
                 .filter(app -> app.getApplicationId().equals(applicationId))
@@ -107,7 +110,10 @@ public class ApplicationService {
                 .orElse(null);
     }
 
-    /** Returns all applications submitted by the given user. */
+    /**
+     * @param userId the user ID to filter by
+     * @return all applications submitted by this user
+     */
     public List<Application> getApplicationsByUserId(String userId) {
         List<Application> result = new ArrayList<>();
         for (Application app : storage.loadApplications()) {
@@ -118,7 +124,10 @@ public class ApplicationService {
         return result;
     }
 
-    /** Returns all applications for the given job. */
+    /**
+     * @param jobId the job ID to filter by
+     * @return all applications for this job
+     */
     public List<Application> getApplicationsByJobId(String jobId) {
         List<Application> result = new ArrayList<>();
         for (Application app : storage.loadApplications()) {
@@ -129,7 +138,10 @@ public class ApplicationService {
         return result;
     }
 
-    /** Returns all applications whose jobId is in the given set. */
+    /**
+     * @param jobIds the set of job IDs to filter by
+     * @return all applications whose jobId is in the given set
+     */
     public List<Application> getApplicationsByJobIds(Set<String> jobIds) {
         List<Application> result = new ArrayList<>();
         if (jobIds == null || jobIds.isEmpty()) {
@@ -144,7 +156,10 @@ public class ApplicationService {
         return result;
     }
 
-    /** Counts how many applications reference the given job. */
+    /**
+     * @param jobId the job ID to count
+     * @return how many applications reference this job
+     */
     public int countApplicationsByJobId(String jobId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
@@ -155,7 +170,10 @@ public class ApplicationService {
         return count;
     }
 
-    /** Counts how many applications reference any job in the given set. */
+    /**
+     * @param jobIds the set of job IDs to count
+     * @return how many applications reference any job in the set
+     */
     public int countApplicationsByJobIds(Set<String> jobIds) {
         if (jobIds == null || jobIds.isEmpty()) {
             return 0;
@@ -256,8 +274,8 @@ public class ApplicationService {
     }
 
     /**
-     * Counts the number of active (PENDING or INTERVIEW) applications for a user.
-     * Used to enforce the per-TA application limit.
+     * @param userId the user ID to count for
+     * @return the number of active (PENDING or INTERVIEW) applications for this user
      */
     public int countUserPendingAndInterview(String userId) {
         int count = 0;
@@ -270,7 +288,7 @@ public class ApplicationService {
         return count;
     }
 
-    /** Counts all applications with the given status. */
+    /** @param status the status to count @return how many applications have this status */
     public int countAllByStatus(ApplicationStatus status) {
         int count = 0;
         for (Application app : storage.loadApplications()) {

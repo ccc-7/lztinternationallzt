@@ -124,7 +124,8 @@ public class JobService {
     }
 
     /**
-     * Returns all OPEN jobs whose organiser matches the given name.
+     * @param organiser the organiser name to filter by
+     * @return all OPEN jobs whose organiser matches the given name
      */
     public List<Job> getOpenJobsByOrganiser(String organiser) {
         List<Job> result = new ArrayList<>();
@@ -207,14 +208,14 @@ public class JobService {
     }
 
     /**
-     * Counts all jobs in the CSV.
+     * @return the total number of jobs in the CSV
      */
     public int countTotalJobs() {
         return storage.loadJobs().size();
     }
 
     /**
-     * Counts all OPEN jobs.
+     * @return the number of OPEN jobs
      */
     public int countActiveJobs() {
         int count = 0;
@@ -289,10 +290,12 @@ public class JobService {
         storage.saveJobs(jobs);
     }
 
+    /** @return the total number of jobs */
     public int countAllJobs() {
         return storage.loadJobs().size();
     }
 
+    /** @param organiser the organiser name to filter by @return how many jobs belong to this organiser */
     public int countJobsByOrganiser(String organiser) {
         int count = 0;
         for (Job job : storage.loadJobs()) {
@@ -303,6 +306,7 @@ public class JobService {
         return count;
     }
 
+    /** @param organiser the organiser name to filter by @return how many OPEN jobs belong to this organiser */
     public int countActiveJobsByOrganiser(String organiser) {
         int count = 0;
         for (Job job : getJobsByOrganiser(organiser)) {

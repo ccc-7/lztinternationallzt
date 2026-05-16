@@ -49,7 +49,10 @@ public class DashboardService {
         return count;
     }
 
-    /** Returns the number of active applications (alias of getPendingCount). */
+    /**
+     * @param user the TA user (may be null)
+     * @return the number of active applications (alias of {@link #getPendingCount})
+     */
     public int getTodoCount(User user) {
         return getPendingCount(user);
     }

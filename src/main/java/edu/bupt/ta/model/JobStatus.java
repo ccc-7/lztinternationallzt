@@ -5,7 +5,11 @@ package edu.bupt.ta.model;
  * @see Job
  */
 public enum JobStatus {
+
+    /** Job is open and accepting applications. */
     OPEN,
+
+    /** Job is closed; no further applications are accepted. */
     CLOSED;
 
     /**
