@@ -42,7 +42,6 @@ The system stores all structured data in **CSV files** rather than a relational 
 
 ### 4.1 Request-Response Flow
 
-```
 A browser initiates an HTTP request, which is first received by the Servlet Controller layer.
 The Servlet Controller consists of classes annotated with @WebServlet under the package edu.bupt.ta.controller. It is responsible for receiving HTTP requests, validating user sessions and roles, invoking the Service layer to process business logic, setting request attributes, and then either forwarding the request to the JSP layer or sending a redirect response.
 
@@ -56,7 +55,6 @@ Finally, FileStorageUtil reads from and writes to the underlying data files:
 CSV files stored in the data/ directory, including ta_users.csv, jobs.csv, applications.csv, and system_logs.csv
 PDF files stored in the data/cvs/ directory, named in the format {userId}.pdf
 
-```
 
 ### 4.2 Role of Each Layer
 
