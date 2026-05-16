@@ -12,6 +12,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Displays the Admin dashboard: workload statistics and summary metrics.
+ *
+ * @see edu.bupt.ta.service.AdminService#getDashboardStats
+ */
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 

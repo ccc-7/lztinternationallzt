@@ -17,6 +17,13 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Displays the TA dashboard for the current logged-in TA.
+ * Provides statistics such as pending application count, matched job count,
+ * and recent application history.
+ *
+ * @see edu.bupt.ta.service.DashboardService
+ */
 @WebServlet("/ta/dashboard")
 public class TaDashboardServlet extends HttpServlet {
 

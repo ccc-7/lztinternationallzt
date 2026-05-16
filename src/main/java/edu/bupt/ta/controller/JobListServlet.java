@@ -11,6 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Lists all open jobs for the current TA, sorted by match score descending.
+ *
+ * @see edu.bupt.ta.service.JobService#getOpenJobsForUser
+ */
 @WebServlet("/jobs")
 public class JobListServlet extends HttpServlet {
 

@@ -16,14 +16,24 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Manages the system audit log stored in {@code data/system_logs.csv}.
+ * Provides methods to append log entries and query them by operator, type,
+ * date range, keyword, and pagination. All public methods are synchronized.
+ */
 public class LogService {
 
+    /** CSV column header for system_logs.csv (9 columns). */
     private static final String LOGS_HEADER =
             "logId,operatorId,operatorName,operationType,targetType,targetId,details,ipAddress,createdAt";
     private static final Path LOGS_FILE = Paths.get("data", "system_logs.csv");
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Creates the LogService and ensures the log file exists with a header row.
+     * Called automatically when the servlet is initialised.
+     */
     public LogService() {
         initFile();
     }
@@ -42,6 +52,18 @@ public class LogService {
         }
     }
 
+    /**
+     * Appends a new audit log entry to the system log file.
+     * Assigns the next sequential log ID and sets the creation timestamp to now.
+     *
+     * @param operatorId    userId of the actor performing the action
+     * @param operatorName  display name of the actor
+     * @param operationType action type, e.g. LOGIN, CREATE, UPDATE, DELETE, APPROVE, REJECT
+     * @param targetType   entity type acted upon, e.g. User, Job, Application
+     * @param targetId     ID of the entity acted upon
+     * @param details      human-readable description of the operation
+     * @param ipAddress    client IP address
+     */
     public synchronized void log(String operatorId, String operatorName, String operationType,
                                  String targetType, String targetId, String details, String ipAddress) {
         List<SystemLog> logs = loadLogs();
@@ -60,12 +82,18 @@ public class LogService {
         saveLogs(logs);
     }
 
+    /**
+     * Returns all log entries sorted by creation time descending (newest first).
+     */
     public synchronized List<SystemLog> getAllLogs() {
         List<SystemLog> logs = loadLogs();
         logs.sort(Comparator.comparing(SystemLog::getCreatedAt).reversed());
         return logs;
     }
 
+    /**
+     * Returns all log entries for the given operator, sorted newest first.
+     */
     public synchronized List<SystemLog> getLogsByOperator(String operatorId) {
         return loadLogs().stream()
                 .filter(log -> log.getOperatorId().equals(operatorId))
@@ -73,6 +101,9 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all log entries with the given operation type, sorted newest first.
+     */
     public synchronized List<SystemLog> getLogsByType(String operationType) {
         return loadLogs().stream()
                 .filter(log -> log.getOperationType().equals(operationType))
@@ -80,6 +111,10 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns all log entries created between the given start and end timestamps (inclusive),
+     * sorted newest first.
+     */
     public synchronized List<SystemLog> getLogsByDateRange(LocalDateTime start, LocalDateTime end) {
         return loadLogs().stream()
                 .filter(log -> !log.getCreatedAt().isBefore(start) && !log.getCreatedAt().isAfter(end))
@@ -87,6 +122,10 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Searches log entries by keyword, matching against operatorName, details, and targetId.
+     * Search is case-insensitive. Returns all logs if keyword is blank.
+     */
     public synchronized List<SystemLog> searchLogs(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return getAllLogs();
@@ -100,6 +139,13 @@ public class LogService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns a single page of log entries, sorted newest first.
+     *
+     * @param page     1-based page number
+     * @param pageSize number of entries per page
+     * @return a list of at most pageSize entries, or an empty list if page is out of range
+     */
     public synchronized List<SystemLog> getLogsPaginated(int page, int pageSize) {
         List<SystemLog> allLogs = getAllLogs();
         int start = (page - 1) * pageSize;
@@ -110,11 +156,18 @@ public class LogService {
         return new ArrayList<>(allLogs.subList(start, end));
     }
 
+    /**
+     * Calculates the total number of pages for a given page size.
+     *
+     * @param pageSize entries per page
+     * @return total page count (minimum 0)
+     */
     public synchronized int getTotalPages(int pageSize) {
         int total = loadLogs().size();
         return (int) Math.ceil((double) total / pageSize);
     }
 
+    /** Reads all log entries from the CSV file. Returns an empty list if the file does not exist. */
     private List<SystemLog> loadLogs() {
         List<SystemLog> logs = new ArrayList<>();
         if (!Files.exists(LOGS_FILE)) {
@@ -157,6 +210,7 @@ public class LogService {
         return logs;
     }
 
+    /** Overwrites the entire log file with the given list of entries. */
     private synchronized void saveLogs(List<SystemLog> logs) {
         try (BufferedWriter writer = Files.newBufferedWriter(LOGS_FILE, StandardCharsets.UTF_8)) {
             writer.write(LOGS_HEADER);
@@ -180,6 +234,7 @@ public class LogService {
         }
     }
 
+    /** Generates the next sequential log ID (e.g. "L00042"). */
     private String nextLogId(List<SystemLog> logs) {
         int max = logs.stream()
                 .map(SystemLog::getLogId)
@@ -196,6 +251,7 @@ public class LogService {
         return String.format("L%05d", max + 1);
     }
 
+    /** Serialises multiple fields into a CSV line using escapeCsv. */
     private String toCsv(String... values) {
         List<String> escaped = new ArrayList<>();
         for (String v : values) {
@@ -204,6 +260,7 @@ public class LogService {
         return String.join(",", escaped);
     }
 
+    /** Escapes a value for CSV output. */
     private String escapeCsv(String value) {
         String safe = value == null ? "" : value;
         if (safe.contains(",") || safe.contains("\"") || safe.contains("\n")) {

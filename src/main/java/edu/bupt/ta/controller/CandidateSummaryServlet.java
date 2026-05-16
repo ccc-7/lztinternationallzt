@@ -11,6 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Displays a structured candidate summary view for a TA's profile.
+ * TA users can only view their own summary; MO and ADMIN users can view any TA's summary.
+ * The summary is rendered via the shared {@code cv-view.jsp} template.
+ *
+ * @see edu.bupt.ta.model.ApplicationWithJob
+ */
 @WebServlet(urlPatterns = {"/files/cv-summary/*"})
 public class CandidateSummaryServlet extends HttpServlet {
 

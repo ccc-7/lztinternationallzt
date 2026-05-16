@@ -21,6 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Displays and manages applications for the logged-in MO's jobs.
+ * GET lists all applications for jobs owned by the MO, with optional filtering by jobId.
+ * POST updates an application's status (INTERVIEW / ACCEPTED / REJECTED) via
+ * {@link edu.bupt.ta.service.ApplicationService#updateStatus}.
+ * The MO can only see and update applications for jobs they own (organiser match).
+ *
+ * @see edu.bupt.ta.service.ApplicationService
+ */
 @WebServlet(urlPatterns = {"/mo/applications", "/mo/applications/update"})
 public class MOApplicationServlet extends HttpServlet {
 

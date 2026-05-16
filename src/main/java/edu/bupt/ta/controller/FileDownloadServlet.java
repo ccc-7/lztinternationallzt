@@ -16,6 +16,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Streams a TA's uploaded CV PDF to the browser. Access is restricted:
+ * TA users can only download their own CV; MO and ADMIN can download any TA's CV.
+ * Content-Type is set from the stored metadata with PDF as a fallback.
+ *
+ * @see edu.bupt.ta.service.CvFileService#resolveExistingCvPath
+ */
 @WebServlet(urlPatterns = {"/files/cv/*"})
 public class FileDownloadServlet extends HttpServlet {
 

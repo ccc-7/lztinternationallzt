@@ -1,5 +1,11 @@
 package edu.bupt.ta.model;
 
+/**
+ * Represents a user account in the TA Recruitment System.
+ * Users have one of three roles: TA (Teaching Assistant), MO (Module Organiser), or ADMIN.
+ * TA users maintain a profile with skills, courses, and a PDF CV.
+ * This class maps directly to the {@code ta_users.csv} file via {@link edu.bupt.ta.storage.FileStorageUtil}.
+ */
 public class User {
     private String userId;
     private String username;
@@ -69,6 +75,12 @@ public class User {
         return name;
     }
 
+    /**
+     * Returns the display name for this user.
+     * Falls back to the username if the name field is null or blank.
+     *
+     * @return the display name, or username if name is not set
+     */
     public String getDisplayName() {
         return name == null || name.isBlank() ? username : name;
     }

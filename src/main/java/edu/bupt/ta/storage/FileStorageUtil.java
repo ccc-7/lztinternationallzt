@@ -22,14 +22,33 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Centralised file-based persistence layer for the TA Recruitment System.
+ * All CSV read/write for users, jobs, and applications passes through this class.
+ * Provides path resolution from system properties, environment variables, or auto-detection;
+ * atomic writes via a temp-then-move pattern; single-process synchronisation via a static
+ * {@code IO_LOCK}; automatic bootstrap and seeding of empty CSV files; and optional mirroring
+ * to a secondary data directory.
+ *
+ * <p>CSV column positions are fixed and must be kept in sync whenever a field is added.
+ *
+ * @see edu.bupt.ta.service.UserService
+ * @see edu.bupt.ta.service.JobService
+ * @see edu.bupt.ta.service.ApplicationService
+ */
 public class FileStorageUtil {
 
+    /** CSV column header for ta_users.csv (21 columns). */
     private static final String USERS_HEADER =
             "userId,username,password,name,email,role,year,major,skills,status,availability," +
                     "personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus," +
                     "cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus";
+
+    /** CSV column header for jobs.csv (12 columns). */
     private static final String JOBS_HEADER =
             "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
+
+    /** CSV column header for applications.csv (7 columns). */
     private static final String APPLICATIONS_HEADER =
             "applicationId,userId,jobId,status,submittedAt,notes,availability";
 
@@ -39,8 +58,8 @@ public class FileStorageUtil {
     private static final String MIRROR_DIR_ENV = "TA_DATA_MIRROR_DIR";
 
     /**
-     * Single-process lock.
-     * This prevents concurrent requests in the same Tomcat instance from writing CSV files out of order.
+     * Lock used to serialise all CSV read and write operations within a single JVM.
+     * This prevents concurrent HTTP requests from interleaving file operations.
      */
     private static final Object IO_LOCK = new Object();
 
@@ -56,14 +75,32 @@ public class FileStorageUtil {
         initFiles();
     }
 
+    /**
+     * Returns a new FileStorageUtil instance. All public methods are static-accessible
+     * via the lock-free read path; this method exists for API compatibility.
+     *
+     * @return a new FileStorageUtil instance
+     */
     public static FileStorageUtil getInstance() {
         return new FileStorageUtil();
     }
 
+    /**
+     * Returns the resolved base data directory path.
+     *
+     * @return the absolute base directory path
+     */
     public Path getBaseDir() {
         return BASE_DIR;
     }
 
+    // ---- Path resolution ----
+
+    /**
+     * Resolves the base data directory.
+     * Resolution order: system property {@code ta.data.dir} &rarr; env var {@code TA_DATA_DIR}
+     * &rarr; auto-detected repository data directory &rarr; relative {@code "data"} path.
+     */
     private static Path resolveBaseDir() {
         String configured = System.getProperty(DATA_DIR_PROPERTY);
         if (configured == null || configured.isBlank()) {
@@ -81,6 +118,11 @@ public class FileStorageUtil {
         return Paths.get("data").toAbsolutePath().normalize();
     }
 
+    /**
+     * Resolves the mirror data directory from system property {@code ta.data.mirror.dir}
+     * or env var {@code TA_DATA_MIRROR_DIR}. Returns null if mirroring is not configured
+     * or if the resolved path equals the base directory.
+     */
     private static Path resolveMirrorDir() {
         String configured = System.getProperty(MIRROR_DIR_PROPERTY);
         if (configured == null || configured.isBlank()) {
@@ -100,6 +142,11 @@ public class FileStorageUtil {
         return mirror;
     }
 
+    /**
+     * Auto-detects the data directory by walking up from {@code user.dir} and from the
+     * class's code source location, looking for a directory that contains both
+     * {@code pom.xml} and a {@code data} subdirectory.
+     */
     private static Path resolveRepoDataDir() {
         String userDir = System.getProperty("user.dir");
         if (userDir != null && !userDir.isBlank()) {
@@ -117,12 +164,16 @@ public class FileStorageUtil {
                 return fromCodeSource;
             }
         } catch (URISyntaxException | RuntimeException ignored) {
-            // Fallback to configured mirror dir or relative data directory.
         }
 
         return null;
     }
 
+    /**
+     * Walks upward from {@code start} looking for a directory that contains both
+     * {@code pom.xml} and a {@code data} subdirectory, or a {@code ta-webapp/pom.xml}
+     * and {@code ta-webapp/data} subdirectory.
+     */
     private static Path findTrackedDataDir(Path start) {
         if (start == null) {
             return null;
@@ -152,6 +203,16 @@ public class FileStorageUtil {
         return null;
     }
 
+    // ---- Initialisation ----
+
+    /**
+     * Initialises the data directory and CSV files on application startup.
+     * Called automatically from the static initializer. Creates directories,
+     * bootstraps missing CSV files with headers, seeds default data if files
+     * are empty, and syncs the mirror directory.
+     *
+     * @throws RuntimeException if any I/O operation fails during initialisation
+     */
     private static void initFiles() {
         synchronized (IO_LOCK) {
             try {
@@ -174,6 +235,10 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Seeds ta_users.csv with 3 TAs, 2 MOs, and 1 Admin if the file has only a header
+     * row or is empty.
+     */
     private static void ensureDefaultUsers() throws IOException {
         List<String> lines = Files.readAllLines(USERS_FILE, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
@@ -219,6 +284,10 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Seeds jobs.csv with 4 sample job postings if the file has only a header row
+     * or is empty.
+     */
     private static void ensureDefaultJobs() throws IOException {
         List<String> lines = Files.readAllLines(JOBS_FILE, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
@@ -232,6 +301,10 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Seeds applications.csv with one sample application if the file has only a header
+     * row or is empty.
+     */
     private static void ensureDefaultApplications() throws IOException {
         List<String> lines = Files.readAllLines(APPLICATIONS_FILE, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
@@ -250,6 +323,11 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Bootstraps a CSV file: if the primary file is missing, copies from mirror if
+     * available, otherwise creates it with a header. Also ensures the mirror is
+     * present if the primary exists.
+     */
     private static void bootstrapFile(Path primary, Path mirror, String header) throws IOException {
         if (!Files.exists(primary)) {
             if (mirror != null && Files.exists(mirror)) {
@@ -264,6 +342,10 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Maps a source file path to the corresponding path in the mirror directory.
+     * Returns null if mirroring is not configured.
+     */
     private static Path mirrorFile(Path sourceFile) {
         if (MIRROR_DIR == null) {
             return null;
@@ -285,6 +367,18 @@ public class FileStorageUtil {
         copyFileAtomically(sourceFile, mirror);
     }
 
+    // ---- Atomic write ----
+
+    /**
+     * Writes all lines to the target file atomically using a temp-then-move pattern.
+     * Creates a temporary file in the same directory, writes all lines, then atomically
+     * moves it to the target path. Falls back to a non-atomic move if the filesystem
+     * does not support atomic moves.
+     *
+     * @param target the destination file path
+     * @param lines  the lines to write (no trailing newline is appended automatically)
+     * @throws IOException if an I/O error occurs
+     */
     private static void writeLinesAtomically(Path target, List<String> lines) throws IOException {
         Files.createDirectories(target.getParent());
         Path temp = Files.createTempFile(target.getParent(), target.getFileName().toString(), ".tmp");
@@ -306,6 +400,10 @@ public class FileStorageUtil {
         moveAtomically(temp, target);
     }
 
+    /**
+     * Moves a file to the target path. Attempts an atomic move first, then falls back
+     * to a standard move on filesystems that do not support atomic moves.
+     */
     private static void moveAtomically(Path source, Path target) throws IOException {
         try {
             Files.move(source, target,
@@ -316,6 +414,14 @@ public class FileStorageUtil {
         }
     }
 
+    // ---- User operations ----
+
+    /**
+     * Loads all users from {@code ta_users.csv}.
+     * Skips the header row and blank lines. Rows with fewer than 11 fields are skipped.
+     *
+     * @return a list of all deserialised User objects
+     */
     public List<User> loadUsers() {
         synchronized (IO_LOCK) {
             List<User> users = new ArrayList<>();
@@ -365,6 +471,12 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Saves all users to {@code ta_users.csv}, replacing the entire file contents.
+     * Null field values are written as empty strings. The write is atomic.
+     *
+     * @param users the complete list of users to persist
+     */
     public void saveUsers(List<User> users) {
         synchronized (IO_LOCK) {
             try {
@@ -403,6 +515,15 @@ public class FileStorageUtil {
         }
     }
 
+    // ---- Job operations ----
+
+    /**
+     * Loads all jobs from {@code jobs.csv}. Skips the header row and blank lines.
+     * For backward compatibility, rows with fewer than 12 fields are padded with empty
+     * strings up to 12 fields.
+     *
+     * @return a list of all deserialised Job objects
+     */
     public List<Job> loadJobs() {
         synchronized (IO_LOCK) {
             List<Job> jobs = new ArrayList<>();
@@ -419,7 +540,6 @@ public class FileStorageUtil {
                     }
                     List<String> f = parseCsvLine(line);
                     if (f.size() < 12) {
-                        // For backward compatibility with old data
                         while (f.size() < 12) {
                             f.add("");
                         }
@@ -447,6 +567,12 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Saves all jobs to {@code jobs.csv}, replacing the entire file contents.
+     * The write is atomic.
+     *
+     * @param jobs the complete list of jobs to persist
+     */
     public void saveJobs(List<Job> jobs) {
         synchronized (IO_LOCK) {
             try {
@@ -476,6 +602,14 @@ public class FileStorageUtil {
         }
     }
 
+    // ---- Application operations ----
+
+    /**
+     * Loads all applications from {@code applications.csv}.
+     * Skips the header row and blank lines. Rows with fewer than 6 fields are skipped.
+     *
+     * @return a list of all deserialised Application objects
+     */
     public List<Application> loadApplications() {
         synchronized (IO_LOCK) {
             List<Application> apps = new ArrayList<>();
@@ -512,6 +646,12 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Saves all applications to {@code applications.csv}, replacing the entire file
+     * contents. The write is atomic.
+     *
+     * @param apps the complete list of applications to persist
+     */
     public void saveApplications(List<Application> apps) {
         synchronized (IO_LOCK) {
             try {
@@ -536,16 +676,35 @@ public class FileStorageUtil {
         }
     }
 
+    /**
+     * Removes application rows whose IDs are in the given list from the applications CSV.
+     *
+     * @param applicationIds the IDs of applications to delete
+     */
     public void deleteApplications(List<String> applicationIds) {
         List<Application> apps = loadApplications();
         apps.removeIf(app -> applicationIds.contains(app.getApplicationId()));
         saveApplications(apps);
     }
 
+    // ---- Utility ----
+
+    /**
+     * Returns the current timestamp formatted as "yyyy-MM-dd HH:mm:ss".
+     *
+     * @return formatted timestamp string
+     */
     public String nowText() {
         return LocalDateTime.now().withNano(0).toString().replace('T', ' ');
     }
 
+    /**
+     * Parses a string to an integer, returning a default value on failure.
+     *
+     * @param value        the string to parse
+     * @param defaultValue the value to return if parsing fails
+     * @return the parsed integer or the default
+     */
     private int parseInt(String value, int defaultValue) {
         try {
             return Integer.parseInt(value.trim());
@@ -554,6 +713,12 @@ public class FileStorageUtil {
         }
     }
 
+    // ---- CSV serialisation helpers ----
+
+    /**
+     * Serialises a variable number of string values into a CSV line,
+     * quoting fields that contain commas, quotes, or newlines.
+     */
     private static String toCsv(String... values) {
         List<String> escaped = new ArrayList<>();
         for (String v : values) {
@@ -562,6 +727,13 @@ public class FileStorageUtil {
         return String.join(",", escaped);
     }
 
+    /**
+     * Escapes a value for CSV output. Fields containing comma, double-quote, or
+     * newline are wrapped in double quotes with internal quotes doubled.
+     *
+     * @param value the raw field value
+     * @return the escaped string safe for CSV output
+     */
     private static String escapeCsv(String value) {
         String safe = value == null ? "" : value;
         if (safe.contains(",") || safe.contains("\"") || safe.contains("\n")) {
@@ -571,6 +743,13 @@ public class FileStorageUtil {
         return safe;
     }
 
+    /**
+     * Parses a single CSV line into a list of fields.
+     * Handles quoted fields containing commas and escaped double-quotes.
+     *
+     * @param line the raw CSV line
+     * @return a list of individual field values
+     */
     private List<String> parseCsvLine(String line) {
         List<String> result = new ArrayList<>();
         StringBuilder current = new StringBuilder();

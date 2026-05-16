@@ -15,6 +15,13 @@ import jakarta.servlet.http.Part;
 
 import java.io.IOException;
 
+/**
+ * Handles PDF CV file upload for the current TA. Validates the file (PDF only,
+ * max 5 MB) via {@link edu.bupt.ta.service.CvFileService#savePdf}, then persists
+ * the file to disk and updates the user's CV metadata in the CSV.
+ *
+ * @see edu.bupt.ta.service.CvFileService
+ */
 @WebServlet(urlPatterns = {"/ta/profile/cv/upload"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,

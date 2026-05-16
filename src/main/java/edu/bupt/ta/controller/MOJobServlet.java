@@ -11,6 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Handles MO job creation. GET shows the new-job form; POST creates a job via
+ * {@link edu.bupt.ta.service.JobService#createJob}. The organiser field is
+ * automatically set to the MO's display name.
+ *
+ * @see edu.bupt.ta.service.JobService#createJob
+ */
 @WebServlet("/mo/jobs/new")
 public class MOJobServlet extends HttpServlet {
 

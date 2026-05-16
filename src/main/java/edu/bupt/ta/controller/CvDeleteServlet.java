@@ -11,6 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Handles deletion of the current TA's uploaded CV. Removes the file from disk
+ * via {@link edu.bupt.ta.service.CvFileService#deleteCv} and clears the CV
+ * metadata columns in the CSV.
+ *
+ * @see edu.bupt.ta.service.CvFileService
+ */
 @WebServlet(urlPatterns = {"/ta/profile/cv/delete"})
 public class CvDeleteServlet extends HttpServlet {
 

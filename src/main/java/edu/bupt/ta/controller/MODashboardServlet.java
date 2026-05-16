@@ -19,6 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Displays the MO dashboard, showing only jobs created by the logged-in MO
+ * (matched by display name). Provides job counts, application counts, and
+ * per-job applicant counts.
+ *
+ * @see edu.bupt.ta.service.JobService#getJobsByOrganiser
+ */
 @WebServlet("/mo/dashboard")
 public class MODashboardServlet extends HttpServlet {
 
