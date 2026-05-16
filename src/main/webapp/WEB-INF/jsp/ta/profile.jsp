@@ -161,61 +161,8 @@
 
                             <div class="full-width">
                                 <label>Project / Teaching Experience</label>
-                                <textarea name="projectExperience" rows="5" placeholder="Summarize projects, teaching experience, teamwork, or lab support">${profileUser.projectExperience}</textarea>
+                                <textarea name="projectExperience" rows="5" placeholder="One project or teaching experience per line.&#10;Example:&#10;Built a Java Servlet/JSP TA recruitment system&#10;Implemented STM32-based embedded monitoring demos&#10;Supported peer debugging for programming coursework">${profileUser.projectExperience}</textarea>
                             </div>
-                        </div>
-                    </section>
-
-                    <section class="profile-section-card profile-phase-note">
-                        <div class="profile-section-header">
-                            <h3>Original CV File</h3>
-                            <p>Upload a PDF resume for MO/Admin review. This file is stored separately from your structured Candidate Summary.</p>
-                        </div>
-                        <div class="profile-cv-card ${profileHasCv ? 'has-file' : 'missing-file'}">
-                            <div class="profile-cv-status-row">
-                                <div>
-                                    <strong>CV Status</strong>
-                                    <span class="cv-status-badge ${profileHasCv ? 'uploaded' : 'missing'}">
-                                        <c:choose>
-                                            <c:when test="${profileHasCv}">Uploaded</c:when>
-                                            <c:otherwise>Missing</c:otherwise>
-                                        </c:choose>
-                                    </span>
-                                </div>
-                                <c:if test="${profileHasCv}">
-                                    <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Open PDF</a>
-                                </c:if>
-                            </div>
-
-                            <c:choose>
-                                <c:when test="${profileHasCv}">
-                                    <div class="profile-cv-meta">
-                                        <div><strong>Current file:</strong> ${profileUser.cvOriginalName}</div>
-                                        <div><strong>Uploaded at:</strong> ${empty profileUser.cvUploadedAt ? 'Unknown' : profileUser.cvUploadedAt}</div>
-                                        <div><strong>File type:</strong> ${empty profileUser.cvContentType ? 'application/pdf' : profileUser.cvContentType}</div>
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="profile-placeholder-box">
-                                        <strong>No original CV uploaded yet</strong>
-                                        <span>Upload one PDF file up to ${cvMaxSizeMb}MB. Your Candidate Summary remains available even before file upload.</span>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-
-                            <form action="${pageContext.request.contextPath}/ta/profile/cv/upload" method="post" enctype="multipart/form-data" class="profile-cv-upload-form">
-                                <div class="profile-cv-upload-row">
-                                    <input type="file" name="cvFile" accept="application/pdf,.pdf" required>
-                                    <button type="submit" class="btn btn-primary">${profileHasCv ? 'Replace PDF CV' : 'Upload PDF CV'}</button>
-                                </div>
-                                <p class="hint-text profile-inline-hint">Only PDF files are supported. Maximum size: ${cvMaxSizeMb}MB.</p>
-                            </form>
-
-                            <c:if test="${profileHasCv}">
-                                <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post" class="profile-cv-delete-form" onsubmit="return confirm('Delete the currently uploaded PDF CV?');">
-                                    <button type="submit" class="btn btn-secondary">Delete Uploaded CV</button>
-                                </form>
-                            </c:if>
                         </div>
                     </section>
 
@@ -225,6 +172,59 @@
                         <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary" id="profileBackLink">Back</a>
                     </div>
                 </form>
+
+                <section class="profile-section-card profile-phase-note">
+                    <div class="profile-section-header">
+                        <h3>Original CV File</h3>
+                        <p>Upload a PDF resume for MO/Admin review. This file is stored separately from your structured Candidate Summary.</p>
+                    </div>
+                    <div class="profile-cv-card ${profileHasCv ? 'has-file' : 'missing-file'}">
+                        <div class="profile-cv-status-row">
+                            <div>
+                                <strong>CV Status</strong>
+                                <span class="cv-status-badge ${profileHasCv ? 'uploaded' : 'missing'}">
+                                    <c:choose>
+                                        <c:when test="${profileHasCv}">Uploaded</c:when>
+                                        <c:otherwise>Missing</c:otherwise>
+                                    </c:choose>
+                                </span>
+                            </div>
+                            <c:if test="${profileHasCv}">
+                                <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Open PDF</a>
+                            </c:if>
+                        </div>
+
+                        <c:choose>
+                            <c:when test="${profileHasCv}">
+                                <div class="profile-cv-meta">
+                                    <div><strong>Current file:</strong> ${profileUser.cvOriginalName}</div>
+                                    <div><strong>Uploaded at:</strong> ${empty profileUser.cvUploadedAt ? 'Unknown' : profileUser.cvUploadedAt}</div>
+                                    <div><strong>File type:</strong> ${empty profileUser.cvContentType ? 'application/pdf' : profileUser.cvContentType}</div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="profile-placeholder-box">
+                                    <strong>No original CV uploaded yet</strong>
+                                    <span>Upload one PDF file up to ${cvMaxSizeMb}MB. Your Candidate Summary remains available even before file upload.</span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <form action="${pageContext.request.contextPath}/ta/profile/cv/upload" method="post" enctype="multipart/form-data" class="profile-cv-upload-form">
+                            <div class="profile-cv-upload-row">
+                                <input type="file" name="cvFile" accept="application/pdf,.pdf" required>
+                                <button type="submit" class="btn btn-primary">${profileHasCv ? 'Replace PDF CV' : 'Upload PDF CV'}</button>
+                            </div>
+                            <p class="hint-text profile-inline-hint">Only PDF files are supported. Maximum size: ${cvMaxSizeMb}MB.</p>
+                        </form>
+
+                        <c:if test="${profileHasCv}">
+                            <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post" class="profile-cv-delete-form" onsubmit="return confirm('Delete the currently uploaded PDF CV?');">
+                                <button type="submit" class="btn btn-secondary">Delete Uploaded CV</button>
+                            </form>
+                        </c:if>
+                    </div>
+                </section>
             </section>
         </div>
     </main>
