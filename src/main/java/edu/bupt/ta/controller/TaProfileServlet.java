@@ -2,6 +2,7 @@ package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
+import edu.bupt.ta.service.CvFileService;
 import edu.bupt.ta.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class TaProfileServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
+    private final CvFileService cvFileService = new CvFileService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -30,7 +32,10 @@ public class TaProfileServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("profileUser", userService.findById(user.getUserId()));
+        User profileUser = userService.findById(user.getUserId());
+        req.setAttribute("profileUser", profileUser);
+        req.setAttribute("profileHasCv", userService.hasUploadedCv(profileUser));
+        req.setAttribute("cvMaxSizeMb", cvFileService.getMaxCvSizeBytes() / (1024 * 1024));
         req.setAttribute("taProfileFieldRings", Boolean.TRUE);
         req.getRequestDispatcher("/WEB-INF/jsp/ta/profile.jsp").forward(req, resp);
     }
@@ -53,6 +58,10 @@ public class TaProfileServlet extends HttpServlet {
         String major = req.getParameter("major");
         String skills = req.getParameter("skills");
         String availability = req.getParameter("availability");
+        String personalStatement = req.getParameter("personalStatement");
+        String relevantCourses = req.getParameter("relevantCourses");
+        String projectExperience = req.getParameter("projectExperience");
+        String preferredRole = req.getParameter("preferredRole");
 
         int year = 0;
         if (yearStr != null && !yearStr.isBlank()) {
@@ -66,7 +75,9 @@ public class TaProfileServlet extends HttpServlet {
         }
 
         try {
-            User updated = userService.updateProfile(user.getUserId(), name, email, year, major, skills, availability);
+            User updated = userService.updateProfile(
+                    user.getUserId(), name, email, year, major, skills, availability,
+                    personalStatement, relevantCourses, projectExperience, preferredRole);
             req.getSession().setAttribute("currentUser", updated);
             req.getSession().setAttribute("flashSuccess", "Profile information saved (written to CSV)");
         } catch (IllegalArgumentException e) {

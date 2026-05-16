@@ -691,6 +691,7 @@
                     <div class="progress-step active" data-step="1" onclick="jumpToStep(1)"><span>1</span></div>
                     <div class="progress-step" data-step="2" onclick="jumpToStep(2)"><span>2</span></div>
                     <div class="progress-step" data-step="3" onclick="jumpToStep(3)"><span>3</span></div>
+                    <div class="progress-step" data-step="4" onclick="jumpToStep(4)"><span>4</span></div>
                 </div>
             </div>
 
@@ -851,6 +852,11 @@
                             </div>
                         </div>
 
+                        <div class="field-group">
+                            <input type="text" id="availability" name="availability" placeholder=" " autocomplete="off">
+                            <label for="availability">Availability (optional)</label>
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" class="btn btn-prev" onclick="prevStep(2)">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -910,13 +916,71 @@
                             <label for="skills">Skills & Expertise</label>
 			</div>
 
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-prev" onclick="prevStep(3)">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                </svg>
+                                Back
+                            </button>
+                            <button type="button" class="btn btn-next" onclick="nextStep(3)">
+                                Continue
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Candidate Summary -->
+                    <div class="step-section" data-section="4">
+                        <div class="step-header">
+                            <div class="step-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20"></path>
+                                    <path d="M20 2H8a2 2 0 0 0-2 2v18"></path>
+                                    <path d="M8 7h8"></path>
+                                    <path d="M8 11h8"></path>
+                                    <path d="M8 15h5"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="step-title">Candidate Summary Setup</h2>
+                                <p class="step-subtitle">Optional structured fields for your recruiter-facing summary</p>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <input type="text" id="preferredRole" name="preferredRole" placeholder=" " autocomplete="off">
+                            <label for="preferredRole">Preferred Role (optional)</label>
+                        </div>
+
+                        <div class="field-group textarea">
+                            <textarea id="relevantCourses" name="relevantCourses" placeholder=" " rows="3"></textarea>
+                            <label for="relevantCourses">Relevant Courses (optional)</label>
+                        </div>
+
+                        <div class="field-group textarea">
+                            <textarea id="projectExperience" name="projectExperience" placeholder=" " rows="4"></textarea>
+                            <label for="projectExperience">Project / Teaching Experience (optional)</label>
+                        </div>
+
+                        <div class="field-group textarea">
+                            <textarea id="personalStatement" name="personalStatement" placeholder=" " rows="4"></textarea>
+                            <label for="personalStatement">Personal Statement (optional)</label>
+                        </div>
+
+                        <p class="step-subtitle" style="margin-top: 8px;">
+                            You can skip this step and complete it later in My Profile. PDF CV upload is now available after registration in the Profile page.
+                        </p>
+
                         <div class="terms-checkbox">
                             <input type="checkbox" id="terms" name="terms">
                             <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
 			</div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-prev" onclick="prevStep(3)">
+                            <button type="button" class="btn btn-prev" onclick="prevStep(4)">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                                 </svg>
@@ -947,7 +1011,7 @@
 
 <script>
 var currentStep = 1;
-var totalSteps = 3;
+var totalSteps = 4;
 
 // Toggle password visibility
 function togglePassword(inputId, btn) {

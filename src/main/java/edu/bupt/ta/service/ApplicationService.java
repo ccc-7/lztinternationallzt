@@ -2,8 +2,12 @@ package edu.bupt.ta.service;
 
 import edu.bupt.ta.model.Application;
 import edu.bupt.ta.model.ApplicationStatus;
+import edu.bupt.ta.model.Job;
+import edu.bupt.ta.model.JobStatus;
+import edu.bupt.ta.model.User;
 import edu.bupt.ta.storage.FileStorageUtil;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -14,8 +18,38 @@ public class ApplicationService {
     private static final int MAX_APPLICATIONS_PER_TA = 3;
 
     private final FileStorageUtil storage = new FileStorageUtil();
+    private final UserService userService = new UserService();
+    private final JobService jobService = new JobService();
 
     public Application apply(String userId, String jobId) {
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("user not found.");
+        }
+        if (!userService.isApplicationReady(user)) {
+            throw new IllegalArgumentException("Please complete your candidate summary or upload a PDF CV before applying.");
+        }
+
+        Job job = jobService.findById(jobId);
+        if (job == null) {
+            throw new IllegalArgumentException("job not found.");
+        }
+        if (job.getStatus() != JobStatus.OPEN) {
+            throw new IllegalArgumentException("This job is not open for applications.");
+        }
+        if (job.getMinYear() > 0 && user.getYear() > 0 && user.getYear() < job.getMinYear()) {
+            throw new IllegalArgumentException("Your current year does not meet the minimum requirement for this job.");
+        }
+        if (job.getMaxYear() > 0 && user.getYear() > 0 && user.getYear() > job.getMaxYear()) {
+            throw new IllegalArgumentException("Your current year exceeds the allowed range for this job.");
+        }
+        if (isDeadlinePassed(job.getDeadline())) {
+            throw new IllegalArgumentException("The application deadline for this job has passed.");
+        }
+        if (job.getVacancies() > 0 && countAcceptedApplications(jobId) >= job.getVacancies()) {
+            throw new IllegalArgumentException("This job has reached its vacancy limit.");
+        }
+
         List<Application> applications = storage.loadApplications();
 
         for (Application app : applications) {
@@ -24,14 +58,8 @@ public class ApplicationService {
             }
         }
 
-        int userApplicationCount = 0;
-        for (Application app : applications) {
-            if (app.getUserId().equals(userId)) {
-                userApplicationCount++;
-            }
-        }
-
-        if (userApplicationCount >= MAX_APPLICATIONS_PER_TA) {
+        int activeApplicationCount = countUserPendingAndInterview(userId);
+        if (activeApplicationCount >= MAX_APPLICATIONS_PER_TA) {
             throw new IllegalArgumentException("You can only have up to " + MAX_APPLICATIONS_PER_TA + " active applications at a time.");
         }
 
@@ -42,6 +70,7 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.PENDING);
         application.setSubmittedAt(storage.nowText());
         application.setNotes("Submitted from TA portal");
+        application.setAvailability(user.getAvailability());
 
         applications.add(application);
         storage.saveApplications(applications);
@@ -176,8 +205,8 @@ public class ApplicationService {
     public int countUserPendingAndInterview(String userId) {
         int count = 0;
         for (Application app : storage.loadApplications()) {
-            if (app.getUserId().equals(userId) &&
-                    (app.getStatus() == ApplicationStatus.PENDING || app.getStatus() == ApplicationStatus.INTERVIEW)) {
+            if (app.getUserId().equals(userId)
+                    && (app.getStatus() == ApplicationStatus.PENDING || app.getStatus() == ApplicationStatus.INTERVIEW)) {
                 count++;
             }
         }
@@ -192,6 +221,27 @@ public class ApplicationService {
             }
         }
         return count;
+    }
+
+    private int countAcceptedApplications(String jobId) {
+        int count = 0;
+        for (Application app : storage.loadApplications()) {
+            if (app.getJobId().equals(jobId) && app.getStatus() == ApplicationStatus.ACCEPTED) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private boolean isDeadlinePassed(String deadline) {
+        if (deadline == null || deadline.isBlank()) {
+            return false;
+        }
+        try {
+            return LocalDate.parse(deadline.trim()).isBefore(LocalDate.now());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private String nextApplicationId(List<Application> applications) {

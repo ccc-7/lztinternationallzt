@@ -2,92 +2,100 @@ package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
+import edu.bupt.ta.service.CvFileService;
 import edu.bupt.ta.service.UserService;
-import edu.bupt.ta.storage.FileStorageUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @WebServlet(urlPatterns = {"/files/cv/*"})
 public class FileDownloadServlet extends HttpServlet {
 
-    private static final String CV_DIR = "cvs";
     private final UserService userService = new UserService();
+    private final CvFileService cvFileService = new CvFileService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User ID is required");
             return;
         }
 
         String userId = pathInfo.substring(1);
-
         User currentUser = (User) req.getSession().getAttribute("currentUser");
         if (currentUser == null) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please login first");
+            req.getSession().setAttribute("flashError", "Please login first.");
+            resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
-        if (currentUser.getRole() != UserRole.MO && currentUser.getRole() != UserRole.ADMIN) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to view CVs");
+        User targetUser = userService.findById(userId);
+        if (targetUser == null || targetUser.getRole() != UserRole.TA) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "TA not found");
             return;
         }
 
-        FileStorageUtil storage = FileStorageUtil.getInstance();
-        File cvDir = new File(storage.getBaseDir().toFile(), CV_DIR);
-
-        if (!cvDir.exists()) {
-            cvDir.mkdirs();
+        if (!canViewCv(currentUser, targetUser)) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to view this CV");
+            return;
         }
 
-        File cvFile = new File(cvDir, userId + ".pdf");
-
-        if (!cvFile.exists()) {
-            File[] files = cvDir.listFiles((dir, name) -> name.startsWith(userId + "_"));
-            if (files != null && files.length > 0) {
-                cvFile = files[0];
-            }
+        Path cvPath = cvFileService.resolveExistingCvPath(resolveStoredName(targetUser));
+        if (cvPath == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "No uploaded CV file is available for this TA");
+            return;
         }
 
-        if (cvFile.exists() && cvFile.isFile()) {
-            String fileName = cvFile.getName();
-            String contentType = getServletContext().getMimeType(fileName);
-            if (contentType == null) {
-                contentType = "application/octet-stream";
-            }
-
-            resp.setContentType(contentType);
-            resp.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
-            resp.setContentLength((int) cvFile.length());
-
-            try (FileInputStream fis = new FileInputStream(cvFile);
-                 OutputStream os = resp.getOutputStream()) {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = fis.read(buffer)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
-            }
-        } else {
-            User taUser = userService.findById(userId);
-            if (taUser == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "TA not found");
-                return;
-            }
-
-            req.setAttribute("cvUser", taUser);
-            req.getRequestDispatcher("/WEB-INF/jsp/common/cv-view.jsp").forward(req, resp);
+        String fileName = targetUser.getCvOriginalName();
+        if (fileName == null || fileName.isBlank()) {
+            fileName = cvPath.getFileName().toString();
         }
+        String contentType = targetUser.getCvContentType();
+        if (contentType == null || contentType.isBlank()) {
+            contentType = getServletContext().getMimeType(fileName);
+        }
+        if (contentType == null || contentType.isBlank()) {
+            contentType = "application/pdf";
+        }
+
+        resp.setContentType(contentType);
+        resp.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+        resp.setContentLengthLong(Files.size(cvPath));
+
+        try (InputStream inputStream = Files.newInputStream(cvPath);
+             OutputStream outputStream = resp.getOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+    }
+
+    private boolean canViewCv(User currentUser, User targetUser) {
+        if (currentUser == null || targetUser == null) {
+            return false;
+        }
+        if (currentUser.getRole() == UserRole.TA) {
+            return currentUser.getUserId().equals(targetUser.getUserId());
+        }
+        return currentUser.getRole() == UserRole.MO || currentUser.getRole() == UserRole.ADMIN;
+    }
+
+    private String resolveStoredName(User targetUser) {
+        if (targetUser.getCvStoredName() != null && !targetUser.getCvStoredName().isBlank()) {
+            return targetUser.getCvStoredName();
+        }
+        return targetUser.getUserId() + ".pdf";
     }
 }

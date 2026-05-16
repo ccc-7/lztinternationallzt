@@ -25,7 +25,9 @@ import java.util.List;
 public class FileStorageUtil {
 
     private static final String USERS_HEADER =
-            "userId,username,password,name,email,role,year,major,skills,status,availability";
+            "userId,username,password,name,email,role,year,major,skills,status,availability," +
+                    "personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus," +
+                    "cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus";
     private static final String JOBS_HEADER =
             "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
     private static final String APPLICATIONS_HEADER =
@@ -177,12 +179,42 @@ public class FileStorageUtil {
         if (lines.size() <= 1) {
             List<String> defaultLines = new ArrayList<>();
             defaultLines.add(USERS_HEADER);
-            defaultLines.add("U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,Mon/Wed afternoons");
-            defaultLines.add("U002,luna,123456,Luna,luna@bupt.edu.cn,TA,2,Software Engineering,Java|Testing|Documentation,ACTIVE,Tue/Thu mornings");
-            defaultLines.add("U003,kevin,123456,Kevin,kevin@bupt.edu.cn,TA,4,Embedded Systems,C|STM32|Debugging,ACTIVE,Fri all day");
-            defaultLines.add("U004,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE,");
-            defaultLines.add("U005,mo2,123456,Dr.Liu,liu@bupt.edu.cn,MO,0,Faculty,C|Circuits|Lab Supervision,ACTIVE,");
-            defaultLines.add("U006,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE,");
+            defaultLines.add(toCsv(
+                    "U001", "seele", "123456", "Seele", "seele@bupt.edu.cn", "TA", "3", "IoT",
+                    "Java|Python|Data Structure|STM32", "ACTIVE", "Mon/Wed afternoons",
+                    "Interested in supporting programming labs and helping junior students debug code.",
+                    "EBU6304 Software Engineering|Data Structures|Embedded Systems",
+                    "Built Java web applications and STM32-based embedded projects.",
+                    "Lab Support|Programming Tutorial", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
+            defaultLines.add(toCsv(
+                    "U002", "luna", "123456", "Luna", "luna@bupt.edu.cn", "TA", "2", "Software Engineering",
+                    "Java|Testing|Documentation", "ACTIVE", "Tue/Thu mornings",
+                    "Enjoy supporting students through testing, documentation, and peer review.",
+                    "Software Testing|Requirements Engineering",
+                    "Worked on team coursework documentation and UI validation tasks.",
+                    "Tutorial Support|Marking", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
+            defaultLines.add(toCsv(
+                    "U003", "kevin", "123456", "Kevin", "kevin@bupt.edu.cn", "TA", "4", "Embedded Systems",
+                    "C|STM32|Debugging", "ACTIVE", "Fri all day",
+                    "Focused on embedded debugging and lab support for hardware modules.",
+                    "Embedded Systems|Digital Electronics",
+                    "Delivered several STM32 projects and hardware troubleshooting demos.",
+                    "Lab Support", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
+            defaultLines.add(toCsv(
+                    "U004", "mo1", "123456", "Dr.Wang", "wang@bupt.edu.cn", "MO", "0", "Faculty",
+                    "Teaching|Java", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
+            defaultLines.add(toCsv(
+                    "U005", "mo2", "123456", "Dr.Liu", "liu@bupt.edu.cn", "MO", "0", "Faculty",
+                    "C|Circuits|Lab Supervision", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
+            defaultLines.add(toCsv(
+                    "U006", "admin", "123456", "System Admin", "admin@bupt.edu.cn", "ADMIN", "0", "Office",
+                    "Management", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
             writeLinesAtomically(USERS_FILE, defaultLines);
         }
     }
@@ -302,19 +334,28 @@ public class FileStorageUtil {
                     if (f.size() < 11) {
                         continue;
                     }
-                    User user = new User(
-                            f.get(0),
-                            f.get(1),
-                            f.get(2),
-                            f.get(3),
-                            f.get(4),
-                            UserRole.fromString(f.get(5)),
-                            parseInt(f.get(6), 0),
-                            f.get(7),
-                            f.get(8),
-                            f.get(9),
-                            f.get(10)
-                    );
+                    User user = new User();
+                    user.setUserId(f.get(0));
+                    user.setUsername(f.get(1));
+                    user.setPassword(f.get(2));
+                    user.setName(f.get(3));
+                    user.setEmail(f.get(4));
+                    user.setRole(UserRole.fromString(f.get(5)));
+                    user.setYear(parseInt(f.get(6), 0));
+                    user.setMajor(f.get(7));
+                    user.setSkills(f.get(8));
+                    user.setStatus(f.get(9));
+                    user.setAvailability(f.get(10));
+                    user.setPersonalStatement(f.size() > 11 ? f.get(11) : "");
+                    user.setRelevantCourses(f.size() > 12 ? f.get(12) : "");
+                    user.setProjectExperience(f.size() > 13 ? f.get(13) : "");
+                    user.setPreferredRole(f.size() > 14 ? f.get(14) : "");
+                    user.setSummaryStatus(f.size() > 15 ? f.get(15) : "");
+                    user.setCvStoredName(f.size() > 16 ? f.get(16) : "");
+                    user.setCvOriginalName(f.size() > 17 ? f.get(17) : "");
+                    user.setCvContentType(f.size() > 18 ? f.get(18) : "");
+                    user.setCvUploadedAt(f.size() > 19 ? f.get(19) : "");
+                    user.setCvStatus(f.size() > 20 ? f.get(20) : "");
                     users.add(user);
                 }
             } catch (IOException e) {
@@ -341,7 +382,17 @@ public class FileStorageUtil {
                             user.getMajor(),
                             user.getSkills(),
                             user.getStatus(),
-                            user.getAvailability() == null ? "" : user.getAvailability()
+                            user.getAvailability() == null ? "" : user.getAvailability(),
+                            user.getPersonalStatement() == null ? "" : user.getPersonalStatement(),
+                            user.getRelevantCourses() == null ? "" : user.getRelevantCourses(),
+                            user.getProjectExperience() == null ? "" : user.getProjectExperience(),
+                            user.getPreferredRole() == null ? "" : user.getPreferredRole(),
+                            user.getSummaryStatus() == null ? "" : user.getSummaryStatus(),
+                            user.getCvStoredName() == null ? "" : user.getCvStoredName(),
+                            user.getCvOriginalName() == null ? "" : user.getCvOriginalName(),
+                            user.getCvContentType() == null ? "" : user.getCvContentType(),
+                            user.getCvUploadedAt() == null ? "" : user.getCvUploadedAt(),
+                            user.getCvStatus() == null ? "" : user.getCvStatus()
                     ));
                 }
                 writeLinesAtomically(USERS_FILE, lines);
@@ -503,7 +554,7 @@ public class FileStorageUtil {
         }
     }
 
-    private String toCsv(String... values) {
+    private static String toCsv(String... values) {
         List<String> escaped = new ArrayList<>();
         for (String v : values) {
             escaped.add(escapeCsv(v));
@@ -511,7 +562,7 @@ public class FileStorageUtil {
         return String.join(",", escaped);
     }
 
-    private String escapeCsv(String value) {
+    private static String escapeCsv(String value) {
         String safe = value == null ? "" : value;
         if (safe.contains(",") || safe.contains("\"") || safe.contains("\n")) {
             safe = safe.replace("\"", "\"\"");
