@@ -150,15 +150,32 @@ Each time the application starts, if a CSV file contains only a header row (no d
 
 ## 6. Expected Outputs Summary
 
-| Test Scenario | Expected Output |
-|---------------|----------------|
-| Login with valid credentials | Redirect to role-specific dashboard; `system_logs.csv` gets a `LOGIN` entry |
-| Login with wrong password | Redirect to login page with error message; no log entry |
-| TA applies to open job | New `A{NNN}` row in `applications.csv` with `PENDING`; success flash message |
-| MO closes a job | `jobs.csv` status column changes from `OPEN` to `CLOSED`; job disappears from TA board |
-| TA uploads CV | `data/cvs/{userId}.pdf` written; 5 CV columns in `ta_users.csv` populated |
-| TA exceeds 3 active applications | Error message: "You have too many active applications"; no new CSV row |
-| Admin approves application | `applications.csv` status → `ACCEPTED`; `system_logs.csv` gets `APPROVE` entry |
-| Duplicate application | Error message: "You have already applied for this job"; no duplicate CSV row |
-| MO tries to see another MO's job's applications | Filtered out; only organiser's own jobs' applications shown |
-| FileStorageUtil first-run | 4 CSV files created with headers + seed data rows if files are empty |
+Test Scenario: Login with valid credentials
+Expected Output: Redirect to role-specific dashboard; system_logs.csv gets a LOGIN entry.
+
+Test Scenario: Login with wrong password
+Expected Output: Redirect to login page with error message; no log entry.
+
+Test Scenario: TA applies to open job
+Expected Output: New A{NNN} row in applications.csv with PENDING status; success flash message displayed.
+
+Test Scenario: MO closes a job
+Expected Output: jobs.csv status column changes from OPEN to CLOSED; the job disappears from the TA board.
+
+Test Scenario: TA uploads CV
+Expected Output: File data/cvs/{userId}.pdf is written; 5 CV-related columns in ta_users.csv are populated.
+
+Test Scenario: TA exceeds 3 active applications
+Expected Output: Error message displayed: "You have too many active applications"; no new row is added to the CSV file.
+
+Test Scenario: Admin approves application
+Expected Output: applications.csv status changes to ACCEPTED; system_logs.csv gets an APPROVE entry.
+
+Test Scenario: Duplicate application
+Expected Output: Error message displayed: "You have already applied for this job"; no duplicate row is added to the CSV file.
+
+Test Scenario: MO tries to see another MO's job's applications
+Expected Output: Applications are filtered out; only the job organiser's own jobs' applications are shown.
+
+Test Scenario: FileStorageUtil first-run
+Expected Output: 4 CSV files are created with headers, plus seed data rows if the files are empty.
