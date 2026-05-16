@@ -53,6 +53,10 @@ public class TaProfileServlet extends HttpServlet {
         String major = req.getParameter("major");
         String skills = req.getParameter("skills");
         String availability = req.getParameter("availability");
+        String personalStatement = req.getParameter("personalStatement");
+        String relevantCourses = req.getParameter("relevantCourses");
+        String projectExperience = req.getParameter("projectExperience");
+        String preferredRole = req.getParameter("preferredRole");
 
         int year = 0;
         if (yearStr != null && !yearStr.isBlank()) {
@@ -66,7 +70,9 @@ public class TaProfileServlet extends HttpServlet {
         }
 
         try {
-            User updated = userService.updateProfile(user.getUserId(), name, email, year, major, skills, availability);
+            User updated = userService.updateProfile(
+                    user.getUserId(), name, email, year, major, skills, availability,
+                    personalStatement, relevantCourses, projectExperience, preferredRole);
             req.getSession().setAttribute("currentUser", updated);
             req.getSession().setAttribute("flashSuccess", "Profile information saved (written to CSV)");
         } catch (IllegalArgumentException e) {

@@ -87,6 +87,7 @@ public class FileDownloadServlet extends HttpServlet {
             }
 
             req.setAttribute("cvUser", taUser);
+            req.setAttribute("summaryNotice", "No uploaded CV file is available yet. Showing the generated candidate summary instead.");
             req.getRequestDispatcher("/WEB-INF/jsp/common/cv-view.jsp").forward(req, resp);
         }
     }
