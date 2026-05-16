@@ -26,7 +26,8 @@ public class FileStorageUtil {
 
     private static final String USERS_HEADER =
             "userId,username,password,name,email,role,year,major,skills,status,availability," +
-                    "personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus";
+                    "personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus," +
+                    "cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus";
     private static final String JOBS_HEADER =
             "jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies";
     private static final String APPLICATIONS_HEADER =
@@ -184,30 +185,36 @@ public class FileStorageUtil {
                     "Interested in supporting programming labs and helping junior students debug code.",
                     "EBU6304 Software Engineering|Data Structures|Embedded Systems",
                     "Built Java web applications and STM32-based embedded projects.",
-                    "Lab Support|Programming Tutorial", "SUMMARY_COMPLETE"));
+                    "Lab Support|Programming Tutorial", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
             defaultLines.add(toCsv(
                     "U002", "luna", "123456", "Luna", "luna@bupt.edu.cn", "TA", "2", "Software Engineering",
                     "Java|Testing|Documentation", "ACTIVE", "Tue/Thu mornings",
                     "Enjoy supporting students through testing, documentation, and peer review.",
                     "Software Testing|Requirements Engineering",
                     "Worked on team coursework documentation and UI validation tasks.",
-                    "Tutorial Support|Marking", "SUMMARY_COMPLETE"));
+                    "Tutorial Support|Marking", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
             defaultLines.add(toCsv(
                     "U003", "kevin", "123456", "Kevin", "kevin@bupt.edu.cn", "TA", "4", "Embedded Systems",
                     "C|STM32|Debugging", "ACTIVE", "Fri all day",
                     "Focused on embedded debugging and lab support for hardware modules.",
                     "Embedded Systems|Digital Electronics",
                     "Delivered several STM32 projects and hardware troubleshooting demos.",
-                    "Lab Support", "SUMMARY_COMPLETE"));
+                    "Lab Support", "SUMMARY_COMPLETE",
+                    "", "", "", "", "MISSING"));
             defaultLines.add(toCsv(
                     "U004", "mo1", "123456", "Dr.Wang", "wang@bupt.edu.cn", "MO", "0", "Faculty",
-                    "Teaching|Java", "ACTIVE", "", "", "", "", "", "INCOMPLETE"));
+                    "Teaching|Java", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
             defaultLines.add(toCsv(
                     "U005", "mo2", "123456", "Dr.Liu", "liu@bupt.edu.cn", "MO", "0", "Faculty",
-                    "C|Circuits|Lab Supervision", "ACTIVE", "", "", "", "", "", "INCOMPLETE"));
+                    "C|Circuits|Lab Supervision", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
             defaultLines.add(toCsv(
                     "U006", "admin", "123456", "System Admin", "admin@bupt.edu.cn", "ADMIN", "0", "Office",
-                    "Management", "ACTIVE", "", "", "", "", "", "INCOMPLETE"));
+                    "Management", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
+                    "", "", "", "", "MISSING"));
             writeLinesAtomically(USERS_FILE, defaultLines);
         }
     }
@@ -344,6 +351,11 @@ public class FileStorageUtil {
                     user.setProjectExperience(f.size() > 13 ? f.get(13) : "");
                     user.setPreferredRole(f.size() > 14 ? f.get(14) : "");
                     user.setSummaryStatus(f.size() > 15 ? f.get(15) : "");
+                    user.setCvStoredName(f.size() > 16 ? f.get(16) : "");
+                    user.setCvOriginalName(f.size() > 17 ? f.get(17) : "");
+                    user.setCvContentType(f.size() > 18 ? f.get(18) : "");
+                    user.setCvUploadedAt(f.size() > 19 ? f.get(19) : "");
+                    user.setCvStatus(f.size() > 20 ? f.get(20) : "");
                     users.add(user);
                 }
             } catch (IOException e) {
@@ -375,7 +387,12 @@ public class FileStorageUtil {
                             user.getRelevantCourses() == null ? "" : user.getRelevantCourses(),
                             user.getProjectExperience() == null ? "" : user.getProjectExperience(),
                             user.getPreferredRole() == null ? "" : user.getPreferredRole(),
-                            user.getSummaryStatus() == null ? "" : user.getSummaryStatus()
+                            user.getSummaryStatus() == null ? "" : user.getSummaryStatus(),
+                            user.getCvStoredName() == null ? "" : user.getCvStoredName(),
+                            user.getCvOriginalName() == null ? "" : user.getCvOriginalName(),
+                            user.getCvContentType() == null ? "" : user.getCvContentType(),
+                            user.getCvUploadedAt() == null ? "" : user.getCvUploadedAt(),
+                            user.getCvStatus() == null ? "" : user.getCvStatus()
                     ));
                 }
                 writeLinesAtomically(USERS_FILE, lines);

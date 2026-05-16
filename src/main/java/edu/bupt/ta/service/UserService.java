@@ -19,7 +19,7 @@ public class UserService {
                 .filter(u -> u.getPassword().equals(password))
                 .findFirst()
                 .orElse(null);
-        return hydrateSummaryStatus(user);
+        return hydrateUser(user);
     }
 
     public User findByUsername(String username) {
@@ -27,7 +27,7 @@ public class UserService {
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst()
                 .orElse(null);
-        return hydrateSummaryStatus(user);
+        return hydrateUser(user);
     }
 
     public User findById(String userId) {
@@ -35,13 +35,13 @@ public class UserService {
                 .filter(u -> u.getUserId().equals(userId))
                 .findFirst()
                 .orElse(null);
-        return hydrateSummaryStatus(user);
+        return hydrateUser(user);
     }
 
     public List<User> getAllUsers() {
         List<User> users = storage.loadUsers();
         for (User user : users) {
-            hydrateSummaryStatus(user);
+            hydrateUser(user);
         }
         return users;
     }
@@ -88,10 +88,15 @@ public class UserService {
         user.setProjectExperience(normalizeSingleLineText(projectExperience));
         user.setPreferredRole(normalizeListText(preferredRole));
         user.setSummaryStatus(calculateSummaryStatus(user));
+        user.setCvStoredName("");
+        user.setCvOriginalName("");
+        user.setCvContentType("");
+        user.setCvUploadedAt("");
+        user.setCvStatus("MISSING");
 
         users.add(user);
         storage.saveUsers(users);
-        return user;
+        return hydrateUser(user);
     }
 
     public User updateProfile(String userId, String name, String email, int year, String major,
@@ -112,6 +117,9 @@ public class UserService {
                 user.setProjectExperience(normalizeSingleLineText(projectExperience));
                 user.setPreferredRole(normalizeListText(preferredRole));
                 user.setSummaryStatus(calculateSummaryStatus(user));
+                if (!notBlank(user.getCvStatus())) {
+                    user.setCvStatus(hasUploadedCv(user) ? "UPLOADED" : "MISSING");
+                }
                 updated = user;
                 break;
             }
@@ -120,7 +128,50 @@ public class UserService {
             throw new IllegalArgumentException("user not found");
         }
         storage.saveUsers(users);
-        return updated;
+        return hydrateUser(updated);
+    }
+
+    public User updateCvMetadata(String userId, String storedName, String originalName,
+                                 String contentType, String uploadedAt) {
+        List<User> users = storage.loadUsers();
+        User updated = null;
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                user.setCvStoredName(normalizeSingleLineText(storedName));
+                user.setCvOriginalName(normalizeSingleLineText(originalName));
+                user.setCvContentType(normalizeSingleLineText(contentType));
+                user.setCvUploadedAt(normalizeSingleLineText(uploadedAt));
+                user.setCvStatus("UPLOADED");
+                updated = user;
+                break;
+            }
+        }
+        if (updated == null) {
+            throw new IllegalArgumentException("user not found");
+        }
+        storage.saveUsers(users);
+        return hydrateUser(updated);
+    }
+
+    public User clearCvMetadata(String userId) {
+        List<User> users = storage.loadUsers();
+        User updated = null;
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                user.setCvStoredName("");
+                user.setCvOriginalName("");
+                user.setCvContentType("");
+                user.setCvUploadedAt("");
+                user.setCvStatus("MISSING");
+                updated = user;
+                break;
+            }
+        }
+        if (updated == null) {
+            throw new IllegalArgumentException("user not found");
+        }
+        storage.saveUsers(users);
+        return hydrateUser(updated);
     }
 
     public void registerUser(User user) {
@@ -154,6 +205,9 @@ public class UserService {
             user.setMajor(user.getMajor().trim());
         }
         user.setSummaryStatus(calculateSummaryStatus(user));
+        if (!notBlank(user.getCvStatus())) {
+            user.setCvStatus("MISSING");
+        }
 
         users.add(user);
         storage.saveUsers(users);
@@ -210,6 +264,24 @@ public class UserService {
         return "INCOMPLETE";
     }
 
+    public boolean hasUploadedCv(String userId) {
+        return hasUploadedCv(findById(userId));
+    }
+
+    public boolean hasUploadedCv(User user) {
+        return user != null
+                && notBlank(user.getCvStoredName())
+                && notBlank(user.getCvOriginalName())
+                && !"MISSING".equalsIgnoreCase(user.getCvStatus());
+    }
+
+    public boolean isApplicationReady(User user) {
+        if (user == null) {
+            return false;
+        }
+        return "SUMMARY_COMPLETE".equals(user.getSummaryStatus()) || hasUploadedCv(user);
+    }
+
     private String nextUserId(List<User> users) {
         int max = users.stream()
                 .map(User::getUserId)
@@ -226,6 +298,17 @@ public class UserService {
         return String.format("U%03d", max + 1);
     }
 
+    private User hydrateUser(User user) {
+        if (user == null) {
+            return null;
+        }
+        user.setSummaryStatus(calculateSummaryStatus(user));
+        if (!notBlank(user.getCvStatus())) {
+            user.setCvStatus(hasUploadedCv(user) ? "UPLOADED" : "MISSING");
+        }
+        return user;
+    }
+
     private String normalizeSkills(String skills) {
         if (skills == null || skills.isBlank()) {
             return "";
@@ -235,19 +318,10 @@ public class UserService {
                 .trim();
     }
 
-    private User hydrateSummaryStatus(User user) {
-        if (user == null) {
-            return null;
-        }
-        user.setSummaryStatus(calculateSummaryStatus(user));
-        return user;
-    }
-
     private String normalizeSingleLineText(String value) {
         if (value == null || value.isBlank()) {
             return "";
         }
-        // CSV loading is line-based in this project, so summary text is persisted as a single physical line.
         return value.replace("\r\n", " | ")
                 .replace('\n', '|')
                 .replace('\r', '|')

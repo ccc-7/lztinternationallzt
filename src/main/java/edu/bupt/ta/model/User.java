@@ -17,6 +17,11 @@ public class User {
     private String projectExperience;
     private String preferredRole;
     private String summaryStatus;
+    private String cvStoredName;
+    private String cvOriginalName;
+    private String cvContentType;
+    private String cvUploadedAt;
+    private String cvStatus;
 
     public User() {
     }
@@ -166,5 +171,45 @@ public class User {
 
     public void setSummaryStatus(String summaryStatus) {
         this.summaryStatus = summaryStatus;
+    }
+
+    public String getCvStoredName() {
+        return cvStoredName;
+    }
+
+    public void setCvStoredName(String cvStoredName) {
+        this.cvStoredName = cvStoredName;
+    }
+
+    public String getCvOriginalName() {
+        return cvOriginalName;
+    }
+
+    public void setCvOriginalName(String cvOriginalName) {
+        this.cvOriginalName = cvOriginalName;
+    }
+
+    public String getCvContentType() {
+        return cvContentType;
+    }
+
+    public void setCvContentType(String cvContentType) {
+        this.cvContentType = cvContentType;
+    }
+
+    public String getCvUploadedAt() {
+        return cvUploadedAt;
+    }
+
+    public void setCvUploadedAt(String cvUploadedAt) {
+        this.cvUploadedAt = cvUploadedAt;
+    }
+
+    public String getCvStatus() {
+        return cvStatus;
+    }
+
+    public void setCvStatus(String cvStatus) {
+        this.cvStatus = cvStatus;
     }
 }
