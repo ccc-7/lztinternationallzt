@@ -34,6 +34,11 @@ public class RegisterServlet extends HttpServlet {
         String yearStr = req.getParameter("year");
         String major = req.getParameter("major");
         String skills = req.getParameter("skills");
+        String availability = req.getParameter("availability");
+        String personalStatement = req.getParameter("personalStatement");
+        String relevantCourses = req.getParameter("relevantCourses");
+        String projectExperience = req.getParameter("projectExperience");
+        String preferredRole = req.getParameter("preferredRole");
 
         try {
             if (username == null || username.isBlank() || password == null || password.isBlank()) {
@@ -54,7 +59,12 @@ public class RegisterServlet extends HttpServlet {
                     email == null ? "" : email,
                     year,
                     major == null ? "" : major,
-                    skills == null ? "" : skills
+                    skills == null ? "" : skills,
+                    availability == null ? "" : availability,
+                    personalStatement == null ? "" : personalStatement,
+                    relevantCourses == null ? "" : relevantCourses,
+                    projectExperience == null ? "" : projectExperience,
+                    preferredRole == null ? "" : preferredRole
             );
             req.getSession().setAttribute("currentUser", user);
             req.getSession().setAttribute("flashSuccess", "Registration successful, you are now logged in");
