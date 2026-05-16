@@ -1,566 +1,354 @@
 # TA Recruitment System
-> A Maven-managed Java Servlet/JSP web application that supports the full recruitment workflow for three user roles: TA Applicant, MO (Module Organiser), and System Admin.
 
-## 📋 Project Overview
-This repository contains a fully functional TA recruitment portal system, designed with a **MVC layered architecture**:
-- **Backend**: Java Servlets for request processing, business logic implementation, and data persistence
-- **Frontend**: JSP template rendering, unified CSS styling, and JavaScript interactive logic
-- **Data Storage**: CSV text file based, no database dependency
-- **Deployment**: WAR package deployment to a local Tomcat server
+A Maven-based Java Servlet/JSP web application for the TA recruitment workflow.  
+The system supports three roles:
 
-### ✨ Core Features
-| Feature | Description |
-|---------|-------------|
-| **Three Role Support** | TA Applicant, MO (Job Publisher), and System Admin |
-| **Session-Based Authentication** | Secure login and logout access control |
-| **Job Management** | MOs create and publish positions; TAs browse and apply for jobs |
-| **Approval Workflow** | MOs accept/reject applications; Admins view workload statistics |
-| **Responsive Design** | Unified and user-friendly interface style |
+- `TA Applicant`
+- `MO (Module Organiser)`
+- `Admin`
+
+The project uses **CSV files + local file storage** instead of a database, which matches the lightweight storage requirement of the coursework.
 
 ---
 
-## 👥 Contributors
-| Name | GitHub |
-|------|--------|
-| Chen Taiyu | `@ccc-7` |
-| Zhu Siyuan | `@woruqingshan` |
-| Liu Zetang | `@yongyuandez` |
-| Miao Runxi | `@Miao200506` |
-| Yang Gang | `@SystemName-e6lq` |
-| Xin Jiongche | `@jiongche110` |
+## 1. Current Project Status
+
+The system has already reached a **demonstrable end-to-end version**:
+
+- TA can register, log in, edit profile, build a structured candidate summary, upload a PDF CV, browse jobs, and apply.
+- MO can create jobs, review applications, view candidate summaries, and open uploaded PDF CVs.
+- Admin can manage users, jobs, applications, and logs through the admin portal.
+
+The current CV module is now split into two clearly separated parts:
+
+1. `Candidate Summary`
+   - generated from structured TA profile fields
+   - used for quick recruiter review
+
+2. `Original PDF CV`
+   - uploaded by the TA
+   - stored as a local file under `data/cvs/`
+   - viewable by TA, MO, and Admin with proper permission checks
 
 ---
 
-## 🎯 Implemented Features
-### 1️⃣ TA Applicant
-- ✅ TA account registration
-- ✅ System login
-- ✅ Dashboard access (application overview)
-- ✅ Browse open job listings
-- ✅ Submit job applications
-- ✅ Check application status
+## 2. Implemented Features
 
-### 2️⃣ Module Organiser (MO)
-- ✅ System login
-- ✅ MO Dashboard access
-- ✅ Create and publish new job positions
-- ✅ View all application records
-- ✅ Accept/reject applications
+### 2.1 TA Applicant
 
-### 3️⃣ System Admin
-- ✅ System login
-- ✅ View TA workload statistics
+- Account registration with multi-step form
+- Login / logout
+- TA dashboard
+- Profile editing
+- Candidate Summary builder
+- Candidate Summary preview
+- PDF CV upload / replace / delete
+- View uploaded PDF CV
+- Browse open jobs with match-score ordering
+- Submit job applications
+- View application history and status
 
-### 4️⃣ System Common Capabilities
-- ✅ Session-based role login control
-- ✅ CSV-based data read and write operations
-- ✅ Service-layer encapsulated business logic
-- ✅ Unified portal style based on JSP + CSS
+### 2.2 Module Organiser
+
+- Login / logout
+- MO dashboard
+- Create and publish jobs
+- View applications for own jobs
+- Accept / interview / reject applications
+- View applicant Candidate Summary
+- View applicant uploaded PDF CV when available
+
+### 2.3 Admin
+
+- Login / logout
+- Admin dashboard
+- User management
+- Job management
+- Application management
+- System log viewing
+- View TA Candidate Summary
+- View uploaded TA PDF CV
+
+### 2.4 Application Rules Already Enforced
+
+The application flow has already been strengthened in `ApplicationService.apply()`:
+
+- user must exist
+- user must be application-ready:
+  - `SUMMARY_COMPLETE`, or
+  - a real uploaded PDF CV exists
+- job must exist
+- job must be `OPEN`
+- deadline must not be expired
+- accepted count must not exceed vacancies
+- user year must satisfy `minYear / maxYear`
+- duplicate application to the same job is blocked
+- active applications are limited to `3`
+
+This means the core **job application rule optimization has already been implemented**.
 
 ---
 
-## 📁 Project Structure
-```
+## 3. Tech Stack
+
+- `Java 17`
+- `Jakarta Servlet / JSP`
+- `JSTL`
+- `Maven`
+- `Tomcat 10`
+- `CSV + local file storage`
+
+---
+
+## 4. Project Structure
+
+```text
 ta-webapp/
-├── README.md
-├── pom.xml                           # Maven build configuration
-│
-├── src/main/java/edu/bupt/ta/
-│   ├── controller/                   # HTTP Request Handling Layer
-│   │   ├── HomeServlet.java
-│   │   ├── LoginServlet.java
-│   │   ├── LogoutServlet.java
-│   │   ├── RegisterServlet.java
-│   │   ├── TaDashboardServlet.java
-│   │   ├── JobListServlet.java
-│   │   ├── ApplyServlet.java
-│   │   ├── ApplicationStatusServlet.java
-│   │   ├── MODashboardServlet.java
-│   │   ├── MOJobServlet.java
-│   │   ├── MOApplicationServlet.java
-│   │   └── AdminDashboardServlet.java
-│   │
-│   ├── model/                        # Data Models and Enums
-│   │   ├── User.java
-│   │   ├── UserRole.java
-│   │   ├── Job.java
-│   │   ├── JobStatus.java
-│   │   ├── Application.java
-│   │   └── ApplicationStatus.java
-│   │
-│   ├── service/                      # Business Logic Layer
-│   │   ├── UserService.java
-│   │   ├── JobService.java
-│   │   ├── ApplicationService.java
-│   │   ├── DashboardService.java
-│   │   └── AdminService.java
-│   │
-│   └── storage/                      # Data Persistence Layer
-│       └── FileStorageUtil.java
-│
-├── src/main/webapp/                  # Web Root Directory
-│   ├── index.jsp                     # Root Path Entry
-│   ├── assets/
-│   │   ├── css/
-│   │   │   └── style.css             # Global Unified Styles
-│   │   └── js/
-│   │       └── app.js                # Page Interaction Scripts
-│   │
-│   └── WEB-INF/
-│       ├── web.xml                   # Servlet Deployment Descriptor
-│       └── jsp/
-│           ├── home.jsp              # Login Home Page
-│           ├── register.jsp          # TA Registration Page
-│           │
-│           ├── common/               # Common Page Fragments
-│           │   ├── header.jspf
-│           │   ├── footer.jspf
-│           │   └── flash.jspf        # Message Notification
-│           │
-│           ├── ta/                   # TA Related Pages
-│           │   ├── dashboard.jsp
-│           │   ├── jobs.jsp
-│           │   └── applications.jsp
-│           │
-│           ├── mo/                   # MO Related Pages
-│           │   ├── dashboard.jsp
-│           │   ├── new-job.jsp
-│           │   └── applications.jsp
-│           │
-│           └── admin/                # Admin Related Pages
-│               └── dashboard.jsp
-│
-├── data/                             # Data File Directory
-│   ├── ta_users.csv                  # User Data
-│   ├── jobs.csv                      # Job Position Data
-│   └── applications.csv              # Application Records
-│
-├── docs/                             # Project Documentation
-│   ├── project-plan.md
-│   ├── requirements.md
-│   └── architecture.md
-│
-└── target/                           # Build Output (Not Committed)
-    └── ta-webapp.war
+├─ README.md
+├─ pom.xml
+├─ data/
+│  ├─ ta_users.csv
+│  ├─ jobs.csv
+│  ├─ applications.csv
+│  └─ cvs/                  # uploaded PDF CV files
+├─ src/main/java/edu/bupt/ta/
+│  ├─ controller/
+│  ├─ model/
+│  ├─ service/
+│  └─ storage/
+└─ src/main/webapp/
+   ├─ assets/css/
+   └─ WEB-INF/jsp/
+      ├─ common/
+      ├─ ta/
+      ├─ mo/
+      └─ admin/
 ```
 
 ---
 
-## 🔐 Default Test Accounts
-Quick login for system testing:
+## 5. Key Modules
+
+### 5.1 CV-Related Backend
+
+- `CandidateSummaryServlet`
+  - route: `/files/cv-summary/{userId}`
+  - displays the structured summary page
+
+- `FileDownloadServlet`
+  - route: `/files/cv/{userId}`
+  - serves the uploaded original PDF CV only
+
+- `CvUploadServlet`
+  - route: `/ta/profile/cv/upload`
+  - handles PDF upload / replacement
+
+- `CvDeleteServlet`
+  - route: `/ta/profile/cv/delete`
+  - removes uploaded PDF CV
+
+- `CvFileService`
+  - validates and stores PDF files
+  - local storage under `data/cvs/`
+
+### 5.2 Data Storage
+
+The project does **not** use MySQL or any other database.
+
+- structured business data:
+  - `ta_users.csv`
+  - `jobs.csv`
+  - `applications.csv`
+
+- original uploaded CV files:
+  - `data/cvs/*.pdf`
+
+---
+
+## 6. User Data Format
+
+### 6.1 `ta_users.csv`
+
+The current user file includes both profile fields and CV metadata.
+
+Important fields:
+
+- `userId`
+- `username`
+- `password`
+- `name`
+- `email`
+- `role`
+- `year`
+- `major`
+- `skills`
+- `status`
+- `availability`
+- `personalStatement`
+- `relevantCourses`
+- `projectExperience`
+- `preferredRole`
+- `summaryStatus`
+- `cvStoredName`
+- `cvOriginalName`
+- `cvContentType`
+- `cvUploadedAt`
+- `cvStatus`
+
+### 6.2 CV Metadata Meaning
+
+- `cvStoredName`
+  - stored file name in `data/cvs/`
+- `cvOriginalName`
+  - original file name uploaded by the TA
+- `cvContentType`
+  - expected to be `application/pdf`
+- `cvUploadedAt`
+  - upload time
+- `cvStatus`
+  - `UPLOADED` or `MISSING`
+
+---
+
+## 7. Default Test Accounts
+
 | Role | Username | Password |
 |------|----------|----------|
-| **TA** | `seele` | `123456` |
-| **MO** | `mo1` | `123456` |
-| **Admin** | `admin` | `123456` |
+| TA | `seele` | `123456` |
+| MO | `mo1` | `123456` |
+| Admin | `admin` | `123456` |
 
 ---
 
-## 💻 Environment Configuration (JDK 17 + Tomcat 10 + Maven)
-### Prerequisites
-- **Windows** Operating System
-- **JDK 17**
-- **Apache Tomcat 10**
-- **Apache Maven 3.9+**
-- **Git for Windows**
+## 8. Build and Run
 
-### Step-by-Step Installation
-#### 1️⃣ Install VS Code and Java Extensions
-```bash
-# Search and install in VS Code Extensions:
-- Extension Pack for Java
-- Community Server Connectors
-```
+### 8.1 Prerequisites
 
-#### 2️⃣ Configure JDK 17
-1. **Download and Install JDK 17**
-   - Installation Directory (Example): `D:\Java\jdk-17.0.x`
+- `JDK 17`
+- `Maven 3.9+`
+- `Tomcat 10`
 
-2. **Configure System Environment Variables**
-   - Create a new system variable `JAVA_HOME` with value: `D:\Java\jdk-17.0.x`
-   - Modify the `Path` variable: add `%JAVA_HOME%\bin`
+### 8.2 Build
 
-3. **Verify Installation**
-   ```powershell
-   java -version
-   # Expected output: java version "17.x.x"
-   ```
+Run in the project root:
 
-#### 3️⃣ Install Apache Tomcat 10
-1. **Download and Extract**
-   - Tomcat 10: `https://tomcat.apache.org/`
-   - Extract to: `D:\apache-tomcat-10.1.52`
-
-2. **Configure System Environment Variables**
-   - Create a new system variable `CATALINA_HOME` with value: `D:\apache-tomcat-10.1.52`
-   - Modify the `Path` variable: add `%CATALINA_HOME%\bin`
-
-3. **Start Tomcat**
-   ```powershell
-   cd D:\apache-tomcat-10.1.52\bin
-   .\startup.bat
-   ```
-
-4. **Verify Running Status**
-   - Visit `http://localhost:8080` in your browser
-   - Installation is successful if the Tomcat welcome page is displayed
-
-#### 4️⃣ Install Apache Maven
-1. **Download and Extract**
-   - Maven 3.9+: `https://maven.apache.org/download.cgi`
-   - Extract to: `D:\apache-maven-3.9.x`
-
-2. **Configure System Environment Variables**
-   - Create a new system variable `MAVEN_HOME` with value: `D:\apache-maven-3.9.x`
-   - Modify the `Path` variable: add `%MAVEN_HOME%\bin`
-
-3. **Verify Installation**
-   ```powershell
-   mvn -v
-   # Expected output: Maven version and Java 17 version information
-   ```
-
-#### 5️⃣ Install Git for Windows
-```powershell
-# Download and install Git for Windows (x64)
-# Verify installation
-git --version
-```
-
----
-
-## 🚀 Quick Start
-### Step 1: Build the Project
-Execute the following command in the project root directory `ta-webapp/`:
 ```powershell
 mvn clean package
 ```
-✅ On success, `BUILD SUCCESS` will be printed, and **`ta-webapp.war`** will be generated in the `target/` directory.
 
-### Step 2: Deploy to Tomcat
+Expected output:
+
+- `BUILD SUCCESS`
+- generated file: `target/ta-webapp.war`
+
+### 8.3 Deploy to Tomcat
+
 ```powershell
-# Copy the WAR file to the Tomcat webapps directory
 copy target\ta-webapp.war "D:\apache-tomcat-10.1.52\webapps\"
 ```
 
-### Step 3: Start Tomcat
+Start Tomcat:
+
 ```powershell
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
-If you need to write runtime data to an external directory `D:\apache-tomcat-10.1.52\ta-data` outside Tomcat, and synchronize it to the local project directory `ta-webapp\data`, **do NOT directly input `-Dta.data.dir=...` alone in PowerShell**.
-The correct approach is to set `CATALINA_OPTS` first, then start Tomcat.
+### 8.4 Access
 
-Temporary Method: Only effective for the current PowerShell window
+- `http://localhost:8080/ta-webapp/`
+- `http://localhost:8080/ta-webapp/home`
+
+---
+
+## 9. Runtime Data Directory
+
+By default, the application can run directly with the local `data/` directory.
+
+It also supports an external runtime data directory through:
+
+- `-Dta.data.dir=...`
+- `-Dta.data.mirror.dir=...`
+
+This is useful when Tomcat should write runtime files outside the project folder while keeping the repo `data/` directory mirrored for inspection.
+
+Example:
+
 ```powershell
-# Modify to your own apache-tomcat-10.1.52\ta-data path and ta-webapp\data path
-$env:CATALINA_OPTS='-Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data'
+$env:CATALINA_OPTS='-Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all_code\JavaIDEA\TA_system\ta-webapp\data'
 cd D:\apache-tomcat-10.1.52\bin
 .\startup.bat
 ```
 
-Recommended Persistent Method: Add the following content to `D:\apache-tomcat-10.1.52\bin\setenv.bat`
-```bat
-@echo off
-set "CATALINA_OPTS=%CATALINA_OPTS% -Dta.data.dir=D:\apache-tomcat-10.1.52\ta-data -Dta.data.mirror.dir=C:\Users\siyuen\Desktop\all code\JavaIDEA\TA_system\ta-webapp\data"
-```
+---
 
-Then start Tomcat normally:
-```powershell
-cd D:\apache-tomcat-10.1.52\bin
-.\startup.bat
-```
+## 10. Current Functional Scope and Limitations
 
-If you need to reinitialize the external data directory, you can delete the files first:
-```powershell
-Remove-Item "D:\apache-tomcat-10.1.52\ta-data\ta_users.csv" -Force -ErrorAction SilentlyContinue
-Remove-Item "D:\apache-tomcat-10.1.52\ta-data\jobs.csv" -Force -ErrorAction SilentlyContinue
-Remove-Item "D:\apache-tomcat-10.1.52\ta-data\applications.csv" -Force -ErrorAction SilentlyContinue
-```
+### Already Done
 
-*If Tomcat is already running, it will automatically detect the new WAR file and reload the application*
+- structured Candidate Summary workflow
+- real PDF CV upload / replace / delete
+- MO/Admin document viewing
+- strengthened application rules
+- CSV compatibility for profile and CV metadata
 
-### Step 4: Access the Application
-Open the following link in your browser:
-- Home Page: `http://localhost:8080/ta-webapp/`
-- Alternative: `http://localhost:8080/ta-webapp/home`
+### Not Done Yet
+
+- TA job search / filter UI
+- Admin workload based on accepted job hours
+- small dashboard charts / visual summaries
+- `admin/stats` dead route cleanup
+- PDF parsing and auto-fill back into profile
+- automated tests
+
+These are the main remaining tasks for the next iteration.
 
 ---
 
-## 📝 Development Workflow
-### Daily Development Workflow (Local Validation After Changes)
-```
-Modify Code
-    ↓
-mvn clean package    (Compile and Build)
-    ↓
-Copy WAR to Tomcat    (Deploy Application)
-    ↓
-Tomcat Auto Reload      (Or manual startup.bat)
-    ↓
-Browser F5 Refresh to Validate   (Check Results)
-```
+## 11. Recommended Demo Flow
 
-### Detailed Steps
-1. **Modify Code**: Edit JSP, Java, CSS or JS files in VSCode
-2. **Local Build**:
-   ```powershell
-   mvn clean package
-   ```
-3. **Deploy to Tomcat**:
-   ```powershell
-   copy target\ta-webapp.war "D:\apache-tomcat-10.1.52\webapps\"
-   ```
-4. **Start or Reload** (if Tomcat is not running):
-   ```powershell
-   cd D:\apache-tomcat-10.1.52\bin
-   .\startup.bat
-   ```
-5. **Check in Browser**:
-   - Open `http://localhost:8080/ta-webapp/`
-   - Press `F5` to refresh and view changes
+### TA Demo
+
+1. log in as `seele`
+2. open `My Profile`
+3. edit structured profile fields
+4. preview Candidate Summary
+5. upload a PDF CV
+6. open uploaded PDF
+7. browse jobs and submit an application
+
+### MO Demo
+
+1. log in as `mo1`
+2. open applications
+3. review `View Summary`
+4. open `View CV` for applicants with uploaded PDFs
+5. accept / interview / reject
+
+### Admin Demo
+
+1. log in as `admin`
+2. inspect dashboard
+3. review users / jobs / applications
+4. open TA summaries and uploaded CVs
 
 ---
 
-## 🔄 Git Version Control (Contributor Branch Workflow)
-This project adopts a **contributor branch** workflow to ensure each developer has an independent branch and complete commit history.
+## 12. Known Next-Step Priorities
 
-### Workflow Principles
-| Branch | Rules |
-|--------|-------|
-| **`master`** | Only stores stable, demonstrable versions; direct commits are prohibited; only merged via Pull Request (PR) |
-| **Contributor Branches** | One branch per developer, with tasks assigned by the team lead; submit PR to master after passing self-test |
+Recommended next iteration order:
 
-### Step 1: Team Lead Initializes Contributor Branches (One Time Only)
-```powershell
-git checkout master
-git pull origin master
-
-# Create branch for each contributor
-git checkout -b zhangsan
-git push -u origin zhangsan
-
-git checkout -b lisi
-git push -u origin lisi
-
-# ... Repeat for other contributors
-
-git checkout master
-```
-
-### Step 2: Daily Development for Contributors
-```powershell
-# 1. Sync master and switch to your own branch
-git checkout master
-git pull origin master
-git checkout zhangsan
-
-# 2. (Optional) Merge the latest master
-git merge master
-
-# 3. Modify code (follow the "Development Workflow" above)
-# - Edit code
-# - mvn clean package
-# - Deploy to Tomcat
-# - Validate in browser
-
-# 4. Commit and push
-git add .
-git commit -m "feat: add feature description"
-git push origin zhangsan
-
-# 5. Create a Pull Request on GitHub
-#    From zhangsan → master
-```
-
-### Step 3: Team Lead Review and Merge
-```powershell
-# 1. View "Files changed" of the PR on GitHub
-# 2. Confirm the changes are consistent with the assigned task
-
-# 3. (Optional) Local validation
-git fetch origin zhangsan
-git checkout zhangsan
-mvn clean package
-# Deploy to Tomcat for functional inspection
-
-# 4. Click "Merge pull request" on GitHub
-```
-
-### Step 4: Sync the Latest Master
-After a PR is merged, other contributors should immediately pull and merge the latest master branch:
-```powershell
-git checkout master
-git pull origin master
-git checkout zhangsan
-git merge master
-```
+1. improve Profile UI and overall TA-facing experience
+2. add TA job search / filtering
+3. improve Admin workload statistics
+4. clean dead routes and dashboard presentation
+5. update user manual / demo script / testing notes
+6. only then consider PDF parsing as an optional enhancement
 
 ---
 
-## 🤝 Resolving Merge Conflicts
-### Scenario: Two Developers Modified the Same File
-**Developer A's branch has been merged into master, now merging Developer B's branch**
+## 13. Notes
 
-1. **Developer B resolves the conflict locally**:
-   ```powershell
-   git checkout master
-   git pull origin master
-   git checkout member-b
-   git merge master
-   ```
-
-2. **Manually Resolve Conflicts**:
-   - Open the conflicted file
-   - Remove conflict markers: `<<<<<<<`, `=======`, `>>>>>>>`
-   - Keep or merge the required code changes
-
-3. **Commit Conflict Resolution**:
-   ```powershell
-   git add .
-   git commit -m "chore: resolve merge conflict with master"
-   git push origin member-b
-   ```
-
-4. **Team Lead Merges the PR Again on GitHub**
-
-### 💡 Best Practices
-- **Team Lead**: Assign tasks to different contributors for separate files or modules to minimize conflicts
-- **Contributors**: Sync the master branch regularly to avoid falling too far behind
-- **PR Order**: Merge PRs one by one according to submission time, and resolve conflicts immediately when they occur
-
----
-
-## 📚 Detailed File Function Description
-### Controller Layer (HTTP Request Handling)
-| Servlet | Function |
-|---------|----------|
-| `HomeServlet` | Handles `/home` requests, redirects to the login home page |
-| `LoginServlet` | User login authentication, role judgment, and Session creation |
-| `LogoutServlet` | User logout, clears Session data |
-| `RegisterServlet` | New TA account registration and automatic login |
-| `TaDashboardServlet` | Loads statistical data for the TA Dashboard |
-| `JobListServlet` | Displays the list of available job positions |
-| `ApplyServlet` | Handles TA job application submission |
-| `ApplicationStatusServlet` | Displays TA's application history and status |
-| `MODashboardServlet` | Displays statistical information for the MO Dashboard |
-| `MOJobServlet` | Handles job position creation and publishing by MOs |
-| `MOApplicationServlet` | Handles application viewing and review by MOs |
-| `AdminDashboardServlet` | Displays system workload statistics for admins |
-
-### Service Layer (Business Logic)
-| Service | Responsibility |
-|---------|----------------|
-| `UserService` | User authentication, registration, and information query |
-| `JobService` | Job position query, creation, and matching degree calculation |
-| `ApplicationService` | Application submission, query, and status update |
-| `DashboardService` | Aggregates data for Dashboard display |
-| `AdminService` | System workload statistics calculation |
-
-### Storage Layer (Data Persistence)
-| File | Description |
-|------|-------------|
-| `FileStorageUtil.java` | CSV file loading and saving, runtime directory resolution |
-
-### Model Layer (Data Models)
-| Class | Description |
-|-------|-------------|
-| `User` | User entity |
-| `UserRole` | User role enum: TA, MO, ADMIN |
-| `Job` | Job position entity |
-| `JobStatus` | Job status enum |
-| `Application` | Application entity |
-| `ApplicationStatus` | Application status enum |
-
----
-
-## 📊 Data File Description
-### `ta_users.csv` (User Data)
-```csv
-Username, Password, Full Name, Role, Description
-seele,123456,Seele,TA,TA Applicant Account
-mo1,123456,Module Organiser,MO,Module Organiser Account
-admin,123456,Administrator,ADMIN,System Administrator Account
-```
-
-### `jobs.csv` (Job Position Data)
-```csv
-Job ID, Title, Course Code, Lecturer, Working Hours, Skills Required, Status
-job001,Python TA,CS101,Dr. Smith,50,Python/Teaching,OPEN
-```
-
-### `applications.csv` (Application Records)
-```csv
-Application ID, Applicant, Job ID, Status, Submission Time, Remarks
-app001,seele,job001,PENDING,2024-03-20 10:30:00,
-```
-
----
-
-## 🛑 Troubleshooting Common Issues
-### Q1: `mvn clean package` Fails
-**Possible Causes**:
-- ❌ JDK version is not 17, switch to JDK 17 and retry
-- ❌ Cannot access Maven Central Repository, check your network connection
-- ❌ Project file encoding issue, check `<project.build.sourceEncoding>` in `pom.xml`
-
-**Solutions**:
-```powershell
-# Check Java version
-java -version
-
-# Clear Maven local cache and retry
-mvn clean package -U
-```
-
-### Q2: Browser Returns 404 After Deployment
-**Possible Causes**:
-- ❌ Tomcat is not running
-- ❌ WAR file is not extracted by Tomcat (you should see a `ta-webapp` folder under `webapps/` normally)
-- ❌ Incorrect URL path
-
-**Solutions**:
-```powershell
-# Ensure Tomcat is running
-cd D:\apache-tomcat-10.1.52\bin
-.\startup.bat
-
-# Access the correct URL
-http://localhost:8080/ta-webapp/
-
-# Check Tomcat logs (if there are errors)
-D:\apache-tomcat-10.1.52\logs\catalina.out
-```
-
-### Q3: PR Shows Conflicts After Git Commit
-**Cause**: Your branch is behind the master branch, and two developers have modified the same file.
-
-**Solution**: Follow the steps in the "Resolving Merge Conflicts" section above.
-
----
-
-## 📖 Related Documentation
-- [📋 Project Plan](sslocal://flow/file_open?url=docs%2Fproject-plan.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
-- [📝 Requirements Analysis](sslocal://flow/file_open?url=docs%2Frequirements.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
-- [🏗️ Architecture Description](sslocal://flow/file_open?url=docs%2Farchitecture.md&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
-
----
-
-## 🎓 Tech Stack
-| Component | Version |
-|-----------|---------|
-| **Java** | 17 |
-| **Servlet/JSP** | Jakarta 10 (Tomcat 10) |
-| **Maven** | 3.9+ |
-| **JSTL** | 2.0+ |
-| **CSS3** | Modern |
-| **JavaScript** | ES6+ |
-
----
-
-**Project Status**: ✅ Core features completed, under continuous iteration...
-
----
-### Notes for Git Submission
-This file uses standard UTF-8 encoding and GitHub-flavored Markdown syntax, which will not cause garbled code when submitted to Git. All CSV headers remain consistent with your actual project code to avoid parsing errors.
+- The current design intentionally keeps `Candidate Summary` and `Original PDF CV` separate.
+- CSV remains the main structured storage format.
+- PDF parsing is **not required** for the current stable version and should be treated as an optional enhancement rather than a blocking task.
