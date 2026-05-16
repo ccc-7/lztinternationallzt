@@ -43,42 +43,19 @@ The system stores all structured data in **CSV files** rather than a relational 
 ### 4.1 Request-Response Flow
 
 ```
-Browser HTTP Request
-        │
-        ▼
-┌─────────────────────────────┐
-│  JSP (View Layer)           │  — Receives forwarded request with attributes.
-│  .jsp files in WEB-INF/jsp/ │    Renders HTML using JSTL expression language.
-└─────────────────────────────┘
-        │ forwards back
-        ▲
-        │
-┌─────────────────────────────┐
-│  Servlet Controller         │  — Receives HTTP request. Validates session & role.
-│  (@WebServlet classes)      │    Calls Service layer. Sets request attributes.
-│  edu.bupt.ta.controller     │    Forwards to JSP or redirects.
-└─────────────────────────────┘
-        │ delegates business logic
-        ▲
-        │
-┌─────────────────────────────┐
-│  Service Layer              │  — Contains all business rules and calculations.
-│  edu.bupt.ta.service        │    Validates input. Coordinates between Services.
-│                             │    Does NOT write files directly (except CvFileService).
-└─────────────────────────────┘
-        │ reads/writes data
-        ▲
-        │
-┌─────────────────────────────┐
-│  FileStorageUtil            │  — Single class managing all CSV I/O.
-│  edu.bupt.ta.storage        │    Synchronized read/write. Atomic writes.
-│                             │    Handles Model ↔ CSV line conversion.
-└─────────────────────────────┘
-        │
-        ▼
-   CSV Files in data/
-   ta_users.csv / jobs.csv / applications.csv / system_logs.csv
-   PDF files in data/cvs/{userId}.pdf
+A browser initiates an HTTP request, which is first received by the Servlet Controller layer.
+The Servlet Controller consists of classes annotated with @WebServlet under the package edu.bupt.ta.controller. It is responsible for receiving HTTP requests, validating user sessions and roles, invoking the Service layer to process business logic, setting request attributes, and then either forwarding the request to the JSP layer or sending a redirect response.
+
+The request is then forwarded to the JSP (View Layer), which contains .jsp files stored in WEB-INF/jsp/. The JSP layer receives the forwarded request along with its attributes, and renders HTML pages using JSTL and expression language.
+
+For business logic processing, the Servlet Controller delegates tasks to the Service Layer located in the package edu.bupt.ta.service. This layer encapsulates all business rules and calculation logic, validates input data, coordinates interactions between different service components, and does not perform direct file writing operations — with the only exception being CvFileService.
+
+To read and write persistent data, the Service Layer interacts with FileStorageUtil, a standalone utility class under the package edu.bupt.ta.storage. This class manages all CSV input/output operations, supports synchronized reading and writing as well as atomic writing, and handles the data conversion between application models and CSV lines.
+
+Finally, FileStorageUtil reads from and writes to the underlying data files:
+CSV files stored in the data/ directory, including ta_users.csv, jobs.csv, applications.csv, and system_logs.csv
+PDF files stored in the data/cvs/ directory, named in the format {userId}.pdf
+
 ```
 
 ### 4.2 Role of Each Layer
