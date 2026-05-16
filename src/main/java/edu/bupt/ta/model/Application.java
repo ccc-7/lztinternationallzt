@@ -32,6 +32,7 @@ public class Application {
         return applicationId;
     }
 
+    /** @param applicationId the application ID to set */
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
     }
@@ -40,6 +41,7 @@ public class Application {
         return userId;
     }
 
+    /** @param userId the user ID to set */
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -48,6 +50,7 @@ public class Application {
         return jobId;
     }
 
+    /** @param jobId the job ID to set */
     public void setJobId(String jobId) {
         this.jobId = jobId;
     }
@@ -56,6 +59,7 @@ public class Application {
         return status;
     }
 
+    /** @param status the application status to set */
     public void setStatus(ApplicationStatus status) {
         this.status = status;
     }
@@ -64,6 +68,7 @@ public class Application {
         return submittedAt;
     }
 
+    /** @param submittedAt the submission timestamp to set */
     public void setSubmittedAt(String submittedAt) {
         this.submittedAt = submittedAt;
     }
@@ -72,6 +77,7 @@ public class Application {
         return notes;
     }
 
+    /** @param notes the notes to set */
     public void setNotes(String notes) {
         this.notes = notes;
     }
@@ -80,6 +86,7 @@ public class Application {
         return availability;
     }
 
+    /** @param availability the availability to set */
     public void setAvailability(String availability) {
         this.availability = availability;
     }

@@ -20,9 +20,26 @@ public class Job {
     private String deadline;
     private int vacancies;
 
+    /** Default constructor. */
     public Job() {
     }
 
+    /**
+     * Full constructor.
+     *
+     * @param jobId          unique job ID
+     * @param title          job title
+     * @param moduleCode     course module code
+     * @param organiser     MO display name
+     * @param minYear       minimum academic year
+     * @param maxYear       maximum academic year
+     * @param hours         weekly working hours
+     * @param status        job status
+     * @param requiredSkills pipe-separated skill requirements
+     * @param matchScore    pre-computed match score (0-100)
+     * @param deadline      application deadline in "yyyy-MM-dd" format
+     * @param vacancies     number of open positions
+     */
     public Job(String jobId, String title, String moduleCode, String organiser,
                int minYear, int maxYear, int hours, JobStatus status,
                String requiredSkills, int matchScore, String deadline, int vacancies) {
@@ -44,6 +61,7 @@ public class Job {
         return jobId;
     }
 
+    /** @param jobId the job ID to set */
     public void setJobId(String jobId) {
         this.jobId = jobId;
     }
@@ -52,6 +70,7 @@ public class Job {
         return title;
     }
 
+    /** @param title the job title to set */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -60,6 +79,7 @@ public class Job {
         return moduleCode;
     }
 
+    /** @param moduleCode the module code to set */
     public void setModuleCode(String moduleCode) {
         this.moduleCode = moduleCode;
     }
@@ -68,6 +88,7 @@ public class Job {
         return organiser;
     }
 
+    /** @param organiser the organiser name to set */
     public void setOrganiser(String organiser) {
         this.organiser = organiser;
     }
@@ -76,6 +97,7 @@ public class Job {
         return minYear;
     }
 
+    /** @param minYear the minimum year to set */
     public void setMinYear(int minYear) {
         this.minYear = minYear;
     }
@@ -84,6 +106,7 @@ public class Job {
         return maxYear;
     }
 
+    /** @param maxYear the maximum year to set */
     public void setMaxYear(int maxYear) {
         this.maxYear = maxYear;
     }
@@ -92,6 +115,7 @@ public class Job {
         return hours;
     }
 
+    /** @param hours the weekly hours to set */
     public void setHours(int hours) {
         this.hours = hours;
     }
@@ -100,6 +124,7 @@ public class Job {
         return status;
     }
 
+    /** @param status the job status to set */
     public void setStatus(JobStatus status) {
         this.status = status;
     }
@@ -108,6 +133,7 @@ public class Job {
         return requiredSkills;
     }
 
+    /** @param requiredSkills the required skills to set */
     public void setRequiredSkills(String requiredSkills) {
         this.requiredSkills = requiredSkills;
     }
@@ -116,6 +142,7 @@ public class Job {
         return matchScore;
     }
 
+    /** @param matchScore the match score (0-100) to set */
     public void setMatchScore(int matchScore) {
         this.matchScore = matchScore;
     }
@@ -124,6 +151,7 @@ public class Job {
         return deadline;
     }
 
+    /** @param deadline the deadline string to set */
     public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
@@ -132,6 +160,7 @@ public class Job {
         return vacancies;
     }
 
+    /** @param vacancies the number of vacancies to set */
     public void setVacancies(int vacancies) {
         this.vacancies = vacancies;
     }

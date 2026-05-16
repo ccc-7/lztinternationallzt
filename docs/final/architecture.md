@@ -47,7 +47,7 @@ Browser HTTP Request
         │
         ▼
 ┌─────────────────────────────┐
-│  JSP (View Layer)            │  — Receives forwarded request with attributes.
+│  JSP (View Layer)           │  — Receives forwarded request with attributes.
 │  .jsp files in WEB-INF/jsp/ │    Renders HTML using JSTL expression language.
 └─────────────────────────────┘
         │ forwards back
@@ -56,7 +56,7 @@ Browser HTTP Request
 ┌─────────────────────────────┐
 │  Servlet Controller         │  — Receives HTTP request. Validates session & role.
 │  (@WebServlet classes)      │    Calls Service layer. Sets request attributes.
-│  edu.bupt.ta.controller      │    Forwards to JSP or redirects.
+│  edu.bupt.ta.controller     │    Forwards to JSP or redirects.
 └─────────────────────────────┘
         │ delegates business logic
         ▲
@@ -70,8 +70,8 @@ Browser HTTP Request
         ▲
         │
 ┌─────────────────────────────┐
-│  FileStorageUtil             │  — Single class managing all CSV I/O.
-│  edu.bupt.ta.storage         │    Synchronized read/write. Atomic writes.
+│  FileStorageUtil            │  — Single class managing all CSV I/O.
+│  edu.bupt.ta.storage        │    Synchronized read/write. Atomic writes.
 │                             │    Handles Model ↔ CSV line conversion.
 └─────────────────────────────┘
         │

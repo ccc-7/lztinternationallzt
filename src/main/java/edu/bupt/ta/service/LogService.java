@@ -83,7 +83,7 @@ public class LogService {
     }
 
     /**
-     * Returns all log entries sorted by creation time descending (newest first).
+     * @return all log entries sorted newest-first
      */
     public synchronized List<SystemLog> getAllLogs() {
         List<SystemLog> logs = loadLogs();
@@ -92,7 +92,8 @@ public class LogService {
     }
 
     /**
-     * Returns all log entries for the given operator, sorted newest first.
+     * @param operatorId the operator ID to filter by
+     * @return all log entries for this operator, sorted newest-first
      */
     public synchronized List<SystemLog> getLogsByOperator(String operatorId) {
         return loadLogs().stream()
@@ -102,7 +103,8 @@ public class LogService {
     }
 
     /**
-     * Returns all log entries with the given operation type, sorted newest first.
+     * @param operationType the operation type to filter by
+     * @return all log entries with this type, sorted newest-first
      */
     public synchronized List<SystemLog> getLogsByType(String operationType) {
         return loadLogs().stream()
@@ -112,8 +114,9 @@ public class LogService {
     }
 
     /**
-     * Returns all log entries created between the given start and end timestamps (inclusive),
-     * sorted newest first.
+     * @param start the start of the date range (inclusive)
+     * @param end   the end of the date range (inclusive)
+     * @return all log entries in the range, sorted newest-first
      */
     public synchronized List<SystemLog> getLogsByDateRange(LocalDateTime start, LocalDateTime end) {
         return loadLogs().stream()
@@ -123,8 +126,8 @@ public class LogService {
     }
 
     /**
-     * Searches log entries by keyword, matching against operatorName, details, and targetId.
-     * Search is case-insensitive. Returns all logs if keyword is blank.
+     * @param keyword the keyword to search for (case-insensitive)
+     * @return matching log entries, sorted newest-first
      */
     public synchronized List<SystemLog> searchLogs(String keyword) {
         if (keyword == null || keyword.isBlank()) {

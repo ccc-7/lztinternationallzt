@@ -5,9 +5,17 @@ package edu.bupt.ta.model;
  * @see Application
  */
 public enum ApplicationStatus {
+
+    /** Application submitted and awaiting review. */
     PENDING,
+
+    /** Application shortlisted; an interview is scheduled. */
     INTERVIEW,
+
+    /** Application approved; TA has been selected. */
     ACCEPTED,
+
+    /** Application declined or rejected. */
     REJECTED;
 
     /**
