@@ -46,7 +46,9 @@ public class CandidateSummaryServlet extends HttpServlet {
 
         req.setAttribute("cvUser", target);
         req.setAttribute("summaryViewMode", Boolean.TRUE);
-        req.setAttribute("summaryNotice", "Generated from structured profile information. Original CV upload will be added in a later phase.");
+        req.setAttribute("cvFileAvailable", userService.hasUploadedCv(target));
+        req.setAttribute("cvDownloadHref", req.getContextPath() + "/files/cv/" + target.getUserId());
+        req.setAttribute("summaryNotice", "Generated from structured profile information. Original PDF CV is now managed separately from this summary.");
         req.getRequestDispatcher("/WEB-INF/jsp/common/cv-view.jsp").forward(req, resp);
     }
 }
