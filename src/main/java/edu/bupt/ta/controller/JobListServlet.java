@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Lists all open jobs for the current TA, sorted by match score descending.
@@ -32,7 +33,27 @@ public class JobListServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("jobs", jobService.getOpenJobsForUser(user));
+        String search = req.getParameter("search");
+        String moduleCode = req.getParameter("moduleCode");
+        Integer minMatchScore = parseMinMatchScore(req.getParameter("minMatchScore"));
+        List<edu.bupt.ta.model.Job> jobs = jobService.getOpenJobsForUser(user, search, moduleCode, minMatchScore);
+
+        req.setAttribute("jobs", jobs);
+        req.setAttribute("search", search == null ? "" : search);
+        req.setAttribute("moduleCode", moduleCode == null ? "" : moduleCode);
+        req.setAttribute("minMatchScore", minMatchScore == null ? "" : minMatchScore);
         req.getRequestDispatcher("/WEB-INF/jsp/ta/jobs.jsp").forward(req, resp);
+    }
+
+    private Integer parseMinMatchScore(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
     }
 }

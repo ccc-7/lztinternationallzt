@@ -3334,3 +3334,20 @@ code {
     color: var(--text-tertiary);
     margin: 0;
 }
+
+.job-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    align-items: center;
+}
+
+.job-filter-bar input {
+    min-width: 180px;
+    flex: 1 1 180px;
+}
+
+.job-filter-bar .btn {
+    white-space: nowrap;
+}
