@@ -216,6 +216,7 @@
                                 <button type="submit" class="btn btn-primary">${profileHasCv ? 'Replace PDF CV' : 'Upload PDF CV'}</button>
                             </div>
                             <p class="hint-text profile-inline-hint">Only PDF files are supported. Maximum size: ${cvMaxSizeMb}MB.</p>
+                            <p class="hint-text profile-inline-hint">After upload, the file is stored as <code>${profileUser.userId}.pdf</code> in <code>data/cvs/</code>.</p>
                         </form>
 
                         <c:if test="${profileHasCv}">

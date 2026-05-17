@@ -47,6 +47,9 @@ public class CvUploadServlet extends HttpServlet {
         Part filePart = req.getPart("cvFile");
         String oldStoredName = currentUser.getCvStoredName();
         CvFileService.SavedCvFile savedCvFile = null;
+        boolean sameStorageName = oldStoredName != null
+                && !oldStoredName.isBlank()
+                && (currentUser.getUserId() + ".pdf").equalsIgnoreCase(oldStoredName);
 
         try {
             savedCvFile = cvFileService.savePdf(currentUser.getUserId(), filePart);
@@ -65,8 +68,18 @@ public class CvUploadServlet extends HttpServlet {
             }
             req.getSession().setAttribute("flashError", e.getMessage());
         } catch (Exception e) {
-            if (savedCvFile != null && (oldStoredName == null || !oldStoredName.equals(savedCvFile.getStoredName()))) {
-                cvFileService.deleteCv(savedCvFile.getStoredName());
+            if (savedCvFile != null) {
+                if (sameStorageName) {
+                    try {
+                        cvFileService.deleteCv(savedCvFile.getStoredName());
+                    } catch (IOException ignored) {
+                    }
+                } else if (oldStoredName == null || !oldStoredName.equals(savedCvFile.getStoredName())) {
+                    try {
+                        cvFileService.deleteCv(savedCvFile.getStoredName());
+                    } catch (IOException ignored) {
+                    }
+                }
             }
             req.getSession().setAttribute("flashError", "Failed to upload CV. Please try again.");
         }
