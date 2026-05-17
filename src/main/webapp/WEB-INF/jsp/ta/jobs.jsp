@@ -58,6 +58,14 @@
                     <h1>Job Board</h1>
                     <p>Find your ideal teaching assistant position</p>
                 </div>
+
+                <form class="job-filter-bar" action="${pageContext.request.contextPath}/jobs" method="get">
+                    <input type="text" name="search" value="${search}" placeholder="Search keyword">
+                    <input type="text" name="moduleCode" value="${moduleCode}" placeholder="Module Code">
+                    <input type="number" name="minMatchScore" min="0" max="100" value="${minMatchScore}" placeholder="Min Match Score">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a class="btn btn-secondary" href="${pageContext.request.contextPath}/jobs">Clear</a>
+                </form>
             </section>
 
             <section class="job-grid-simple">

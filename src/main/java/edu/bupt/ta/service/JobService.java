@@ -151,9 +151,51 @@ public class JobService {
             int score = calculateMatchScore(user == null ? "" : user.getSkills(), job.getRequiredSkills());
             job.setMatchScore(score);
         }
-        // Sort by match score descending
         jobs.sort((a, b) -> b.getMatchScore() - a.getMatchScore());
         return jobs;
+    }
+
+    /**
+     * Returns open jobs for a TA with optional keyword, module code, and minimum match score filters.
+     *
+     * @param user the TA user used for match-score calculation
+     * @param search keyword matched against title, organiser, and required skills
+     * @param moduleCode module code filter
+     * @param minMatchScore minimum match score threshold; values below zero are treated as zero
+     * @return filtered open jobs sorted by match score descending
+     */
+    public List<Job> getOpenJobsForUser(User user, String search, String moduleCode, Integer minMatchScore) {
+        List<Job> jobs = getOpenJobsForUser(user);
+        String keyword = search == null ? "" : search.trim().toLowerCase();
+        String moduleFilter = moduleCode == null ? "" : moduleCode.trim().toLowerCase();
+        int threshold = minMatchScore == null ? 0 : Math.max(0, minMatchScore);
+
+        List<Job> result = new ArrayList<>();
+        for (Job job : jobs) {
+            if (!keyword.isBlank()) {
+                String haystack = String.join(" ",
+                        safeLower(job.getTitle()),
+                        safeLower(job.getOrganiser()),
+                        safeLower(job.getRequiredSkills()));
+                if (!haystack.contains(keyword)) {
+                    continue;
+                }
+            }
+
+            if (!moduleFilter.isBlank()) {
+                String jobModule = safeLower(job.getModuleCode());
+                if (!jobModule.contains(moduleFilter)) {
+                    continue;
+                }
+            }
+
+            if (job.getMatchScore() < threshold) {
+                continue;
+            }
+
+            result.add(job);
+        }
+        return result;
     }
 
     /**
@@ -497,5 +539,9 @@ public class JobService {
                 .max(Comparator.naturalOrder())
                 .orElse(0);
         return String.format("J%03d", max + 1);
+    }
+
+    private String safeLower(String value) {
+        return value == null ? "" : value.toLowerCase();
     }
 }
