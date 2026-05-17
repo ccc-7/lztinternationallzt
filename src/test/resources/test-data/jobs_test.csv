@@ -1,0 +1,7 @@
+jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies
+J001,Software Engineering TA,EBU6304,Prof.Chen,2,4,20,OPEN,Java|Teamwork|Documentation,95,2030-12-31,3
+J002,Embedded Systems TA,EBU6201,Prof.Li,2,4,18,OPEN,C|STM32|Debugging,89,2030-12-31,2
+J003,Data Structures TA,EBU6102,Prof.Chen,1,4,16,OPEN,Java|Data Structure|Communication,92,2030-12-31,2
+J004,Digital Systems Lab TA,EBU6204,Prof.Li,2,4,12,CLOSED,Circuits|Lab Support|Communication,84,2020-01-01,2
+J005,AI Research Assistant,EBU6401,Prof.Wang,3,4,10,OPEN,Python|Machine Learning|TensorFlow,98,2030-12-31,1
+J006,Python Programming TA,EBU6105,Prof.Chen,1,3,15,OPEN,Python|Java|Communication,90,2030-12-31,2

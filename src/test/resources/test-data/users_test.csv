@@ -1,0 +1,7 @@
+userId,username,password,name,email,role,year,major,skills,status,availability,personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus,cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus
+T001,alice,123456,Alice Chen,alice@bupt.edu.cn,TA,2,Software Engineering,Java|Python|Testing,ACTIVE,Mon/Wed afternoons,Interested in software testing and lab support.,EBU6304|Software Testing,Built Java testing frameworks.,Testing Support|Lab Support,SUMMARY_COMPLETE,,,,,MISSING
+T002,bob,123456,Bob Wang,bob@bupt.edu.cn,TA,3,IoT,Java|C|Debugging,ACTIVE,Tue/Thu mornings,Passionate about embedded systems and debugging.,EBU6304|Embedded Systems,STM32 robot project.,Lab Support|Tutorial Support,SUMMARY_COMPLETE,,,,,MISSING
+T003,charlie,123456,Charlie Li,charlie@bupt.edu.cn,TA,1,Computer Science,,ACTIVE,,,,,,,,,INCOMPLETE,,,,,MISSING
+T004,debbie,123456,Debbie Zhang,debbie@bupt.edu.cn,TA,4,Computer Science,Java|Python|Machine Learning|Data Structure,ACTIVE,Mon all day,Excellent at data structures and algorithms.,EBU6304|EBU6102|Data Structures,Online judge ranking top 100.,Lab Support|Programming Tutorial,SUMMARY_COMPLETE,,,,,MISSING
+M001,mo_chen,123456,Prof.Chen,chen@bupt.edu.cn,MO,0,Faculty,Java|Python,ACTIVE,,,,,,,,,INCOMPLETE,,,,,MISSING
+A001,admin,123456,System Admin,admin@bupt.edu.cn,ADMIN,0,Office,Management,ACTIVE,,,,,,,,,INCOMPLETE,,,,,MISSING

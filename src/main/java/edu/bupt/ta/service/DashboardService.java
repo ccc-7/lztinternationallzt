@@ -12,8 +12,55 @@ import java.util.List;
  */
 public class DashboardService {
 
-    private final JobService jobService = new JobService();
-    private final ApplicationService applicationService = new ApplicationService();
+    private JobService jobService;
+    private ApplicationService applicationService;
+
+    /**
+     * Default constructor. Uses default JobService and ApplicationService instances.
+     */
+    public DashboardService() {
+        this.jobService = new JobService();
+        this.applicationService = new ApplicationService();
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil path. Used by tests.
+     *
+     * @param dataDir the data directory for CSV files
+     * @param mirrorDir the mirror directory (may be null)
+     */
+    public DashboardService(java.nio.file.Path dataDir, java.nio.file.Path mirrorDir) {
+        this.jobService = new JobService(dataDir, mirrorDir);
+        this.applicationService = new ApplicationService(dataDir, mirrorDir);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by tests to share storage.
+     *
+     * @param storage the FileStorageUtil instance to use
+     */
+    public DashboardService(edu.bupt.ta.storage.FileStorageUtil storage) {
+        this.jobService = new JobService(storage);
+        this.applicationService = new ApplicationService(storage);
+    }
+
+    /**
+     * Sets the JobService instance. Allows test injection.
+     *
+     * @param jobService the JobService to use
+     */
+    public void setJobService(JobService jobService) {
+        this.jobService = jobService;
+    }
+
+    /**
+     * Sets the ApplicationService instance. Allows test injection.
+     *
+     * @param applicationService the ApplicationService to use
+     */
+    public void setApplicationService(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
 
     /**
      * Returns the number of active (PENDING or INTERVIEW) applications for the user.

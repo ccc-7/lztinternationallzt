@@ -26,23 +26,33 @@ public class LogService {
     /** CSV column header for system_logs.csv (9 columns). */
     private static final String LOGS_HEADER =
             "logId,operatorId,operatorName,operationType,targetType,targetId,details,ipAddress,createdAt";
-    private static final Path LOGS_FILE = Paths.get("data", "system_logs.csv");
+
+    private final Path logsFile;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * Creates the LogService and ensures the log file exists with a header row.
-     * Called automatically when the servlet is initialised.
+     * Default constructor. Uses the default logs file path relative to the working directory.
      */
     public LogService() {
+        this(Paths.get("data", "system_logs.csv"));
+    }
+
+    /**
+     * Constructor with injected logs file path. Used by tests.
+     *
+     * @param logsFile the absolute path to the system_logs.csv file
+     */
+    public LogService(Path logsFile) {
+        this.logsFile = logsFile;
         initFile();
     }
 
     private void initFile() {
         try {
-            Files.createDirectories(LOGS_FILE.getParent());
-            if (!Files.exists(LOGS_FILE)) {
-                try (BufferedWriter writer = Files.newBufferedWriter(LOGS_FILE, StandardCharsets.UTF_8)) {
+            Files.createDirectories(logsFile.getParent());
+            if (!Files.exists(logsFile)) {
+                try (BufferedWriter writer = Files.newBufferedWriter(logsFile, StandardCharsets.UTF_8)) {
                     writer.write(LOGS_HEADER);
                     writer.newLine();
                 }
@@ -173,10 +183,10 @@ public class LogService {
     /** Reads all log entries from the CSV file. Returns an empty list if the file does not exist. */
     private List<SystemLog> loadLogs() {
         List<SystemLog> logs = new ArrayList<>();
-        if (!Files.exists(LOGS_FILE)) {
+        if (!Files.exists(logsFile)) {
             return logs;
         }
-        try (BufferedReader reader = Files.newBufferedReader(LOGS_FILE, StandardCharsets.UTF_8)) {
+            try (BufferedReader reader = Files.newBufferedReader(logsFile, StandardCharsets.UTF_8)) {
             String line;
             boolean first = true;
             while ((line = reader.readLine()) != null) {
@@ -215,7 +225,7 @@ public class LogService {
 
     /** Overwrites the entire log file with the given list of entries. */
     private synchronized void saveLogs(List<SystemLog> logs) {
-        try (BufferedWriter writer = Files.newBufferedWriter(LOGS_FILE, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(logsFile, StandardCharsets.UTF_8)) {
             writer.write(LOGS_HEADER);
             writer.newLine();
             for (SystemLog log : logs) {
