@@ -55,5 +55,4 @@ public class JobListServlet extends HttpServlet {
             return null;
         }
     }
-    }
 }
