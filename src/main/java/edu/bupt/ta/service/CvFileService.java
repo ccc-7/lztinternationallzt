@@ -3,8 +3,10 @@ package edu.bupt.ta.service;
 import edu.bupt.ta.storage.FileStorageUtil;
 import jakarta.servlet.http.Part;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -78,11 +80,29 @@ public class CvFileService {
 
         String storedName = userId + ".pdf";
         Path target = cvDir.resolve(storedName);
+        byte[] content;
         try (InputStream inputStream = filePart.getInputStream()) {
-            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            byte[] header = inputStream.readNBytes(5);
+            if (header.length < 5) {
+                throw new IllegalArgumentException("Invalid PDF file content.");
+            }
+
+            String headerText = new String(header, StandardCharsets.US_ASCII);
+            if (!"%PDF-".equals(headerText)) {
+                throw new IllegalArgumentException("Invalid PDF file content.");
+            }
+
+            byte[] remaining = inputStream.readAllBytes();
+            content = new byte[header.length + remaining.length];
+            System.arraycopy(header, 0, content, 0, header.length);
+            System.arraycopy(remaining, 0, content, header.length, remaining.length);
         }
 
-        return new SavedCvFile(storedName, originalName, "application/pdf", filePart.getSize(), target);
+        try (InputStream rewritten = new ByteArrayInputStream(content)) {
+            Files.copy(rewritten, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        return new SavedCvFile(storedName, originalName, "application/pdf", content.length, target);
     }
 
     /**
