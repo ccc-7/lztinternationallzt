@@ -16,8 +16,47 @@ import java.util.Optional;
  */
 public class UserService {
 
-    private final FileStorageUtil storage = new FileStorageUtil();
-    private final CvFileService cvFileService = new CvFileService();
+    private FileStorageUtil storage;
+    private CvFileService cvFileService;
+
+    /**
+     * Default constructor. Uses default FileStorageUtil and CvFileService instances.
+     */
+    public UserService() {
+        this.storage = new FileStorageUtil();
+        this.cvFileService = new CvFileService(this.storage);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil path. Used by tests to redirect
+     * CSV I/O to a temporary directory.
+     *
+     * @param dataDir the data directory for CSV files
+     * @param mirrorDir the mirror directory (may be null)
+     */
+    public UserService(java.nio.file.Path dataDir, java.nio.file.Path mirrorDir) {
+        this.storage = new FileStorageUtil(dataDir, mirrorDir);
+        this.cvFileService = new CvFileService(this.storage);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by ApplicationService.
+     *
+     * @param storage the FileStorageUtil instance to use
+     */
+    public UserService(FileStorageUtil storage) {
+        this.storage = storage;
+        this.cvFileService = new CvFileService(storage);
+    }
+
+    /**
+     * Sets the FileStorageUtil instance. Allows test injection.
+     *
+     * @param storage the FileStorageUtil to use
+     */
+    public void setStorage(FileStorageUtil storage) {
+        this.storage = storage;
+    }
 
     /**
      * Authenticates a user by username and password.

@@ -64,20 +64,47 @@ public class FileStorageUtil {
     private static final Object IO_LOCK = new Object();
 
     private static final Path REPO_DATA_DIR = resolveRepoDataDir();
-    private static final Path BASE_DIR = resolveBaseDir();
-    private static final Path MIRROR_DIR = resolveMirrorDir();
+    private static final Path DEFAULT_BASE_DIR = resolveBaseDir();
+    private static final Path DEFAULT_MIRROR_DIR = resolveMirrorDir();
 
-    private static final Path USERS_FILE = BASE_DIR.resolve("ta_users.csv");
-    private static final Path JOBS_FILE = BASE_DIR.resolve("jobs.csv");
-    private static final Path APPLICATIONS_FILE = BASE_DIR.resolve("applications.csv");
+    // Instance-level paths for testability; initialized to defaults.
+    private final Path baseDir;
+    private final Path usersFile;
+    private final Path jobsFile;
+    private final Path applicationsFile;
 
-    static {
+    // Cached mirror dir for this instance (recomputed per-instance because baseDir may differ).
+    private final Path mirrorDir;
+
+    /**
+     * Default constructor. Uses the resolved default base directory
+     * (system property {@code ta.data.dir} &rarr; env var {@code TA_DATA_DIR}
+     * &rarr; auto-detected repository data directory &rarr; relative {@code data} path).
+     * Initializes the data directory and CSV files on first instantiation.
+     */
+    public FileStorageUtil() {
+        this(DEFAULT_BASE_DIR, DEFAULT_MIRROR_DIR);
+    }
+
+    /**
+     * Constructor with explicit base directory. Used by tests to redirect all file I/O
+     * to a temporary directory.
+     *
+     * @param baseDir the directory that should contain {@code ta_users.csv},
+     *                {@code jobs.csv}, and {@code applications.csv}
+     */
+    public FileStorageUtil(Path baseDir, Path mirrorDir) {
+        this.baseDir = baseDir.toAbsolutePath().normalize();
+        this.mirrorDir = (mirrorDir != null && !mirrorDir.equals(this.baseDir))
+                ? mirrorDir.toAbsolutePath().normalize() : null;
+        this.usersFile = this.baseDir.resolve("ta_users.csv");
+        this.jobsFile = this.baseDir.resolve("jobs.csv");
+        this.applicationsFile = this.baseDir.resolve("applications.csv");
         initFiles();
     }
 
     /**
-     * Returns a new FileStorageUtil instance. All public methods are static-accessible
-     * via the lock-free read path; this method exists for API compatibility.
+     * Returns a new FileStorageUtil instance using the default base directory.
      *
      * @return a new FileStorageUtil instance
      */
@@ -86,12 +113,12 @@ public class FileStorageUtil {
     }
 
     /**
-     * Returns the resolved base data directory path.
+     * Returns the base data directory path for this instance.
      *
      * @return the absolute base directory path
      */
     public Path getBaseDir() {
-        return BASE_DIR;
+        return baseDir;
     }
 
     // ---- Path resolution ----
@@ -136,7 +163,7 @@ public class FileStorageUtil {
             mirror = REPO_DATA_DIR.toAbsolutePath().normalize();
         }
 
-        if (mirror == null || mirror.equals(BASE_DIR)) {
+        if (mirror == null || mirror.equals(DEFAULT_BASE_DIR)) {
             return null;
         }
         return mirror;
@@ -206,24 +233,23 @@ public class FileStorageUtil {
     // ---- Initialisation ----
 
     /**
-     * Initialises the data directory and CSV files on application startup.
-     * Called automatically from the static initializer. Creates directories,
-     * bootstraps missing CSV files with headers, seeds default data if files
-     * are empty, and syncs the mirror directory.
+     * Initialises the data directory and CSV files on construction.
+     * Creates directories, bootstraps missing CSV files with headers, seeds default data
+     * if files are empty, and syncs the mirror directory.
      *
      * @throws RuntimeException if any I/O operation fails during initialisation
      */
-    private static void initFiles() {
+    private void initFiles() {
         synchronized (IO_LOCK) {
             try {
-                Files.createDirectories(BASE_DIR);
-                if (MIRROR_DIR != null) {
-                    Files.createDirectories(MIRROR_DIR);
+                Files.createDirectories(baseDir);
+                if (mirrorDir != null) {
+                    Files.createDirectories(mirrorDir);
                 }
 
-                bootstrapFile(USERS_FILE, mirrorFile(USERS_FILE), USERS_HEADER);
-                bootstrapFile(JOBS_FILE, mirrorFile(JOBS_FILE), JOBS_HEADER);
-                bootstrapFile(APPLICATIONS_FILE, mirrorFile(APPLICATIONS_FILE), APPLICATIONS_HEADER);
+                bootstrapFile(usersFile, mirrorFile(usersFile), USERS_HEADER);
+                bootstrapFile(jobsFile, mirrorFile(jobsFile), JOBS_HEADER);
+                bootstrapFile(applicationsFile, mirrorFile(applicationsFile), APPLICATIONS_HEADER);
 
                 ensureDefaultUsers();
                 ensureDefaultJobs();
@@ -239,8 +265,8 @@ public class FileStorageUtil {
      * Seeds ta_users.csv with 3 TAs, 2 MOs, and 1 Admin if the file has only a header
      * row or is empty.
      */
-    private static void ensureDefaultUsers() throws IOException {
-        List<String> lines = Files.readAllLines(USERS_FILE, StandardCharsets.UTF_8);
+    private void ensureDefaultUsers() throws IOException {
+        List<String> lines = Files.readAllLines(usersFile, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
             List<String> defaultLines = new ArrayList<>();
             defaultLines.add(USERS_HEADER);
@@ -280,7 +306,7 @@ public class FileStorageUtil {
                     "U006", "admin", "123456", "System Admin", "admin@bupt.edu.cn", "ADMIN", "0", "Office",
                     "Management", "ACTIVE", "", "", "", "", "", "INCOMPLETE",
                     "", "", "", "", "MISSING"));
-            writeLinesAtomically(USERS_FILE, defaultLines);
+            writeLinesAtomically(usersFile, defaultLines);
         }
     }
 
@@ -288,16 +314,16 @@ public class FileStorageUtil {
      * Seeds jobs.csv with 4 sample job postings if the file has only a header row
      * or is empty.
      */
-    private static void ensureDefaultJobs() throws IOException {
-        List<String> lines = Files.readAllLines(JOBS_FILE, StandardCharsets.UTF_8);
+    private void ensureDefaultJobs() throws IOException {
+        List<String> lines = Files.readAllLines(jobsFile, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
             List<String> defaultLines = new ArrayList<>();
             defaultLines.add(JOBS_HEADER);
-            defaultLines.add("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2026-05-01,3");
-            defaultLines.add("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2026-05-15,2");
-            defaultLines.add("J003,Data Structures TA,EBU6102,Dr.Wang,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-04-30,2");
-            defaultLines.add("J004,Digital Systems Lab TA,EBU6204,Dr.Liu,2,4,12,OPEN,Circuits|Lab Support|Communication,84,2026-05-20,2");
-            writeLinesAtomically(JOBS_FILE, defaultLines);
+            defaultLines.add("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2030-05-01,3");
+            defaultLines.add("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2030-05-15,2");
+            defaultLines.add("J003,Data Structures TA,EBU6102,Dr.Wang,1,4,16,OPEN,Java|Data Structure|Communication,92,2030-04-30,2");
+            defaultLines.add("J004,Digital Systems Lab TA,EBU6204,Dr.Liu,2,4,12,OPEN,Circuits|Lab Support|Communication,84,2030-05-20,2");
+            writeLinesAtomically(jobsFile, defaultLines);
         }
     }
 
@@ -305,17 +331,17 @@ public class FileStorageUtil {
      * Seeds applications.csv with one sample application if the file has only a header
      * row or is empty.
      */
-    private static void ensureDefaultApplications() throws IOException {
-        List<String> lines = Files.readAllLines(APPLICATIONS_FILE, StandardCharsets.UTF_8);
+    private void ensureDefaultApplications() throws IOException {
+        List<String> lines = Files.readAllLines(applicationsFile, StandardCharsets.UTF_8);
         if (lines.size() <= 1) {
             List<String> defaultLines = new ArrayList<>();
             defaultLines.add(APPLICATIONS_HEADER);
             defaultLines.add("A001,U001,J001,PENDING,2026-03-16 10:00:00,First application,Mon/Wed afternoons");
-            writeLinesAtomically(APPLICATIONS_FILE, defaultLines);
+            writeLinesAtomically(applicationsFile, defaultLines);
         }
     }
 
-    private static void ensureFile(Path file, String header) throws IOException {
+    private void ensureFile(Path file, String header) throws IOException {
         if (!Files.exists(file)) {
             List<String> lines = new ArrayList<>();
             lines.add(header);
@@ -328,7 +354,7 @@ public class FileStorageUtil {
      * available, otherwise creates it with a header. Also ensures the mirror is
      * present if the primary exists.
      */
-    private static void bootstrapFile(Path primary, Path mirror, String header) throws IOException {
+    private void bootstrapFile(Path primary, Path mirror, String header) throws IOException {
         if (!Files.exists(primary)) {
             if (mirror != null && Files.exists(mirror)) {
                 copyFileAtomically(mirror, primary);
@@ -346,20 +372,20 @@ public class FileStorageUtil {
      * Maps a source file path to the corresponding path in the mirror directory.
      * Returns null if mirroring is not configured.
      */
-    private static Path mirrorFile(Path sourceFile) {
-        if (MIRROR_DIR == null) {
+    private Path mirrorFile(Path sourceFile) {
+        if (mirrorDir == null) {
             return null;
         }
-        return MIRROR_DIR.resolve(sourceFile.getFileName().toString());
+        return mirrorDir.resolve(sourceFile.getFileName().toString());
     }
 
-    private static void syncBaseToMirror() throws IOException {
-        syncFileToMirror(USERS_FILE);
-        syncFileToMirror(JOBS_FILE);
-        syncFileToMirror(APPLICATIONS_FILE);
+    private void syncBaseToMirror() throws IOException {
+        syncFileToMirror(usersFile);
+        syncFileToMirror(jobsFile);
+        syncFileToMirror(applicationsFile);
     }
 
-    private static void syncFileToMirror(Path sourceFile) throws IOException {
+    private void syncFileToMirror(Path sourceFile) throws IOException {
         Path mirror = mirrorFile(sourceFile);
         if (mirror == null || !Files.exists(sourceFile)) {
             return;
@@ -425,7 +451,7 @@ public class FileStorageUtil {
     public List<User> loadUsers() {
         synchronized (IO_LOCK) {
             List<User> users = new ArrayList<>();
-            try (BufferedReader reader = Files.newBufferedReader(USERS_FILE, StandardCharsets.UTF_8)) {
+            try (BufferedReader reader = Files.newBufferedReader(usersFile, StandardCharsets.UTF_8)) {
                 String line;
                 boolean first = true;
                 while ((line = reader.readLine()) != null) {
@@ -507,8 +533,8 @@ public class FileStorageUtil {
                             user.getCvStatus() == null ? "" : user.getCvStatus()
                     ));
                 }
-                writeLinesAtomically(USERS_FILE, lines);
-                syncFileToMirror(USERS_FILE);
+                writeLinesAtomically(usersFile, lines);
+                syncFileToMirror(usersFile);
             } catch (IOException e) {
                 throw new RuntimeException("failed to save users data: " + e.getMessage(), e);
             }
@@ -527,7 +553,7 @@ public class FileStorageUtil {
     public List<Job> loadJobs() {
         synchronized (IO_LOCK) {
             List<Job> jobs = new ArrayList<>();
-            try (BufferedReader reader = Files.newBufferedReader(JOBS_FILE, StandardCharsets.UTF_8)) {
+            try (BufferedReader reader = Files.newBufferedReader(jobsFile, StandardCharsets.UTF_8)) {
                 String line;
                 boolean first = true;
                 while ((line = reader.readLine()) != null) {
@@ -594,8 +620,8 @@ public class FileStorageUtil {
                             String.valueOf(job.getVacancies())
                     ));
                 }
-                writeLinesAtomically(JOBS_FILE, lines);
-                syncFileToMirror(JOBS_FILE);
+                writeLinesAtomically(jobsFile, lines);
+                syncFileToMirror(jobsFile);
             } catch (IOException e) {
                 throw new RuntimeException("failed to save jobs data: " + e.getMessage(), e);
             }
@@ -613,7 +639,7 @@ public class FileStorageUtil {
     public List<Application> loadApplications() {
         synchronized (IO_LOCK) {
             List<Application> apps = new ArrayList<>();
-            try (BufferedReader reader = Files.newBufferedReader(APPLICATIONS_FILE, StandardCharsets.UTF_8)) {
+            try (BufferedReader reader = Files.newBufferedReader(applicationsFile, StandardCharsets.UTF_8)) {
                 String line;
                 boolean first = true;
                 while ((line = reader.readLine()) != null) {
@@ -668,8 +694,8 @@ public class FileStorageUtil {
                             app.getAvailability() == null ? "" : app.getAvailability()
                     ));
                 }
-                writeLinesAtomically(APPLICATIONS_FILE, lines);
-                syncFileToMirror(APPLICATIONS_FILE);
+                writeLinesAtomically(applicationsFile, lines);
+                syncFileToMirror(applicationsFile);
             } catch (IOException e) {
                 throw new RuntimeException("failed to save applications data: " + e.getMessage(), e);
             }

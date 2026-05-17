@@ -1,0 +1,5 @@
+logId,operatorId,operatorName,operationType,targetType,targetId,details,ipAddress,createdAt
+L00001,T001,Alice Chen,LOGIN,User,T001,User logged in,127.0.0.1,2026-01-15 10:00:00
+L00002,T001,Alice Chen,CREATE,Application,A001,Applied for Software Engineering TA,127.0.0.1,2026-01-15 10:00:01
+L00003,T004,Debbie Zhang,APPROVE,Application,A004,Moved to interview,127.0.0.1,2026-01-16 09:00:00
+L00004,M001,Prof.Chen,CREATE,Job,J001,Created new job posting,127.0.0.1,2026-01-14 08:00:00

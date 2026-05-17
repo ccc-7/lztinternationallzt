@@ -14,7 +14,43 @@ import java.util.*;
  */
 public class JobService {
 
-    private final FileStorageUtil storage = new FileStorageUtil();
+    private FileStorageUtil storage;
+
+    /**
+     * Default constructor. Uses a default FileStorageUtil instance.
+     */
+    public JobService() {
+        this.storage = new FileStorageUtil();
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil path. Used by tests to redirect
+     * CSV I/O to a temporary directory.
+     *
+     * @param dataDir the data directory for CSV files
+     * @param mirrorDir the mirror directory (may be null)
+     */
+    public JobService(java.nio.file.Path dataDir, java.nio.file.Path mirrorDir) {
+        this.storage = new FileStorageUtil(dataDir, mirrorDir);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by ApplicationService.
+     *
+     * @param storage the FileStorageUtil instance to use
+     */
+    public JobService(FileStorageUtil storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * Sets the FileStorageUtil instance. Allows test injection after construction.
+     *
+     * @param storage the FileStorageUtil to use
+     */
+    public void setStorage(FileStorageUtil storage) {
+        this.storage = storage;
+    }
 
     // Skill alias mappings (alternative names -> canonical names)
     private static final Map<String, String> SKILL_ALIASES = new HashMap<>();

@@ -1,0 +1,139 @@
+================================================================================
+TA Recruitment System - Test Results
+================================================================================
+
+Test Command: mvn test
+
+Environment:
+  - Java: 17
+  - Maven Surefire Plugin: 3.2.5
+  - JUnit Platform Provider: org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+
+================================================================================
+TEST CLASSES AND RESULTS
+================================================================================
+
+Model Tests:
+  [PASS] edu.bupt.ta.model.ApplicationTest
+         - AvailabilityTests:           2 tests
+         - StatusTests:                5 tests
+         - FieldAccessTests:           1 test
+         - ConstructorTests:           2 tests
+         Subtotal: 10 tests
+
+  [PASS] edu.bupt.ta.model.ApplicationWithJobTest
+         - StatusConversionTests:       4 tests
+         - JobFieldTests:              3 tests
+         - ApplicationFieldTests:      5 tests
+         - ConstructorTests:           2 tests
+         Subtotal: 14 tests
+
+  [PASS] edu.bupt.ta.model.JobTest
+         - VacancyTests:               3 tests
+         - MatchScoreTests:            3 tests
+         - StatusTests:                3 tests
+         - FieldAccessTests:           1 test
+         - ConstructorTests:           2 tests
+         Subtotal: 12 tests
+
+  [PASS] edu.bupt.ta.model.UserTest
+         - CvFieldTests:               2 tests
+         - YearTests:                  2 tests
+         - RoleTests:                  3 tests
+         - ConstructorTests:           2 tests
+         Subtotal: 9 tests
+
+Service Tests:
+  [PASS] edu.bupt.ta.service.AdminServiceTest
+         - BulkUserSaveTests:           1 test
+         - UserStatusToggleTests:      2 tests
+         - WorkloadTests:              2 tests
+         - DashboardStatsTests:        7 tests
+         Subtotal: 12 tests
+
+  [PASS] edu.bupt.ta.service.ApplicationServiceTest
+         - FindByIdTests:               2 tests
+         - CountTests:                  2 tests
+         - StatusUpdateTests:          5 tests
+         - QueryTests:                 7 tests
+         - ApplyTests:                 6 tests
+         Subtotal: 22 tests
+
+  [PASS] edu.bupt.ta.service.DashboardServiceTest
+         - BestMatchMessageTests:       3 tests
+         - TodoCountTests:              2 tests
+         - MatchedJobsTests:            2 tests
+         - PendingCountTests:           3 tests
+         Subtotal: 10 tests
+
+  [PASS] edu.bupt.ta.service.JobServiceTest
+         - SkillNormalizationTests:     2 tests
+         - JobQueryTests:             11 tests
+         - JobCrudTests:               6 tests
+         - MatchScoreTests:           12 tests
+         Subtotal: 31 tests
+
+  [PASS] edu.bupt.ta.service.LogServiceTest
+         - PaginationTests:             4 tests
+         - DateRangeTests:              2 tests
+         - SearchTests:                5 tests
+         - QueryTests:                 5 tests
+         - LogCreationTests:           3 tests
+         Subtotal: 19 tests
+
+  [PASS] edu.bupt.ta.service.SkillMatchServiceTest
+         - BoundaryAndEdgeCasesTests:   5 tests
+         - SkillAliasTests:             4 tests
+         - EmptyAndNullTests:           8 tests
+         - DuplicateSkillsTests:        2 tests
+         - CaseAndWhitespaceTests:      4 tests
+         - MissingSkillsTests:          3 tests
+         - PartialMatchTests:           4 tests
+         - ExactMatchTests:             4 tests
+         Subtotal: 30 tests
+
+  [PASS] edu.bupt.ta.service.UserServiceTest
+         - ApplicationReadinessTests:   3 tests
+         - SummaryStatusTests:         4 tests
+         - UserStatusToggleTests:      2 tests
+         - PasswordTests:               1 test
+         - ProfileUpdateTests:          2 tests
+         - RegisterTests:               4 tests
+         - GetAllUsersTests:           2 tests
+         - FindTests:                  4 tests
+         - AuthenticationTests:         3 tests
+         Subtotal: 27 tests
+
+  [PASS] edu.bupt.ta.service.WorkloadServiceTest
+         - EdgeCasesTests:              3 tests
+         - WorkloadLimitTests:          3 tests
+         - WorkloadCalculationTests:    6 tests
+         Subtotal: 12 tests
+
+Storage Tests:
+  [PASS] edu.bupt.ta.storage.FileStorageUtilTest
+         - UtilityTests:                2 tests
+         - ApplicationCrudTests:        2 tests
+         - JobCrudTests:               2 tests
+         - UserCrudTests:              3 tests
+         Subtotal: 9 tests
+
+================================================================================
+SUMMARY
+================================================================================
+
+  Total Test Classes:   13
+  Total Tests Run:      219
+  Passed:               219
+  Failed:               0
+  Errors:               0
+  Skipped:              0
+
+================================================================================
+BUILD SUCCESS
+================================================================================
+
+  Total time:  6.539 s
+  Finished at:  2026-05-17T12:48:34+08:00
+
+================================================================================

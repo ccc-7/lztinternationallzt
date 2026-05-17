@@ -15,9 +15,41 @@ import java.util.*;
  */
 public class AdminService {
 
-    private final UserService userService = new UserService();
-    private final ApplicationService applicationService = new ApplicationService();
-    private final JobService jobService = new JobService();
+    private UserService userService;
+    private ApplicationService applicationService;
+    private JobService jobService;
+
+    /**
+     * Default constructor. Uses default service instances.
+     */
+    public AdminService() {
+        this.userService = new UserService();
+        this.applicationService = new ApplicationService();
+        this.jobService = new JobService();
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil path. Used by tests.
+     *
+     * @param dataDir the data directory for CSV files
+     * @param mirrorDir the mirror directory (may be null)
+     */
+    public AdminService(java.nio.file.Path dataDir, java.nio.file.Path mirrorDir) {
+        this.userService = new UserService(dataDir, mirrorDir);
+        this.applicationService = new ApplicationService(dataDir, mirrorDir);
+        this.jobService = new JobService(dataDir, mirrorDir);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by tests to share storage.
+     *
+     * @param storage the FileStorageUtil instance to use
+     */
+    public AdminService(edu.bupt.ta.storage.FileStorageUtil storage) {
+        this.userService = new UserService(storage);
+        this.applicationService = new ApplicationService(storage);
+        this.jobService = new JobService(storage);
+    }
 
     /**
      * Returns a map of TA user IDs to the total number of applications they have submitted.

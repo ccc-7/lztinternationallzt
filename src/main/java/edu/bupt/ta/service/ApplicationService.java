@@ -22,9 +22,54 @@ public class ApplicationService {
     /** Maximum number of active (PENDING or INTERVIEW) applications a single TA can hold. */
     private static final int MAX_APPLICATIONS_PER_TA = 3;
 
-    private final FileStorageUtil storage = new FileStorageUtil();
-    private final UserService userService = new UserService();
-    private final JobService jobService = new JobService();
+    private FileStorageUtil storage;
+    private UserService userService;
+    private JobService jobService;
+
+    /**
+     * Default constructor. Uses default FileStorageUtil, UserService, and JobService instances.
+     */
+    public ApplicationService() {
+        this.storage = new FileStorageUtil();
+        this.userService = new UserService(this.storage);
+        this.jobService = new JobService(this.storage);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil path. Used by tests to redirect
+     * CSV I/O to a temporary directory.
+     *
+     * @param dataDir the data directory for CSV files
+     * @param mirrorDir the mirror directory (may be null)
+     */
+    public ApplicationService(java.nio.file.Path dataDir, java.nio.file.Path mirrorDir) {
+        this.storage = new FileStorageUtil(dataDir, mirrorDir);
+        this.userService = new UserService(this.storage);
+        this.jobService = new JobService(this.storage);
+    }
+
+    /**
+     * Sets the FileStorageUtil instance and re-creates dependent services.
+     *
+     * @param storage the FileStorageUtil to use
+     */
+    public void setStorage(FileStorageUtil storage) {
+        this.storage = storage;
+        this.userService = new UserService(storage);
+        this.jobService = new JobService(storage);
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by tests to share a single
+     * storage instance across multiple services.
+     *
+     * @param storage the FileStorageUtil instance to use
+     */
+    public ApplicationService(FileStorageUtil storage) {
+        this.storage = storage;
+        this.userService = new UserService(storage);
+        this.jobService = new JobService(storage);
+    }
 
     /**
      * Submits a new job application for a TA user.

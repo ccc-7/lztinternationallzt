@@ -20,7 +20,23 @@ public class CvFileService {
     private static final long MAX_CV_SIZE_BYTES = 5L * 1024 * 1024;
     private static final String CV_DIR = "cvs";
 
-    private final FileStorageUtil storage = FileStorageUtil.getInstance();
+    private FileStorageUtil storage;
+
+    /**
+     * Default constructor. Uses the default FileStorageUtil instance.
+     */
+    public CvFileService() {
+        this.storage = FileStorageUtil.getInstance();
+    }
+
+    /**
+     * Constructor with injected FileStorageUtil. Used by tests.
+     *
+     * @param storage the FileStorageUtil to use
+     */
+    public CvFileService(FileStorageUtil storage) {
+        this.storage = storage;
+    }
 
     /**
      * Saves an uploaded PDF file to the {@code data/cvs/} directory.

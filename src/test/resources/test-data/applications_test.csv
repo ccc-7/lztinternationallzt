@@ -1,0 +1,7 @@
+applicationId,userId,jobId,status,submittedAt,notes,availability
+A001,T001,J001,PENDING,2026-01-15 10:00:00,First application,Mon/Wed afternoons
+A002,T001,J003,PENDING,2026-01-16 11:00:00,Second application,Mon/Wed afternoons
+A003,T002,J002,PENDING,2026-01-15 14:00:00,Interested in embedded systems,Tue/Thu mornings
+A004,T004,J001,INTERVIEW,2026-01-10 09:00:00,Strong Java background,Mon all day
+A005,T004,J005,ACCEPTED,2026-01-08 16:00:00,ML experience matches well,Mon all day
+A006,T004,J003,REJECTED,2026-01-09 10:00:00,Schedule conflict,Mon all day
