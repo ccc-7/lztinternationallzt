@@ -319,10 +319,10 @@ public class FileStorageUtil {
         if (lines.size() <= 1) {
             List<String> defaultLines = new ArrayList<>();
             defaultLines.add(JOBS_HEADER);
-            defaultLines.add("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2030-05-01,3");
-            defaultLines.add("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2030-05-15,2");
-            defaultLines.add("J003,Data Structures TA,EBU6102,Dr.Wang,1,4,16,OPEN,Java|Data Structure|Communication,92,2030-04-30,2");
-            defaultLines.add("J004,Digital Systems Lab TA,EBU6204,Dr.Liu,2,4,12,OPEN,Circuits|Lab Support|Communication,84,2030-05-20,2");
+            defaultLines.add("J001,Software Engineering TA,EBU6304,Dr.Wang,2,4,20,OPEN,Java|Teamwork|Documentation,95,2026-06-30,3");
+            defaultLines.add("J002,Embedded Systems TA,EBU6201,Dr.Liu,2,4,18,OPEN,C|STM32|Debugging,89,2026-06-30,2");
+            defaultLines.add("J003,Data Structures TA,EBU6102,Dr.Wang,1,4,16,OPEN,Java|Data Structure|Communication,92,2026-06-30,2");
+            defaultLines.add("J004,Digital Systems Lab TA,EBU6204,Dr.Liu,2,4,12,OPEN,Circuits|Lab Support|Communication,84,2026-06-30,2");
             writeLinesAtomically(jobsFile, defaultLines);
         }
     }
