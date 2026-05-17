@@ -3244,6 +3244,122 @@ code {
 .app-stat-badge.accepted { background: var(--status-green-bg); color: var(--status-green); }
 .app-stat-badge.rejected { background: var(--status-red-bg); color: var(--status-red); }
 
+.panel-subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.workload-list .workload-item {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.workload-badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.workload-badge.normal { background: var(--status-green-bg); color: var(--status-green); }
+.workload-badge.warning { background: var(--status-orange-bg); color: #856404; }
+.workload-badge.overloaded { background: var(--status-red-bg); color: var(--status-red); }
+
+/* Admin dashboard CSS charts */
+.dashboard-charts .chart-panel {
+    min-height: 280px;
+}
+
+.chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.chart-bar-row {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 7.5rem) 1fr minmax(2.5rem, auto);
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.chart-bar-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chart-bar-label-job {
+    white-space: normal;
+    line-height: 1.3;
+    max-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.chart-bar-track {
+    height: 22px;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.chart-bar-fill {
+    height: 100%;
+    min-width: 2px;
+    border-radius: var(--radius-sm);
+    transition: width 0.35s ease;
+}
+
+.chart-bar-fill.pending { background: var(--status-orange); }
+.chart-bar-fill.interview { background: #5b7cfa; }
+.chart-bar-fill.accepted { background: var(--status-green); }
+.chart-bar-fill.rejected { background: var(--status-red); }
+.chart-bar-fill.jobs { background: var(--primary, #2563eb); }
+.chart-bar-fill.workload-normal { background: var(--status-green); }
+.chart-bar-fill.workload-warning { background: var(--status-orange); }
+.chart-bar-fill.workload-overloaded { background: var(--status-red); }
+
+.chart-bar-value {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.legend-dot.pending { background: var(--status-orange); }
+.legend-dot.interview { background: #5b7cfa; }
+.legend-dot.accepted { background: var(--status-green); }
+.legend-dot.rejected { background: var(--status-red); }
+
 .app-stat-count {
     font-size: 1.25rem;
     font-weight: 700;

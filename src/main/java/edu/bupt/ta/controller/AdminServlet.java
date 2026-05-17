@@ -12,22 +12,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Central Admin controller handling all admin-panel routes.
- * Routes are:
- * <ul>
- *   <li>{@code /admin/applications} — list and approve/reject applications</li>
- *   <li>{@code /admin/jobs} — manage jobs (create, update, delete, toggle)</li>
- *   <li>{@code /admin/users} — manage users (create, toggle status, change password)</li>
- *   <li>{@code /admin/logs} — view paginated system audit logs</li>
- *   <li>{@code /admin/stats} — raw statistics JSON</li>
- * </ul>
- *
- * <p>GET requests display pages; POST requests perform actions.
- * Every action is logged via {@link edu.bupt.ta.service.LogService}.
- *
- * @see edu.bupt.ta.service.AdminService
- */
 @WebServlet(urlPatterns = {
     "/admin/applications",
     "/admin/applications/approve",
@@ -41,7 +25,6 @@ import java.util.stream.Collectors;
 })
 public class AdminServlet extends HttpServlet {
 
-    private final AdminService adminService = new AdminService();
     private final ApplicationService applicationService = new ApplicationService();
     private final JobService jobService = new JobService();
     private final UserService userService = new UserService();
@@ -327,10 +310,8 @@ public class AdminServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/jsp/admin/logs.jsp").forward(req, resp);
     }
 
-    private void showStats(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, Object> stats = adminService.getDashboardStats();
-        req.setAttribute("stats", stats);
-        req.getRequestDispatcher("/WEB-INF/jsp/admin/stats.jsp").forward(req, resp);
+    private void showStats(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
     }
 
     private void handleApprove(HttpServletRequest req, HttpServletResponse resp, User admin) throws IOException {

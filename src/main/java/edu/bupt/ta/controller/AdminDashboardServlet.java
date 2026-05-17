@@ -4,6 +4,12 @@ import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
 import edu.bupt.ta.service.AdminService;
 import edu.bupt.ta.service.LogService;
+import edu.bupt.ta.service.UserService;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +27,7 @@ import java.io.IOException;
 public class AdminDashboardServlet extends HttpServlet {
 
     private final AdminService adminService = new AdminService();
+    private final UserService userService = new UserService();
     private final LogService logService = new LogService();
 
     @Override
@@ -34,8 +41,41 @@ public class AdminDashboardServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("workloads", adminService.calculateUserWorkloads());
-        req.setAttribute("stats", adminService.getDashboardStats());
+        Map<String, Integer> workloads = adminService.calculateUserWorkloads();
+        Map<String, Object> stats = adminService.getDashboardStats();
+
+        int maxWorkloadHours = workloads.values().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
+        if (maxWorkloadHours < 1) {
+            maxWorkloadHours = 1;
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> topJobs = (Map<String, Integer>) stats.get("topJobs");
+        int maxJobApplicants = 0;
+        if (topJobs != null && !topJobs.isEmpty()) {
+            maxJobApplicants = topJobs.values().stream()
+                    .mapToInt(Integer::intValue)
+                    .max()
+                    .orElse(0);
+        }
+        if (maxJobApplicants < 1) {
+            maxJobApplicants = 1;
+        }
+
+        List<User> taUsers = userService.getAllUsers().stream()
+                .filter(u -> u.getRole() == UserRole.TA)
+                .sorted(Comparator.comparingInt(
+                        (User u) -> workloads.getOrDefault(u.getUserId(), 0)).reversed())
+                .collect(Collectors.toList());
+
+        req.setAttribute("workloads", workloads);
+        req.setAttribute("stats", stats);
+        req.setAttribute("taUsers", taUsers);
+        req.setAttribute("maxWorkloadHours", maxWorkloadHours);
+        req.setAttribute("maxJobApplicants", maxJobApplicants);
         req.getRequestDispatcher("/WEB-INF/jsp/admin/dashboard.jsp").forward(req, resp);
     }
 }

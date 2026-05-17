@@ -1,4 +1,4 @@
 jobId,title,moduleCode,organiser,minYear,maxYear,hours,status,requiredSkills,matchScore,deadline,vacancies
-J001,Software Engineering TA,EBU6304,Prof.Chen,2,4,20,OPEN,Java|Teamwork,95,2030-12-31,3
-J002,Embedded Systems TA,EBU6201,Prof.Li,2,4,18,OPEN,C|STM32,89,2030-12-31,2
+J001,Software Engineering TA,EBU6304,Prof.Chen,2,4,20,OPEN,Java|Teamwork,95,2026-06-30,3
+J002,Embedded Systems TA,EBU6201,Prof.Li,2,4,18,OPEN,C|STM32,89,2026-06-30,2
 J003,Closed Position,EBU6102,Prof.Wang,1,4,16,CLOSED,Python,84,2020-01-01,2
