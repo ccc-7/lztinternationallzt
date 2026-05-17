@@ -161,7 +161,7 @@
 
                             <div class="full-width">
                                 <label>Project / Teaching Experience</label>
-                                <textarea name="projectExperience" rows="5" placeholder="One project or teaching experience per line.&#10;Example:&#10;Built a Java Servlet/JSP TA recruitment system&#10;Implemented STM32-based embedded monitoring demos&#10;Supported peer debugging for programming coursework">${profileUser.projectExperience}</textarea>
+                                <textarea name="projectExperience" rows="5" placeholder="One project or teaching experience per line">${profileUser.projectExperience}</textarea>
                             </div>
                         </div>
                     </section>

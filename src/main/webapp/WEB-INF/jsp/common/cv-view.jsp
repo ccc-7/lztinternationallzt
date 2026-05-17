@@ -58,6 +58,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .summary-btn {
@@ -228,6 +229,19 @@
             margin: 0;
             line-height: 1.72;
             color: var(--summary-text);
+        }
+
+        .summary-title-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .summary-title-row h2 {
+            margin: 0;
         }
 
         .summary-info-grid {
@@ -536,7 +550,12 @@
                     </section>
 
                     <section class="summary-section">
-                        <h2>Original CV File</h2>
+                        <div class="summary-title-row">
+                            <h2>Original PDF CV</h2>
+                            <c:if test="${cvFileAvailable}">
+                                <a href="${cvDownloadHref}" target="_blank" class="summary-btn summary-btn-primary">Open Original PDF</a>
+                            </c:if>
+                        </div>
                         <c:choose>
                             <c:when test="${cvFileAvailable}">
                                 <div class="summary-phase-box">
@@ -544,7 +563,7 @@
                                     <strong>${empty cvUser.cvOriginalName ? 'Original CV available' : cvUser.cvOriginalName}</strong>
                                     <p>
                                         This candidate has uploaded a separate PDF CV.
-                                        Use the “Open Original PDF” action to review the original file alongside this summary.
+                                        Use the button above to review the original file alongside this summary.
                                     </p>
                                     <p style="margin-top:10px;color:#51627d;">
                                         Uploaded at: ${empty cvUser.cvUploadedAt ? 'Unknown' : cvUser.cvUploadedAt}
