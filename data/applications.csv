@@ -1,6 +1,2 @@
-applicationId,userId,jobId,status,submittedAt,notes,availability
-A001,T001,J001,PENDING,2026-01-15 10:00:00,First,Mon afternoons
-A002,T001,J002,INTERVIEW,2026-01-16 11:00:00,Second,Mon afternoons
-A003,T002,J001,ACCEPTED,2026-01-10 09:00:00,Third,Tue mornings
-A004,T003,J002,REJECTED,2026-01-11 10:00:00,Fourth,Fri all day
-A005,T002,J001,ACCEPTED,2026-01-12 14:00:00,Fifth,Tue mornings
+applicationId,userId,jobId,status,submittedAt,notes
+A001,U001,J001,PENDING,2026/3/16 10:00,First application

@@ -6,6 +6,22 @@
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
+<style>
+html {
+    overflow-y: scroll !important;
+}
+.job-filter-bar input {
+    height: 38px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    vertical-align: middle;
+}
+.job-filter-bar .btn {
+    height: 38px;
+    vertical-align: middle;
+}
+</style>
+
 <div class="layout layout-ta">
     <aside class="sidebar sidebar-ta" id="sidebar">
         <div class="sidebar-brand">
@@ -94,12 +110,11 @@
                     </div>
                 </div>
             </c:forEach>
-        </section>
+            </section>
         </div>
     </main>
 </div>
 
-<!-- Job Detail Modal -->
 <div id="jobDetailModal" class="job-modal-overlay" onclick="closeModal(event)">
     <div class="job-detail-modal" onclick="event.stopPropagation()">
         <button class="job-modal-close-btn" onclick="closeModal()">

@@ -1,2 +1,3 @@
 userId,username,password,name,email,role,year,major,skills,status,availability,personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus,cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus
-T999,newuser,password,New User,new@bupt.edu.cn,TA,1,CS,Python,ACTIVE,,,,,,INCOMPLETE,,,,,MISSING
+U001,seele,123456,,seele11111111111111111@host.com,TA,3,,,ACTIVE,,,,,,INCOMPLETE,,,,,MISSING
+U002,testuser,123456,,,TA,0,,,ACTIVE,,,,,,INCOMPLETE,,,,,MISSING
