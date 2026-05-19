@@ -253,6 +253,53 @@
     font-size: 0.875rem;
 }
 
+.profile-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.48);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1200;
+}
+
+.profile-modal-backdrop.open {
+    display: flex;
+}
+
+.profile-modal {
+    width: min(100%, 460px);
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid #dbe4f0;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+    overflow: hidden;
+}
+
+.profile-modal-head {
+    padding: 22px 24px 10px;
+}
+
+.profile-modal-head h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.profile-modal-body {
+    padding: 0 24px 18px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.profile-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 0 24px 24px;
+}
+
 @media (max-width: 960px) {
     .profile-page-grid {
         grid-template-columns: 1fr;
@@ -502,7 +549,7 @@
                         </form>
 
                         <c:if test="${profileHasCv}">
-                            <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post" onsubmit="return confirm('Delete the currently uploaded PDF CV?');">
+                            <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post">
                                 <button type="submit" class="btn btn-secondary">Delete Uploaded CV</button>
                             </form>
                         </c:if>
@@ -511,6 +558,21 @@
             </section>
         </div>
     </main>
+</div>
+
+<div class="profile-modal-backdrop" id="profileConfirmModal" aria-hidden="true">
+    <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileConfirmTitle">
+        <div class="profile-modal-head">
+            <h3 id="profileConfirmTitle">Unsaved changes</h3>
+        </div>
+        <div class="profile-modal-body" id="profileConfirmMessage">
+            You have unsaved profile changes. Leave this page without saving?
+        </div>
+        <div class="profile-modal-actions">
+            <button type="button" class="btn btn-secondary" id="profileConfirmCancel">Stay on Page</button>
+            <button type="button" class="btn btn-primary" id="profileConfirmOk">Leave Without Saving</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -581,6 +643,12 @@ setupRolePicker('profilePreferredRolePicker', 'profilePreferredRoleCount', 3);
 
     var skipPrompt = false;
     var initialSnapshot = snapshotProfileForm();
+    var modal = document.getElementById('profileConfirmModal');
+    var modalTitle = document.getElementById('profileConfirmTitle');
+    var modalMessage = document.getElementById('profileConfirmMessage');
+    var modalOk = document.getElementById('profileConfirmOk');
+    var modalCancel = document.getElementById('profileConfirmCancel');
+    var pendingResolver = null;
 
     function snapshotProfileForm() {
         var data = [];
@@ -605,11 +673,36 @@ setupRolePicker('profilePreferredRolePicker', 'profilePreferredRoleCount', 3);
         return snapshotProfileForm() !== initialSnapshot;
     }
 
-    function confirmLeaveIfDirty(message) {
+    function openConfirmModal(options) {
+        options = options || {};
+        modalTitle.textContent = options.title || 'Unsaved changes';
+        modalMessage.textContent = options.message || 'You have unsaved profile changes. Leave this page without saving?';
+        modalOk.textContent = options.confirmLabel || 'Leave Without Saving';
+        modalCancel.textContent = options.cancelLabel || 'Stay on Page';
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        return new Promise(function(resolve) {
+            pendingResolver = resolve;
+        });
+    }
+
+    function closeConfirmModal(result) {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (pendingResolver) {
+            pendingResolver(result);
+            pendingResolver = null;
+        }
+    }
+
+    async function confirmLeaveIfDirty(options) {
         if (!hasUnsavedChanges()) {
             return true;
         }
-        return window.confirm(message || 'You have unsaved profile changes. Leave this page without saving?');
+        return await openConfirmModal(options);
     }
 
     profileForm.addEventListener('submit', function() {
@@ -632,21 +725,51 @@ setupRolePicker('profilePreferredRolePicker', 'profilePreferredRoleCount', 3);
         event.returnValue = '';
     });
 
+    modalOk.addEventListener('click', function() {
+        closeConfirmModal(true);
+    });
+
+    modalCancel.addEventListener('click', function() {
+        closeConfirmModal(false);
+    });
+
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closeConfirmModal(false);
+        }
+    });
+
     document.querySelectorAll('.sidebar-nav a, .topbar-right a, #profileBackLink').forEach(function(link) {
-        link.addEventListener('click', function(event) {
-            if (!confirmLeaveIfDirty()) {
-                event.preventDefault();
+        link.addEventListener('click', async function(event) {
+            event.preventDefault();
+            var allowLeave = await confirmLeaveIfDirty({
+                title: 'Unsaved changes',
+                message: 'You have unsaved profile changes. Leave this page without saving?',
+                confirmLabel: 'Leave Without Saving',
+                cancelLabel: 'Stay on Page'
+            });
+            if (!allowLeave) {
+                return;
             }
+            skipPrompt = true;
+            window.location.href = link.href;
         });
     });
 
     document.querySelectorAll('.profile-cv-upload-form, .profile-cv-card form[action$="/ta/profile/cv/delete"]').forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            if (!confirmLeaveIfDirty('You have unsaved profile changes. Continue without saving them first?')) {
-                event.preventDefault();
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            var allowLeave = await confirmLeaveIfDirty({
+                title: 'Unsaved profile edits',
+                message: 'You have unsaved profile changes. Continue without saving them before this CV action?',
+                confirmLabel: 'Continue',
+                cancelLabel: 'Go Back'
+            });
+            if (!allowLeave) {
                 return;
             }
             skipPrompt = true;
+            form.submit();
         });
     });
 })();
