@@ -52,30 +52,53 @@ public class AdminService {
     }
 
     /**
-     * Returns a map of TA user IDs to the total number of applications they have submitted.
-     * Used by the Admin dashboard to display per-TA workload statistics.
+     * Returns a map of TA user IDs to total accepted workload hours.
+     * Only {@link ApplicationStatus#ACCEPTED} applications contribute; each accepted
+     * application adds the linked job's weekly hours.
      *
-     * @return a map from userId to application count
+     * @return a map from userId to total accepted hours
      */
     public Map<String, Integer> calculateUserWorkloads() {
         List<User> users = userService.getAllUsers();
         List<Application> applications = applicationService.getAllApplications();
 
         Map<String, Integer> workloads = new LinkedHashMap<>();
-
         for (User user : users) {
             if (user.getRole() == UserRole.TA) {
-                int count = 0;
-                for (Application app : applications) {
-                    if (app.getUserId().equals(user.getUserId())) {
-                        count++;
-                    }
-                }
-                workloads.put(user.getUserId(), count);
+                workloads.put(user.getUserId(), 0);
+            }
+        }
+
+        for (Application app : applications) {
+            if (app.getStatus() != ApplicationStatus.ACCEPTED) {
+                continue;
+            }
+            if (!workloads.containsKey(app.getUserId())) {
+                continue;
+            }
+            Job job = jobService.findById(app.getJobId());
+            if (job != null) {
+                workloads.merge(app.getUserId(), job.getHours(), Integer::sum);
             }
         }
 
         return workloads;
+    }
+
+    /**
+     * Classifies total accepted workload hours into a display level.
+     *
+     * @param totalHours total accepted hours for a TA
+     * @return {@code Normal} (0–20), {@code Warning} (21–40), or {@code Overloaded} (&gt;40)
+     */
+    public static String getWorkloadLevel(int totalHours) {
+        if (totalHours > 40) {
+            return "Overloaded";
+        }
+        if (totalHours > 20) {
+            return "Warning";
+        }
+        return "Normal";
     }
 
     /**
@@ -106,11 +129,13 @@ public class AdminService {
         List<Application> allApps = applicationService.getAllApplications();
         int totalApps = allApps.size();
         int pendingApps = 0;
+        int interviewApps = 0;
         int acceptedApps = 0;
         int rejectedApps = 0;
         for (Application a : allApps) {
             switch (a.getStatus()) {
                 case PENDING: pendingApps++; break;
+                case INTERVIEW: interviewApps++; break;
                 case ACCEPTED: acceptedApps++; break;
                 case REJECTED: rejectedApps++; break;
             }
@@ -142,20 +167,28 @@ public class AdminService {
         }
         jobAppCounts.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(3)
+                .limit(5)
                 .forEachOrdered(e -> topJobs.put(e.getKey(), e.getValue()));
+
+        Map<String, String> topJobTitles = new LinkedHashMap<>();
+        for (String jobId : topJobs.keySet()) {
+            Job job = jobService.findById(jobId);
+            topJobTitles.put(jobId, job != null ? job.getTitle() : jobId);
+        }
 
         stats.put("totalTA", totalTA);
         stats.put("activeTA", activeTA);
         stats.put("totalMO", totalMO);
         stats.put("totalApplications", totalApps);
         stats.put("pendingApplications", pendingApps);
+        stats.put("interviewApplications", interviewApps);
         stats.put("acceptedApplications", acceptedApps);
         stats.put("rejectedApplications", rejectedApps);
         stats.put("totalJobs", totalJobs);
         stats.put("openJobs", openJobs);
         stats.put("topTAs", topTAs);
         stats.put("topJobs", topJobs);
+        stats.put("topJobTitles", topJobTitles);
 
         return stats;
     }

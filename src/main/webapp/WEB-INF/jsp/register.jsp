@@ -1040,7 +1040,7 @@ function validateUsername(username) {
     return results.length && results.chars && results.start;
 }
 
-// Password strength display
+// 修复后的密码强度判断逻辑
 function updatePasswordStrength(password) {
     var bars = [
         document.getElementById('bar1'),
@@ -1049,32 +1049,50 @@ function updatePasswordStrength(password) {
     ];
     var text = document.getElementById('strengthText');
 
-    var strength = 0;
-    if (password.length >= 4) strength = 1;
-    if (password.length >= 8) strength = 2;
-    if (password.length >= 12) strength = 3;
-
     if (password.length === 0) {
         text.textContent = '-';
         text.className = 'strength-text';
-    } else if (strength === 1) {
-        text.textContent = 'Weak';
-        text.className = 'strength-text weak';
-    } else if (strength === 2) {
-        text.textContent = 'Fair';
-        text.className = 'strength-text medium';
-    } else {
-        text.textContent = 'Strong';
-        text.className = 'strength-text strong';
+        bars.forEach(function(bar) {
+            bar.classList.remove('active', 'weak', 'medium', 'strong');
+        });
+        return;
     }
 
+    var score = 0;
+
+    // 长度评分
+    if (password.length >= 4) score += 1;
+    if (password.length >= 8) score += 1;
+    if (password.length >= 12) score += 1;
+
+    // 字符类型评分
+    if (/[a-z]/.test(password)) score += 1; // 小写字母
+    if (/[A-Z]/.test(password)) score += 1; // 大写字母
+    if (/[0-9]/.test(password)) score += 1; // 数字
+    if (/[^a-zA-Z0-9]/.test(password)) score += 1; // 特殊字符
+
+    // 强度分级
+    var strength, level;
+    if (score <= 2) {
+        strength = 'weak';
+        level = 1;
+        text.textContent = 'Weak';
+    } else if (score <= 4) {
+        strength = 'medium';
+        level = 2;
+        text.textContent = 'Fair';
+    } else {
+        strength = 'strong';
+        level = 3;
+        text.textContent = 'Strong';
+    }
+
+    // 更新UI
+    text.className = 'strength-text ' + strength;
     bars.forEach(function(bar, index) {
         bar.classList.remove('active', 'weak', 'medium', 'strong');
-        if (index < strength) {
-            bar.classList.add('active');
-            if (strength === 1) bar.classList.add('weak');
-            else if (strength === 2) bar.classList.add('medium');
-            else bar.classList.add('strong');
+        if (index < level) {
+            bar.classList.add('active', strength);
         }
     });
 }

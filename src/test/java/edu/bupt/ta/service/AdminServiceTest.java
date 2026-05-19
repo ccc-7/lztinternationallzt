@@ -71,8 +71,10 @@ class AdminServiceTest {
             assertTrue(stats.containsKey("totalMO"));
             assertTrue(stats.containsKey("totalApplications"));
             assertTrue(stats.containsKey("pendingApplications"));
+            assertTrue(stats.containsKey("interviewApplications"));
             assertTrue(stats.containsKey("acceptedApplications"));
             assertTrue(stats.containsKey("rejectedApplications"));
+            assertTrue(stats.containsKey("topJobTitles"));
             assertTrue(stats.containsKey("totalJobs"));
             assertTrue(stats.containsKey("openJobs"));
             assertTrue(stats.containsKey("topTAs"));
@@ -126,6 +128,31 @@ class AdminServiceTest {
             Map<String, Integer> topJobs = (Map<String, Integer>) stats.get("topJobs");
             assertNotNull(topJobs);
         }
+
+        @Test
+        @DisplayName("should count interview applications separately")
+        void shouldCountInterviewApplicationsSeparately() {
+            applicationService.updateStatus("A001", ApplicationStatus.INTERVIEW);
+            Map<String, Object> stats = adminService.getDashboardStats();
+            assertEquals(1, stats.get("interviewApplications"));
+            assertEquals(0, stats.get("pendingApplications"));
+        }
+
+        @Test
+        @DisplayName("should return job titles for popular jobs chart")
+        void shouldReturnJobTitlesForPopularJobsChart() {
+            Map<String, Object> stats = adminService.getDashboardStats();
+            @SuppressWarnings("unchecked")
+            Map<String, String> topJobTitles = (Map<String, String>) stats.get("topJobTitles");
+            @SuppressWarnings("unchecked")
+            Map<String, Integer> topJobs = (Map<String, Integer>) stats.get("topJobs");
+            assertNotNull(topJobTitles);
+            assertFalse(topJobs.isEmpty());
+            for (String jobId : topJobs.keySet()) {
+                assertTrue(topJobTitles.containsKey(jobId));
+                assertFalse(topJobTitles.get(jobId).isBlank());
+            }
+        }
     }
 
     // ========== Workload Calculation Tests ==========
@@ -150,11 +177,25 @@ class AdminServiceTest {
         }
 
         @Test
-        @DisplayName("should calculate correct application counts per user")
-        void shouldCalculateCorrectApplicationCountsPerUser() {
+        @DisplayName("should count only accepted application hours per user")
+        void shouldCountOnlyAcceptedApplicationHoursPerUser() {
             Map<String, Integer> workloads = adminService.calculateUserWorkloads();
-            // U001 has seeded application A001
-            assertTrue(workloads.get("U001") >= 1);
+            // U001 has seeded A001 (PENDING) for J001 (20h) — pending does not count
+            assertEquals(0, workloads.get("U001"));
+
+            applicationService.updateStatus("A001", ApplicationStatus.ACCEPTED);
+            workloads = adminService.calculateUserWorkloads();
+            assertEquals(20, workloads.get("U001"));
+        }
+
+        @Test
+        @DisplayName("should classify workload levels")
+        void shouldClassifyWorkloadLevels() {
+            assertEquals("Normal", AdminService.getWorkloadLevel(0));
+            assertEquals("Normal", AdminService.getWorkloadLevel(20));
+            assertEquals("Warning", AdminService.getWorkloadLevel(21));
+            assertEquals("Warning", AdminService.getWorkloadLevel(40));
+            assertEquals("Overloaded", AdminService.getWorkloadLevel(41));
         }
     }
 
