@@ -1,10 +1,132 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%
     request.setAttribute("pageTitle", "Applications");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
+
+<style>
+.feedback-rejected {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #dc3545;
+    font-size: 0.8125rem;
+    cursor: pointer;
+}
+.feedback-rejected svg {
+    color: #dc3545;
+    flex-shrink: 0;
+}
+.feedback-accepted {
+    color: #28a745;
+    font-size: 0.8125rem;
+}
+.feedback-interview {
+    color: #007bff;
+    font-size: 0.8125rem;
+}
+.feedback-none {
+    color: #999;
+    font-size: 0.8125rem;
+}
+.feedback-rejected-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.feedback-rejected-btn:hover {
+    background: #dc3545;
+    color: #fff;
+}
+.feedback-rejected-btn svg {
+    color: #dc3545;
+    flex-shrink: 0;
+}
+.feedback-rejected-btn:hover svg {
+    color: #fff;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+}
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+.modal-body {
+    margin-bottom: 16px;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.modal-form .form-group {
+    margin-bottom: 16px;
+}
+.modal-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.modal-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    resize: vertical;
+}
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+</style>
 
 <div class="layout layout-ta">
     <aside class="sidebar sidebar-ta" id="sidebar">
@@ -69,13 +191,14 @@
                         <th>Organiser</th>
                         <th>Status</th>
                         <th>Submitted At</th>
+                        <th>Feedback</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
                         <c:when test="${empty applications}">
                             <tr>
-                                <td colspan="6" class="empty-state">
+                                <td colspan="7" class="empty-state">
                                     <div class="empty-content">
                                         <span class="empty-icon">&#128203;</span>
                                         <p>No applications yet</p>
@@ -93,6 +216,25 @@
                                     <td>${a.organiser}</td>
                                     <td><span class="badge ${a.status}">${a.status}</span></td>
                                     <td>${a.submittedAt}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${a.status == 'REJECTED' && not empty a.notes}">
+                                                <button type="button" class="feedback-rejected-btn" onclick="showReasonModal('${fn:escapeXml(a.notes)}')">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                                    View Reason
+                                                </button>
+                                            </c:when>
+                                            <c:when test="${a.status == 'ACCEPTED' && not empty a.notes}">
+                                                <span class="feedback-accepted">${a.notes}</span>
+                                            </c:when>
+                                            <c:when test="${a.status == 'INTERVIEW' && not empty a.notes}">
+                                                <span class="feedback-interview">${a.notes}</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="feedback-none">-</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
@@ -106,4 +248,42 @@
 </div>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
+
+<div class="modal-overlay" id="reasonModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Rejection Reason</h3>
+            <button class="modal-close" onclick="closeReasonModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="reasonContent" style="margin: 0; color: #333; line-height: 1.6;"></p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeReasonModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showReasonModal(reason) {
+    var content = reason || 'No reason provided.';
+    // Remove "Rejected: " prefix if present for cleaner display
+    if (content.indexOf('Rejected: ') === 0) {
+        content = content.substring(10);
+    }
+    document.getElementById('reasonContent').textContent = content;
+    document.getElementById('reasonModal').classList.add('active');
+}
+
+function closeReasonModal() {
+    document.getElementById('reasonModal').classList.remove('active');
+}
+
+// Close modal on overlay click
+document.getElementById('reasonModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeReasonModal();
+    }
+});
+</script>
 
