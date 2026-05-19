@@ -133,11 +133,20 @@
                                         <td>
                                             <div class="action-buttons">
                                                 <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-action btn-edit" target="_blank">
-                                                    <span class="btn-icon-svg">&#128196;</span> Summary
+                                                    <span class="btn-icon-svg">&#128196;</span> View Profile
                                                 </a>
-                                                <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-action btn-edit" target="_blank">
-                                                    <span class="btn-icon-svg">&#128462;</span> CV
-                                                </a>
+                                                <c:choose>
+                                                    <c:when test="${applicantHasCv[a.userId]}">
+                                                        <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-action btn-edit" target="_blank">
+                                                            <span class="btn-icon-svg">&#128462;</span> View CV
+                                                        </a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <button type="button" class="btn btn-action btn-edit" onclick="showNoCvNotice('${applicantNames[a.userId]}')">
+                                                            <span class="btn-icon-svg">&#128462;</span> View CV
+                                                        </button>
+                                                    </c:otherwise>
+                                                </c:choose>
                                                 <c:if test="${a.status == 'PENDING'}">
                                                     <form action="${pageContext.request.contextPath}/admin/applications/approve" method="post" class="inline-form">
                                                         <input type="hidden" name="action" value="approve">
@@ -239,6 +248,10 @@ function showToast(message, type) {
             container.removeChild(toast);
         }, 300);
     }, 3000);
+}
+
+function showNoCvNotice(displayName) {
+    showToast((displayName || 'This user') + ' has not uploaded a CV yet.', 'error');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

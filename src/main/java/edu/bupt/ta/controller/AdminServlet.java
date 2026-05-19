@@ -146,9 +146,11 @@ public class AdminServlet extends HttpServlet {
 
         Map<String, String> applicantNames = new HashMap<>();
         Map<String, String> jobTitles = new HashMap<>();
+        Map<String, Boolean> applicantHasCv = new HashMap<>();
         List<Job> jobs = jobService.getAllJobs();
         for (User u : userService.getAllUsers()) {
             applicantNames.put(u.getUserId(), u.getDisplayName());
+            applicantHasCv.put(u.getUserId(), userService.hasUploadedCv(u));
         }
         for (Job j : jobs) {
             jobTitles.put(j.getJobId(), j.getTitle());
@@ -157,6 +159,7 @@ public class AdminServlet extends HttpServlet {
         req.setAttribute("applications", applications);
         req.setAttribute("jobs", allJobs);
         req.setAttribute("applicantNames", applicantNames);
+        req.setAttribute("applicantHasCv", applicantHasCv);
         req.setAttribute("jobTitles", jobTitles);
         req.setAttribute("currentStatus", statusFilter);
         req.setAttribute("currentSearch", searchKeyword);
@@ -247,7 +250,13 @@ public class AdminServlet extends HttpServlet {
 
         users.sort(Comparator.comparing(User::getUserId).reversed());
 
+        Map<String, Boolean> userHasCv = new HashMap<>();
+        for (User user : users) {
+            userHasCv.put(user.getUserId(), userService.hasUploadedCv(user));
+        }
+
         req.setAttribute("users", users);
+        req.setAttribute("userHasCv", userHasCv);
         req.setAttribute("currentRole", roleFilter);
         req.setAttribute("currentStatus", statusFilter);
         req.setAttribute("currentSearch", searchKeyword);

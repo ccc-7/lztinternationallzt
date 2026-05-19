@@ -138,12 +138,21 @@
                                         <td>
                                             <div class="action-buttons">
                                                 <c:if test="${currentRole == 'TA'}">
-                                                    <a href="${pageContext.request.contextPath}/files/cv-summary/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Candidate Summary">
+                                                    <a href="${pageContext.request.contextPath}/files/cv-summary/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Profile">
                                                         <span class="btn-icon-svg">&#128196;</span>
                                                     </a>
-                                                    <a href="${pageContext.request.contextPath}/files/cv/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View Uploaded CV">
-                                                        <span class="btn-icon-svg">&#128462;</span>
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${userHasCv[user.userId]}">
+                                                            <a href="${pageContext.request.contextPath}/files/cv/${user.userId}" class="btn btn-action btn-edit" target="_blank" title="View CV">
+                                                                <span class="btn-icon-svg">&#128462;</span>
+                                                            </a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <button type="button" class="btn btn-action btn-edit" onclick="showNoCvNotice('${user.displayName}')" title="View CV">
+                                                                <span class="btn-icon-svg">&#128462;</span>
+                                                            </button>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </c:if>
                                                 <form action="${pageContext.request.contextPath}/admin/users/toggle" method="post" class="inline-form">
                                                     <input type="hidden" name="action" value="toggle">
@@ -287,6 +296,10 @@ function showToast(message, type) {
         toast.classList.remove('show');
         setTimeout(function() { container.removeChild(toast); }, 300);
     }, 3000);
+}
+
+function showNoCvNotice(displayName) {
+    showToast((displayName || 'This user') + ' has not uploaded a CV yet.', 'error');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

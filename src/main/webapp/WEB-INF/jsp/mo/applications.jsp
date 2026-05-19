@@ -32,6 +32,7 @@
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1;
+    cursor: pointer;
 }
 </style>
 
@@ -127,16 +128,16 @@
                                     <td>
                                         <div class="document-action-group">
                                             <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-outline btn-small" target="_blank">
-                                                View Summary
+                                                View Profile
                                             </a>
                                             <c:choose>
                                                 <c:when test="${applicantHasCv[a.userId]}">
                                                     <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-outline btn-small" target="_blank">
-                                                        View PDF
+                                                        View CV
                                                     </a>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span class="document-pill-muted">PDF Missing</span>
+                                                    <button type="button" class="document-pill-muted" onclick="showNoCvNotice('${applicantNames[a.userId]}')">View CV</button>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
@@ -196,4 +197,9 @@
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
+<script>
+function showNoCvNotice(displayName) {
+    alert((displayName || 'This user') + ' has not uploaded a CV yet.');
+}
+</script>
 
