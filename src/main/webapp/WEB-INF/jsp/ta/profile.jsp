@@ -48,9 +48,51 @@
 
 .profile-summary-status {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-direction: column;
     gap: 12px;
     flex-wrap: wrap;
+    min-width: 320px;
+}
+
+.profile-summary-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-summary-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-format-hint {
+    padding: 14px 16px;
+    border: 1px dashed #c7d7ea;
+    border-radius: var(--radius-md);
+    background: #f8fbff;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.profile-format-hint strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.profile-format-hint code {
+    background: #edf4ff;
+    border: 1px solid #d6e4fb;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.82rem;
 }
 
 .profile-cv-card {
@@ -161,18 +203,22 @@
                         <p class="form-help">Summary and original PDF CV are managed separately. Save your profile fields here, then use preview or PDF actions independently.</p>
                     </div>
                     <div class="profile-summary-status">
-                        <span class="summary-status-label">Summary Status</span>
-                        <span class="summary-status-badge ${profileUser.summaryStatus}">
-                            <c:choose>
-                                <c:when test="${profileUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
-                                <c:when test="${profileUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
-                                <c:otherwise>Incomplete</c:otherwise>
-                            </c:choose>
-                        </span>
-                        <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" target="_blank">Preview Candidate Summary</a>
-                        <c:if test="${profileHasCv}">
-                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Preview Uploaded CV</a>
-                        </c:if>
+                        <div class="profile-summary-meta">
+                            <span class="summary-status-label">Summary Status</span>
+                            <span class="summary-status-badge ${profileUser.summaryStatus}">
+                                <c:choose>
+                                    <c:when test="${profileUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
+                                    <c:when test="${profileUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
+                                    <c:otherwise>Incomplete</c:otherwise>
+                                </c:choose>
+                            </span>
+                        </div>
+                        <div class="profile-summary-actions">
+                            <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" target="_blank">Preview Candidate Summary</a>
+                            <c:if test="${profileHasCv}">
+                                <a class="btn btn-secondary btn-small" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Preview Uploaded CV</a>
+                            </c:if>
+                        </div>
                     </div>
                 </div>
 
@@ -230,19 +276,25 @@
                         <div class="profile-column">
                             <section class="panel">
                                 <h2>Candidate Summary Builder</h2>
-                                <p class="form-help">Use these structured fields to generate a richer summary for reviewers. Line breaks are compacted for CSV compatibility.</p>
+                                <p class="form-help">Use these structured fields to generate a richer summary for reviewers. Please follow the suggested format so the final summary stays tidy and recruiter-friendly.</p>
+                                <div class="profile-format-hint">
+                                    <strong>Suggested format</strong>
+                                    <span>`Personal Statement`: 1-2 short sentences about your background, strengths, and TA motivation.</span><br>
+                                    <span>`Relevant Courses`: separate items with <code>|</code> or commas, for example `Data Structures | Embedded Systems | Signals and Systems`.</span><br>
+                                    <span>`Project / Teaching Experience`: one experience per line, starting with an action and a result.</span>
+                                </div>
                                 <div class="profile-card-grid">
                                     <div class="full-width">
                                         <label>Personal Statement</label>
-                                        <textarea name="personalStatement" rows="6" placeholder="Short self-introduction or motivation">${profileUser.personalStatement}</textarea>
+                                        <textarea name="personalStatement" rows="6" placeholder="Example: Final-year IoT student interested in teaching support, embedded systems, and peer mentoring.">${profileUser.personalStatement}</textarea>
                                     </div>
                                     <div class="full-width">
                                         <label>Relevant Courses</label>
-                                        <input type="text" name="relevantCourses" value="${profileUser.relevantCourses}" placeholder="Use commas, semicolons, or | to separate items">
+                                        <input type="text" name="relevantCourses" value="${profileUser.relevantCourses}" placeholder="Example: Data Structures | Embedded Systems | Signals and Systems">
                                     </div>
                                     <div class="full-width">
                                         <label>Project / Teaching Experience</label>
-                                        <textarea name="projectExperience" rows="8" placeholder="One project or teaching experience per line">${profileUser.projectExperience}</textarea>
+                                        <textarea name="projectExperience" rows="8" placeholder="One experience per line&#10;Example: Built a Java Servlet/JSP TA recruitment system&#10;Supported peer debugging for programming coursework&#10;Designed STM32-based monitoring demos">${profileUser.projectExperience}</textarea>
                                     </div>
                                 </div>
                             </section>

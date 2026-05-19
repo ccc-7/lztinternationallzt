@@ -133,8 +133,10 @@
 
         .summary-meta-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: minmax(0, 1fr);
             gap: 12px;
+            justify-self: end;
+            width: min(100%, 228px);
         }
 
         .summary-meta-card {
@@ -156,34 +158,6 @@
         .summary-meta-value {
             font-size: 1.02rem;
             font-weight: 600;
-        }
-
-        .summary-status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 14px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .summary-status-badge.INCOMPLETE {
-            background: rgba(255, 206, 167, 0.2);
-            color: #fff6eb;
-            border: 1px solid rgba(255, 230, 204, 0.26);
-        }
-
-        .summary-status-badge.BASIC_COMPLETE {
-            background: rgba(255, 243, 205, 0.22);
-            color: #fff7db;
-            border: 1px solid rgba(255, 248, 225, 0.24);
-        }
-
-        .summary-status-badge.SUMMARY_COMPLETE {
-            background: rgba(219, 252, 230, 0.18);
-            color: #f4fff7;
-            border: 1px solid rgba(231, 255, 239, 0.24);
         }
 
         .summary-body {
@@ -262,6 +236,16 @@
             margin-bottom: 8px;
             color: #51627d;
             font-size: 0.86rem;
+        }
+
+        .summary-info-card.email-card {
+            grid-column: 1 / -1;
+        }
+
+        .summary-info-card.email-card span {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            line-height: 1.6;
         }
 
         .summary-chip-list {
@@ -406,20 +390,6 @@
                     <span class="summary-meta-value">${cvUser.userId}</span>
                 </div>
                 <div class="summary-meta-card">
-                    <span class="summary-meta-label">Summary Status</span>
-                    <span class="summary-status-badge ${cvUser.summaryStatus}">
-                        <c:choose>
-                            <c:when test="${cvUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
-                            <c:when test="${cvUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
-                            <c:otherwise>Incomplete</c:otherwise>
-                        </c:choose>
-                    </span>
-                </div>
-                <div class="summary-meta-card">
-                    <span class="summary-meta-label">Email</span>
-                    <span class="summary-meta-value">${empty cvUser.email ? 'Not provided' : cvUser.email}</span>
-                </div>
-                <div class="summary-meta-card">
                     <span class="summary-meta-label">Preferred Role</span>
                     <span class="summary-meta-value">${empty cvUser.preferredRole ? 'Not specified' : cvUser.preferredRole}</span>
                 </div>
@@ -448,9 +418,9 @@
                                 <strong>Major</strong>
                                 <span>${empty cvUser.major ? 'Not specified' : cvUser.major}</span>
                             </div>
-                            <div class="summary-info-card">
-                                <strong>Account Status</strong>
-                                <span>${empty cvUser.status ? 'Unknown' : cvUser.status}</span>
+                            <div class="summary-info-card email-card">
+                                <strong>Email</strong>
+                                <span>${empty cvUser.email ? 'Not provided' : cvUser.email}</span>
                             </div>
                         </div>
                     </section>
