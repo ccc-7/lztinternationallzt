@@ -160,6 +160,19 @@
             font-weight: 600;
         }
 
+        .summary-meta-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .summary-meta-line {
+            display: block;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
         .summary-body {
             padding: 32px;
         }
@@ -391,7 +404,18 @@
                 </div>
                 <div class="summary-meta-card">
                     <span class="summary-meta-label">Preferred Role</span>
-                    <span class="summary-meta-value">${empty cvUser.preferredRole ? 'Not specified' : cvUser.preferredRole}</span>
+                    <c:choose>
+                        <c:when test="${not empty cvUser.preferredRole}">
+                            <span class="summary-meta-value summary-meta-stack">
+                                <c:forTokens items="${cvUser.preferredRole}" delims="|" var="role">
+                                    <span class="summary-meta-line">${role}</span>
+                                </c:forTokens>
+                            </span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="summary-meta-value">Not specified</span>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </header>
