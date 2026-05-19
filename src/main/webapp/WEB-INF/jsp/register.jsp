@@ -1331,15 +1331,15 @@ function checkPasswordMatch() {
         field.classList.remove('error');
         field.classList.add('valid');
         return true;
-    } else {
-        status.classList.remove('match');
-        status.classList.add('mismatch');
-        icon.textContent = '✕';
-        text.textContent = 'Passwords do not match';
-        field.classList.remove('valid');
-        field.classList.add('error');
-        return false;
     }
+
+    status.classList.remove('match');
+    status.classList.add('mismatch');
+    icon.textContent = '✕';
+    text.textContent = 'Passwords do not match';
+    field.classList.remove('valid');
+    field.classList.add('error');
+    return false;
 }
 
 // Event listeners
@@ -1407,7 +1407,6 @@ function updateProgress() {
     line.style.width = progress + '%';
 }
 
-function setupLimitedMultiSelect(selectId, counterId, maxAllowed) {
 function setupRolePicker(shellId, counterId, maxAllowed, presetValue) {
     var shell = document.getElementById(shellId);
     if (!shell) return;
@@ -1472,10 +1471,6 @@ function setupRolePicker(shellId, counterId, maxAllowed, presetValue) {
     }
 
     updateCounter();
-}
-
-function setupLimitedMultiSelect(selectId, counterId, maxAllowed) {
-    // legacy no-op retained to avoid breaking older calls
 }
 
 // Validate step
