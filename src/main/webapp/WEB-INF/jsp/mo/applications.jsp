@@ -158,12 +158,7 @@
                                                 <input type="hidden" name="filterJobId" value="${filterJobId}">
                                                 <button type="submit" class="btn btn-decision btn-interview" ${a.status == 'INTERVIEW' ? 'disabled' : ''}>Interview</button>
                                             </form>
-                                            <form action="${pageContext.request.contextPath}/mo/applications/update" method="post" class="decision-form">
-                                                <input type="hidden" name="applicationId" value="${a.applicationId}">
-                                                <input type="hidden" name="status" value="REJECTED">
-                                                <input type="hidden" name="filterJobId" value="${filterJobId}">
-                                                <button type="submit" class="btn btn-decision btn-reject" ${a.status == 'REJECTED' ? 'disabled' : ''}>Reject</button>
-                                            </form>
+                                            <button type="button" class="btn btn-decision btn-reject" onclick="showRejectModal('${a.applicationId}')" ${a.status == 'REJECTED' ? 'disabled' : ''}>Reject</button>
                                         </div>
                                     </td>
                                     </tr>
@@ -197,9 +192,49 @@
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
+<div class="modal-overlay" id="rejectModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Reject Application</h3>
+            <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+        </div>
+        <form action="${pageContext.request.contextPath}/mo/applications/update" method="post" class="modal-form">
+            <input type="hidden" name="applicationId" id="rejectApplicationId" value="">
+            <input type="hidden" name="status" value="REJECTED">
+            <input type="hidden" name="filterJobId" value="${filterJobId}">
+            <div class="form-group">
+                <label>Rejection Reason <span class="required">*</span></label>
+                <textarea name="rejectReason" id="rejectReason" rows="4" required placeholder="Please enter the reason for rejection..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Cancel</button>
+                <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 function showNoCvNotice(displayName) {
     alert((displayName || 'This user') + ' has not uploaded a CV yet.');
 }
+
+function showRejectModal(applicationId) {
+    document.getElementById('rejectApplicationId').value = applicationId;
+    document.getElementById('rejectModal').classList.add('active');
+}
+
+function closeRejectModal() {
+    document.getElementById('rejectModal').classList.remove('active');
+    document.getElementById('rejectApplicationId').value = '';
+    document.getElementById('rejectReason').value = '';
+}
+
+// Close modal on overlay click
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeRejectModal();
+    }
+});
 </script>
 

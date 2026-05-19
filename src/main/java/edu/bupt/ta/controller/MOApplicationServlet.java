@@ -115,6 +115,7 @@ public class MOApplicationServlet extends HttpServlet {
         String applicationId = req.getParameter("applicationId");
         String status = req.getParameter("status");
         String filterJobId = req.getParameter("filterJobId");
+        String rejectReason = req.getParameter("rejectReason");
 
         try {
             Application application = applicationService.findById(applicationId);
@@ -127,7 +128,15 @@ public class MOApplicationServlet extends HttpServlet {
                 throw new IllegalArgumentException("you can only update applications for your own jobs");
             }
 
-            applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));
+            // For REJECTED status, require and pass the rejection reason
+            if ("REJECTED".equalsIgnoreCase(status)) {
+                if (rejectReason == null || rejectReason.isBlank()) {
+                    throw new IllegalArgumentException("rejection reason cannot be empty");
+                }
+                applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED, "Rejected: " + rejectReason);
+            } else {
+                applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));
+            }
             req.getSession().setAttribute("flashSuccess", "Application status updated successfully");
         } catch (Exception e) {
             req.getSession().setAttribute("flashError", "Failed to update status: " + e.getMessage());
