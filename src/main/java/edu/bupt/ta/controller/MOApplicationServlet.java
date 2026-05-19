@@ -116,6 +116,7 @@ public class MOApplicationServlet extends HttpServlet {
         String status = req.getParameter("status");
         String filterJobId = req.getParameter("filterJobId");
         String rejectReason = req.getParameter("rejectReason");
+        String interviewNote = req.getParameter("interviewNote");
 
         try {
             Application application = applicationService.findById(applicationId);
@@ -134,6 +135,13 @@ public class MOApplicationServlet extends HttpServlet {
                     throw new IllegalArgumentException("rejection reason cannot be empty");
                 }
                 applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED, "Rejected: " + rejectReason);
+            } else if ("INTERVIEW".equalsIgnoreCase(status)) {
+                // For INTERVIEW status, optionally pass interview note
+                if (interviewNote != null && !interviewNote.isBlank()) {
+                    applicationService.updateStatus(applicationId, ApplicationStatus.INTERVIEW, "Interview: " + interviewNote);
+                } else {
+                    applicationService.updateStatus(applicationId, ApplicationStatus.INTERVIEW);
+                }
             } else {
                 applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));
             }
