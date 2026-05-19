@@ -451,7 +451,7 @@
                         <c:if test="${profileHasCv}">
                             <a href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" class="btn btn-secondary" target="_blank">Preview CV</a>
                         </c:if>
-                        <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary">Back</a>
+                        <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary" id="profileBackLink">Back</a>
                     </div>
                 </form>
 
@@ -574,6 +574,82 @@ function setupRolePicker(shellId, counterId, maxAllowed) {
 }
 
 setupRolePicker('profilePreferredRolePicker', 'profilePreferredRoleCount', 3);
+
+(function() {
+    var profileForm = document.getElementById('taProfileForm');
+    if (!profileForm) return;
+
+    var skipPrompt = false;
+    var initialSnapshot = snapshotProfileForm();
+
+    function snapshotProfileForm() {
+        var data = [];
+        Array.from(profileForm.elements).forEach(function(field) {
+            if (!field.name || field.disabled) return;
+            if (field.type === 'checkbox') {
+                data.push(field.name + '=' + (field.checked ? '1' : '0') + ':' + field.value);
+                return;
+            }
+            if (field.type === 'radio') {
+                if (field.checked) {
+                    data.push(field.name + '=' + field.value);
+                }
+                return;
+            }
+            data.push(field.name + '=' + field.value);
+        });
+        return data.join('||');
+    }
+
+    function hasUnsavedChanges() {
+        return snapshotProfileForm() !== initialSnapshot;
+    }
+
+    function confirmLeaveIfDirty(message) {
+        if (!hasUnsavedChanges()) {
+            return true;
+        }
+        return window.confirm(message || 'You have unsaved profile changes. Leave this page without saving?');
+    }
+
+    profileForm.addEventListener('submit', function() {
+        skipPrompt = true;
+    });
+
+    profileForm.addEventListener('input', function() {
+        skipPrompt = false;
+    });
+
+    profileForm.addEventListener('change', function() {
+        skipPrompt = false;
+    });
+
+    window.addEventListener('beforeunload', function(event) {
+        if (skipPrompt || !hasUnsavedChanges()) {
+            return;
+        }
+        event.preventDefault();
+        event.returnValue = '';
+    });
+
+    document.querySelectorAll('.sidebar-nav a, .topbar-right a, #profileBackLink').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            if (!confirmLeaveIfDirty()) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    document.querySelectorAll('.profile-cv-upload-form, .profile-cv-card form[action$="/ta/profile/cv/delete"]').forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!confirmLeaveIfDirty('You have unsaved profile changes. Continue without saving them first?')) {
+                event.preventDefault();
+                return;
+            }
+            skipPrompt = true;
+        });
+    });
+})();
 </script>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
