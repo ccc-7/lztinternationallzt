@@ -34,6 +34,10 @@
     margin-bottom: 0;
 }
 
+.profile-summary-panel {
+    margin-bottom: 20px;
+}
+
 .profile-builder-head {
     display: flex;
     justify-content: space-between;
@@ -48,18 +52,19 @@
 
 .profile-summary-status {
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     gap: 12px;
     flex-wrap: wrap;
-    min-width: 320px;
+    min-width: 280px;
+    margin-right: 28px;
 }
 
 .profile-summary-actions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
 }
@@ -67,7 +72,7 @@
 .profile-summary-meta {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
 }
@@ -137,6 +142,117 @@
     flex-wrap: wrap;
 }
 
+.profile-role-select-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.role-picker {
+    position: relative;
+}
+
+.profile-role-select-helper {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+}
+
+.role-picker-trigger {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.role-picker-trigger:focus,
+.role-picker.open .role-picker-trigger {
+    border-color: var(--enterprise-blue);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    outline: none;
+}
+
+.role-picker-trigger-text {
+    color: var(--text-placeholder);
+}
+
+.role-picker-trigger.has-value .role-picker-trigger-text {
+    color: var(--text-primary);
+}
+
+.role-picker-arrow {
+    color: var(--text-tertiary);
+    transition: transform 0.2s ease;
+}
+
+.role-picker.open .role-picker-arrow {
+    transform: rotate(180deg);
+}
+
+.role-picker-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 15;
+    max-height: 240px;
+    overflow-y: auto;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-elevated);
+    padding: 8px;
+}
+
+.role-picker.open .role-picker-dropdown {
+    display: block;
+}
+
+.role-picker-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.role-picker-option:hover {
+    background: var(--gray-100);
+}
+
+.role-picker-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--enterprise-blue);
+    flex-shrink: 0;
+}
+
+.role-picker-option-text {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.role-picker-empty {
+    padding: 12px;
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+}
+
 @media (max-width: 960px) {
     .profile-page-grid {
         grid-template-columns: 1fr;
@@ -196,7 +312,7 @@
         </div>
 
         <div class="ta-content">
-            <section class="panel profile-form-panel<c:if test="${taProfileFieldRings}"> profile-field-rings</c:if>">
+            <section class="panel profile-summary-panel">
                 <div class="profile-builder-head">
                     <div>
                         <h1>Candidate Summary Builder</h1>
@@ -221,7 +337,9 @@
                         </div>
                     </div>
                 </div>
+            </section>
 
+            <section class="panel profile-form-panel<c:if test="${taProfileFieldRings}"> profile-field-rings</c:if>">
                 <form id="taProfileForm" class="grid-form" action="${pageContext.request.contextPath}/ta/profile" method="post">
                     <div class="profile-page-grid">
                         <div class="profile-column">
@@ -262,7 +380,33 @@
                                     </div>
                                     <div class="full-width">
                                         <label>Preferred Role</label>
-                                        <input type="text" name="preferredRole" value="${profileUser.preferredRole}" placeholder="e.g. Lab Support | Tutorial Support">
+                                        <div class="profile-role-select-shell">
+                                            <div class="role-picker" id="profilePreferredRolePicker" data-selected="${profileUser.preferredRole}">
+                                                <button type="button" class="role-picker-trigger" aria-expanded="false">
+                                                    <span class="role-picker-trigger-text">Select up to 3 preferred roles</span>
+                                                    <span class="role-picker-arrow">▼</span>
+                                                </button>
+                                                <div class="role-picker-dropdown">
+                                                    <c:choose>
+                                                        <c:when test="${empty preferredRoleOptions}">
+                                                            <div class="role-picker-empty">No positions are available yet.</div>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="roleOption" items="${preferredRoleOptions}">
+                                                                <label class="role-picker-option">
+                                                                    <input type="checkbox" name="preferredRoleSelection" value="${roleOption}">
+                                                                    <span class="role-picker-option-text">${roleOption}</span>
+                                                                </label>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </div>
+                                            <div class="profile-role-select-helper">
+                                                <span>Select up to 3 roles from the current job list.</span>
+                                                <span id="profilePreferredRoleCount">0 / 3 selected</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="full-width">
                                         <label>Skills</label>
@@ -368,5 +512,68 @@
         </div>
     </main>
 </div>
+
+<script>
+function setupRolePicker(shellId, counterId, maxAllowed) {
+    var shell = document.getElementById(shellId);
+    if (!shell) return;
+
+    var trigger = shell.querySelector('.role-picker-trigger');
+    var triggerText = shell.querySelector('.role-picker-trigger-text');
+    var checkboxes = Array.from(shell.querySelectorAll('input[type="checkbox"][name="preferredRoleSelection"]'));
+    var preset = (shell.getAttribute('data-selected') || '').split('|').map(function(item) { return item.trim(); }).filter(Boolean);
+
+    checkboxes.forEach(function(box) {
+        box.checked = preset.includes(box.value);
+    });
+
+    function selectedValues() {
+        return checkboxes.filter(function(box) { return box.checked; }).map(function(box) { return box.value; });
+    }
+
+    function updateCounter() {
+        var values = selectedValues();
+        var counter = document.getElementById(counterId);
+        if (counter) {
+            counter.textContent = values.length + ' / ' + maxAllowed + ' selected';
+        }
+        if (values.length === 0) {
+            trigger.classList.remove('has-value');
+            triggerText.textContent = 'Select up to 3 preferred roles';
+        } else {
+            trigger.classList.add('has-value');
+            triggerText.textContent = values.join(', ');
+        }
+    }
+
+    trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        shell.classList.toggle('open');
+        trigger.setAttribute('aria-expanded', shell.classList.contains('open') ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!shell.contains(e.target)) {
+            shell.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    checkboxes.forEach(function(box) {
+        box.addEventListener('change', function() {
+            if (selectedValues().length > maxAllowed) {
+                box.checked = false;
+                alert('You can select up to ' + maxAllowed + ' preferred roles.');
+                return;
+            }
+            updateCounter();
+        });
+    });
+
+    updateCounter();
+}
+
+setupRolePicker('profilePreferredRolePicker', 'profilePreferredRoleCount', 3);
+</script>
 
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>

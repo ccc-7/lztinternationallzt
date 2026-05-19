@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
 	request.setAttribute("pageTitle", "Create Account");
 %>
@@ -461,6 +462,140 @@
             border-color: var(--status-red, #dc3545);
         }
 
+        .field-message {
+            margin-top: 8px;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-tertiary, #6c757d);
+            display: none;
+        }
+
+        .field-message.visible {
+            display: block;
+        }
+
+        .field-message.success {
+            color: var(--status-green, #198754);
+        }
+
+        .field-message.error {
+            color: var(--status-red, #dc3545);
+        }
+
+        .multi-select-shell {
+            margin-bottom: 20px;
+        }
+
+        .multi-select-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary, #212529);
+        }
+
+        .multi-select-trigger {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-300, #dee2e6);
+            border-radius: 6px;
+            background: #fff;
+            font-size: 0.9375rem;
+            color: var(--text-primary, #212529);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .multi-select-trigger:focus,
+        .multi-select-shell.open .multi-select-trigger {
+            border-color: var(--enterprise-blue, #0d6efd);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        }
+
+        .multi-select-trigger-text {
+            min-height: 24px;
+            color: var(--text-placeholder, #adb5bd);
+        }
+
+        .multi-select-trigger.has-value .multi-select-trigger-text {
+            color: var(--text-primary, #212529);
+        }
+
+        .multi-select-trigger-arrow {
+            color: var(--text-tertiary, #6c757d);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .multi-select-shell.open .multi-select-trigger-arrow {
+            transform: rotate(180deg);
+        }
+
+        .multi-select-dropdown {
+            display: none;
+            margin-top: 8px;
+            border: 1px solid var(--gray-300, #dee2e6);
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(33, 37, 41, 0.08);
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .multi-select-shell.open .multi-select-dropdown {
+            display: block;
+        }
+
+        .multi-select-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .multi-select-option:hover {
+            background: var(--gray-100, #f8f9fa);
+        }
+
+        .multi-select-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: var(--enterprise-blue, #0d6efd);
+            flex-shrink: 0;
+        }
+
+        .multi-select-option-text {
+            font-size: 0.875rem;
+            color: var(--text-primary, #212529);
+        }
+
+        .multi-select-empty {
+            padding: 12px;
+            font-size: 0.875rem;
+            color: var(--text-tertiary, #6c757d);
+        }
+
+        .multi-select-helper {
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.8125rem;
+            color: var(--text-tertiary, #6c757d);
+        }
+
         /* Form Row */
         .form-row {
             display: grid;
@@ -724,6 +859,7 @@
                             <input type="text" id="username" name="username" placeholder=" " required autocomplete="username">
                             <label for="username">Username *</label>
                         </div>
+                        <div id="usernameAvailability" class="field-message"></div>
                         <div class="requirements-box">
                             <div class="requirements-box-title">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -950,9 +1086,31 @@
                             </div>
                         </div>
 
-                        <div class="field-group">
-                            <input type="text" id="preferredRole" name="preferredRole" placeholder=" " autocomplete="off">
-                            <label for="preferredRole">Preferred Role (optional)</label>
+                        <div class="multi-select-shell" id="registerPreferredRolePicker" data-max-select="3">
+                            <label class="multi-select-label" for="registerPreferredRoleTrigger">Preferred Roles (optional)</label>
+                            <button type="button" id="registerPreferredRoleTrigger" class="multi-select-trigger" aria-expanded="false">
+                                <span class="multi-select-trigger-text">Select up to 3 positions</span>
+                                <span class="multi-select-trigger-arrow">▼</span>
+                            </button>
+                            <div class="multi-select-dropdown">
+                                <c:choose>
+                                    <c:when test="${empty preferredRoleOptions}">
+                                        <div class="multi-select-empty">No positions are available yet.</div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="roleOption" items="${preferredRoleOptions}">
+                                            <label class="multi-select-option">
+                                                <input type="checkbox" name="preferredRoleSelection" value="${roleOption}">
+                                                <span class="multi-select-option-text">${roleOption}</span>
+                                            </label>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="multi-select-helper">
+                                <span>Choose up to 3 positions from the current job list.</span>
+                                <span id="registerPreferredRoleCount">0 / 3 selected</span>
+                            </div>
                         </div>
 
                         <div class="field-group textarea">
@@ -1012,6 +1170,11 @@
 <script>
 var currentStep = 1;
 var totalSteps = 4;
+var contextPath = '${pageContext.request.contextPath}';
+var usernameAvailabilityCache = {
+    value: '',
+    available: false
+};
 
 // Toggle password visibility
 function togglePassword(inputId, btn) {
@@ -1038,6 +1201,52 @@ function validateUsername(username) {
     document.getElementById('req-username-start').classList.toggle('valid', results.start);
 
     return results.length && results.chars && results.start;
+}
+
+function setUsernameAvailabilityMessage(message, type) {
+    var box = document.getElementById('usernameAvailability');
+    if (!message) {
+        box.textContent = '';
+        box.className = 'field-message';
+        return;
+    }
+    box.textContent = message;
+    box.className = 'field-message visible ' + (type || '');
+}
+
+async function checkUsernameAvailability(forceCheck) {
+    var usernameInput = document.getElementById('username');
+    var username = usernameInput.value.trim();
+
+    if (!validateUsername(username)) {
+        setUsernameAvailabilityMessage('Please satisfy the username format requirements first.', 'error');
+        return false;
+    }
+
+    if (!forceCheck && usernameAvailabilityCache.value === username) {
+        setUsernameAvailabilityMessage(
+            usernameAvailabilityCache.available ? 'Username is available.' : 'This username already exists. Please choose another one.',
+            usernameAvailabilityCache.available ? 'success' : 'error'
+        );
+        return usernameAvailabilityCache.available;
+    }
+
+    setUsernameAvailabilityMessage('Checking username availability...', '');
+
+    try {
+        var response = await fetch(contextPath + '/register?check=username&username=' + encodeURIComponent(username), {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        var result = await response.json();
+        usernameAvailabilityCache.value = username;
+        usernameAvailabilityCache.available = !!result.available;
+        setUsernameAvailabilityMessage(result.message, result.available ? 'success' : 'error');
+        return !!result.available;
+    } catch (error) {
+        setUsernameAvailabilityMessage('Unable to check username right now. Please try again.', 'error');
+        return false;
+    }
 }
 
 // 修复后的密码强度判断逻辑
@@ -1136,6 +1345,15 @@ function checkPasswordMatch() {
 // Event listeners
 document.getElementById('username').addEventListener('input', function() {
     validateUsername(this.value);
+    usernameAvailabilityCache.value = '';
+    usernameAvailabilityCache.available = false;
+    setUsernameAvailabilityMessage('', '');
+});
+
+document.getElementById('username').addEventListener('blur', function() {
+    if (this.value.trim()) {
+        checkUsernameAvailability(false);
+    }
 });
 
 document.getElementById('password').addEventListener('input', function() {
@@ -1189,8 +1407,79 @@ function updateProgress() {
     line.style.width = progress + '%';
 }
 
+function setupLimitedMultiSelect(selectId, counterId, maxAllowed) {
+function setupRolePicker(shellId, counterId, maxAllowed, presetValue) {
+    var shell = document.getElementById(shellId);
+    if (!shell) return;
+    var trigger = shell.querySelector('.multi-select-trigger');
+    var triggerText = shell.querySelector('.multi-select-trigger-text');
+    var checkboxes = Array.from(shell.querySelectorAll('input[type="checkbox"][name="preferredRoleSelection"]'));
+    var preset = (presetValue || '').split('|').map(function(item) { return item.trim(); }).filter(Boolean);
+
+    checkboxes.forEach(function(box) {
+        box.checked = preset.includes(box.value);
+    });
+
+    var previousSelection = checkboxes.filter(function(box) { return box.checked; }).map(function(box) { return box.value; });
+
+    function updateCounter() {
+        var selectedValues = checkboxes.filter(function(box) { return box.checked; }).map(function(box) { return box.value; });
+        var counter = document.getElementById(counterId);
+        if (counter) {
+            counter.textContent = selectedValues.length + ' / ' + maxAllowed + ' selected';
+        }
+        if (selectedValues.length === 0) {
+            trigger.classList.remove('has-value');
+            triggerText.textContent = 'Select up to ' + maxAllowed + ' positions';
+        } else {
+            trigger.classList.add('has-value');
+            triggerText.textContent = selectedValues.join(', ');
+        }
+    }
+
+    trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        shell.classList.toggle('open');
+        trigger.setAttribute('aria-expanded', shell.classList.contains('open') ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!shell.contains(e.target)) {
+            shell.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    checkboxes.forEach(function(box) {
+        box.addEventListener('change', function() {
+            var selectedValues = checkboxes.filter(function(item) { return item.checked; }).map(function(item) { return item.value; });
+            if (selectedValues.length > maxAllowed) {
+                box.checked = false;
+                alert('You can select up to ' + maxAllowed + ' preferred roles.');
+                return;
+            }
+            previousSelection = checkboxes.filter(function(item) { return item.checked; }).map(function(item) { return item.value; });
+            updateCounter();
+        });
+    });
+
+    if (preset.length > maxAllowed) {
+        checkboxes.forEach(function(box, index) {
+            if (index >= maxAllowed) {
+                box.checked = false;
+            }
+        });
+    }
+
+    updateCounter();
+}
+
+function setupLimitedMultiSelect(selectId, counterId, maxAllowed) {
+    // legacy no-op retained to avoid breaking older calls
+}
+
 // Validate step
-function validateStep(step) {
+async function validateStep(step) {
     var section = document.querySelector('.step-section[data-section="' + step + '"]');
     var isValid = true;
 
@@ -1205,6 +1494,11 @@ function validateStep(step) {
         } else {
             username.parentNode.classList.remove('error');
             username.parentNode.classList.add('valid');
+            if (!(await checkUsernameAvailability(true))) {
+                username.parentNode.classList.add('error');
+                username.parentNode.classList.remove('valid');
+                isValid = false;
+            }
         }
 
         if (!password.value) {
@@ -1229,8 +1523,8 @@ function validateStep(step) {
 }
 
 // Navigation
-function nextStep(from) {
-    if (!validateStep(from)) return;
+async function nextStep(from) {
+    if (!(await validateStep(from))) return;
     
     var currentSection = document.querySelector('.step-section[data-section="' + from + '"]');
     currentSection.classList.add('exiting');
@@ -1257,9 +1551,9 @@ function prevStep(from) {
     }, 300);
 }
 
-function jumpToStep(step) {
+async function jumpToStep(step) {
     if (step > currentStep) {
-        if (!validateStep(currentStep)) return;
+        if (!(await validateStep(currentStep))) return;
     }
     
     var currentSection = document.querySelector('.step-section.active');
@@ -1278,17 +1572,17 @@ document.querySelectorAll('input, textarea').forEach(function(input) {
 });
 
 // Form submission
-document.getElementById('regForm').addEventListener('submit', function(e) {
-    if (!validateStep(1)) {
-        jumpToStep(1);
-        e.preventDefault();
+document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (!(await validateStep(1))) {
+        await jumpToStep(1);
         return;
     }
 
     var terms = document.getElementById('terms');
     if (!terms.checked) {
         alert('Please check the box to agree to the Terms of Service and Privacy Policy before continuing.');
-        e.preventDefault();
         return;
     }
 
@@ -1299,10 +1593,12 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
     var style = document.createElement('style');
     style.textContent = '@keyframes spin { 100% { transform: rotate(360deg); } }';
     document.head.appendChild(style);
+    this.submit();
 });
 
 // Initialize
 updateProgress();
+setupRolePicker('registerPreferredRolePicker', 'registerPreferredRoleCount', 3, '');
 </script>
 
 </body>
