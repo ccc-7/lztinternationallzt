@@ -89,6 +89,21 @@ public class UserService {
     }
 
     /**
+     * Checks whether a username already exists, ignoring case and surrounding whitespace.
+     *
+     * @param username the username to check
+     * @return true if the username is already taken
+     */
+    public boolean usernameExists(String username) {
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+        String normalized = username.trim();
+        return storage.loadUsers().stream()
+                .anyMatch(u -> u.getUsername() != null && u.getUsername().equalsIgnoreCase(normalized));
+    }
+
+    /**
      * Looks up a user by their unique ID (e.g. "U001").
      *
      * @param userId the user ID
@@ -180,7 +195,7 @@ public class UserService {
         user.setPersonalStatement(normalizeSingleLineText(personalStatement));
         user.setRelevantCourses(normalizeListText(relevantCourses));
         user.setProjectExperience(normalizeSingleLineText(projectExperience));
-        user.setPreferredRole(normalizeListText(preferredRole));
+        user.setPreferredRole(normalizePreferredRoles(preferredRole));
         user.setSummaryStatus(calculateSummaryStatus(user));
         user.setCvStoredName("");
         user.setCvOriginalName("");
@@ -227,7 +242,7 @@ public class UserService {
                 user.setPersonalStatement(normalizeSingleLineText(personalStatement));
                 user.setRelevantCourses(normalizeListText(relevantCourses));
                 user.setProjectExperience(normalizeSingleLineText(projectExperience));
-                user.setPreferredRole(normalizeListText(preferredRole));
+                user.setPreferredRole(normalizePreferredRoles(preferredRole));
                 user.setSummaryStatus(calculateSummaryStatus(user));
                 if (!notBlank(user.getCvStatus())) {
                     user.setCvStatus(hasUploadedCv(user) ? "UPLOADED" : "MISSING");
@@ -328,7 +343,7 @@ public class UserService {
         user.setPersonalStatement(normalizeSingleLineText(user.getPersonalStatement()));
         user.setRelevantCourses(normalizeListText(user.getRelevantCourses()));
         user.setProjectExperience(normalizeSingleLineText(user.getProjectExperience()));
-        user.setPreferredRole(normalizeListText(user.getPreferredRole()));
+        user.setPreferredRole(normalizePreferredRoles(user.getPreferredRole()));
 
         user.setUserId(nextUserId(users));
         user.setUsername(user.getUsername().trim());
@@ -551,6 +566,30 @@ public class UserService {
                 .replaceAll("\\|{2,}", "|")
                 .replaceAll("\\s*\\|\\s*", "|")
                 .trim();
+    }
+
+    /**
+     * Normalises preferred-role selections and keeps at most three unique items in
+     * insertion order. This gives the UI freedom to use multi-select controls while
+     * keeping CSV storage compact and predictable.
+     */
+    private String normalizePreferredRoles(String value) {
+        String normalized = normalizeListText(value);
+        if (normalized.isBlank()) {
+            return "";
+        }
+        java.util.LinkedHashSet<String> unique = new java.util.LinkedHashSet<>();
+        for (String token : normalized.split("\\|")) {
+            String item = token == null ? "" : token.trim();
+            if (item.isEmpty()) {
+                continue;
+            }
+            unique.add(item);
+            if (unique.size() == 3) {
+                break;
+            }
+        }
+        return String.join("|", unique);
     }
 
     /**

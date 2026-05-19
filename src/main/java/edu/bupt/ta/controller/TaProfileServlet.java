@@ -3,6 +3,7 @@ package edu.bupt.ta.controller;
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
 import edu.bupt.ta.service.CvFileService;
+import edu.bupt.ta.service.JobService;
 import edu.bupt.ta.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,6 +25,7 @@ public class TaProfileServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
     private final CvFileService cvFileService = new CvFileService();
+    private final JobService jobService = new JobService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -40,6 +42,7 @@ public class TaProfileServlet extends HttpServlet {
         req.setAttribute("profileHasCv", userService.hasUploadedCv(profileUser));
         req.setAttribute("cvMaxSizeMb", cvFileService.getMaxCvSizeBytes() / (1024 * 1024));
         req.setAttribute("taProfileFieldRings", Boolean.TRUE);
+        req.setAttribute("preferredRoleOptions", jobService.getPreferredRoleOptions());
         req.getRequestDispatcher("/WEB-INF/jsp/ta/profile.jsp").forward(req, resp);
     }
 
@@ -64,7 +67,8 @@ public class TaProfileServlet extends HttpServlet {
         String personalStatement = req.getParameter("personalStatement");
         String relevantCourses = req.getParameter("relevantCourses");
         String projectExperience = req.getParameter("projectExperience");
-        String preferredRole = req.getParameter("preferredRole");
+        String preferredRole = mergePreferredRoles(req.getParameterValues("preferredRoleSelection"),
+                req.getParameter("preferredRole"));
 
         int year = 0;
         if (yearStr != null && !yearStr.isBlank()) {
@@ -90,6 +94,13 @@ public class TaProfileServlet extends HttpServlet {
         }
 
         resp.sendRedirect(req.getContextPath() + "/ta/profile");
+    }
+
+    private String mergePreferredRoles(String[] selections, String fallback) {
+        if (selections != null && selections.length > 0) {
+            return String.join("|", selections);
+        }
+        return fallback == null ? "" : fallback;
     }
 }
 

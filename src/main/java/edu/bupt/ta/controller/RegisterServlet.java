@@ -1,6 +1,7 @@
 package edu.bupt.ta.controller;
 
 import edu.bupt.ta.model.User;
+import edu.bupt.ta.service.JobService;
 import edu.bupt.ta.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,10 +21,16 @@ import java.io.IOException;
 public class RegisterServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
+    private final JobService jobService = new JobService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        if ("username".equals(req.getParameter("check"))) {
+            handleUsernameAvailability(req, resp);
+            return;
+        }
+        req.setAttribute("preferredRoleOptions", jobService.getPreferredRoleOptions());
         req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
     }
 
@@ -44,7 +51,8 @@ public class RegisterServlet extends HttpServlet {
         String personalStatement = req.getParameter("personalStatement");
         String relevantCourses = req.getParameter("relevantCourses");
         String projectExperience = req.getParameter("projectExperience");
-        String preferredRole = req.getParameter("preferredRole");
+        String preferredRole = mergePreferredRoles(req.getParameterValues("preferredRoleSelection"),
+                req.getParameter("preferredRole"));
 
         try {
             if (username == null || username.isBlank() || password == null || password.isBlank()) {
@@ -82,5 +90,39 @@ public class RegisterServlet extends HttpServlet {
             req.getSession().setAttribute("flashError", e.getMessage());
             resp.sendRedirect(req.getContextPath() + "/register");
         }
+    }
+
+    private void handleUsernameAvailability(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        String username = req.getParameter("username");
+        boolean formatValid = username != null
+                && username.matches("[A-Za-z][A-Za-z0-9_]{2,}");
+        boolean exists = formatValid && userService.usernameExists(username);
+        boolean available = formatValid && !exists;
+
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
+        String message;
+        if (username == null || username.isBlank()) {
+            message = "Username is required.";
+        } else if (!formatValid) {
+            message = "Use at least 3 characters, start with a letter, and only use letters, numbers, or underscore.";
+        } else if (exists) {
+            message = "This username already exists. Please choose another one.";
+        } else {
+            message = "Username is available.";
+        }
+        resp.getWriter().write("{\"available\":" + available + ",\"message\":\"" + escapeJson(message) + "\"}");
+    }
+
+    private String mergePreferredRoles(String[] selections, String fallback) {
+        if (selections != null && selections.length > 0) {
+            return String.join("|", selections);
+        }
+        return fallback == null ? "" : fallback;
+    }
+
+    private String escapeJson(String value) {
+        return value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

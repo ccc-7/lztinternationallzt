@@ -125,6 +125,23 @@ public class JobService {
     }
 
     /**
+     * Returns a distinct, sorted list of recruiter-facing role options derived from
+     * current job titles. These are used by registration and profile pages as the
+     * preferred-role multi-select source.
+     *
+     * @return distinct job titles sorted alphabetically
+     */
+    public List<String> getPreferredRoleOptions() {
+        Set<String> distinctTitles = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        for (Job job : storage.loadJobs()) {
+            if (job.getTitle() != null && !job.getTitle().isBlank()) {
+                distinctTitles.add(job.getTitle().trim());
+            }
+        }
+        return new ArrayList<>(distinctTitles);
+    }
+
+    /**
      * Returns all jobs whose status is OPEN.
      *
      * @return a list of open jobs
