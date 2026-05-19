@@ -117,6 +117,7 @@ public class MOApplicationServlet extends HttpServlet {
         String filterJobId = req.getParameter("filterJobId");
         String rejectReason = req.getParameter("rejectReason");
         String interviewNote = req.getParameter("interviewNote");
+        String acceptNote = req.getParameter("acceptNote");
 
         try {
             Application application = applicationService.findById(applicationId);
@@ -141,6 +142,13 @@ public class MOApplicationServlet extends HttpServlet {
                     applicationService.updateStatus(applicationId, ApplicationStatus.INTERVIEW, "Interview: " + interviewNote);
                 } else {
                     applicationService.updateStatus(applicationId, ApplicationStatus.INTERVIEW);
+                }
+            } else if ("ACCEPTED".equalsIgnoreCase(status)) {
+                // For ACCEPTED status, optionally pass acceptance note
+                if (acceptNote != null && !acceptNote.isBlank()) {
+                    applicationService.updateStatus(applicationId, ApplicationStatus.ACCEPTED, "Accepted: " + acceptNote);
+                } else {
+                    applicationService.updateStatus(applicationId, ApplicationStatus.ACCEPTED);
                 }
             } else {
                 applicationService.updateStatus(applicationId, ApplicationStatus.fromString(status));

@@ -146,12 +146,7 @@
                                     <td>${a.submittedAt}</td>
                                     <td>
                                         <div class="decision-buttons">
-                                            <form action="${pageContext.request.contextPath}/mo/applications/update" method="post" class="decision-form">
-                                                <input type="hidden" name="applicationId" value="${a.applicationId}">
-                                                <input type="hidden" name="status" value="ACCEPTED">
-                                                <input type="hidden" name="filterJobId" value="${filterJobId}">
-                                                <button type="submit" class="btn btn-decision btn-accept" ${a.status == 'ACCEPTED' ? 'disabled' : ''}>Accept</button>
-                                            </form>
+                                            <button type="button" class="btn btn-decision btn-accept" onclick="showAcceptModal('${a.applicationId}')" ${a.status == 'ACCEPTED' ? 'disabled' : ''}>Accept</button>
                                             <button type="button" class="btn btn-decision btn-interview" onclick="showInterviewModal('${a.applicationId}')" ${a.status == 'INTERVIEW' ? 'disabled' : ''}>Interview</button>
                                             <button type="button" class="btn btn-decision btn-reject" onclick="showRejectModal('${a.applicationId}')" ${a.status == 'REJECTED' ? 'disabled' : ''}>Reject</button>
                                         </div>
@@ -231,6 +226,28 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="acceptModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Accept Application</h3>
+            <button class="modal-close" onclick="closeAcceptModal()">&times;</button>
+        </div>
+        <form action="${pageContext.request.contextPath}/mo/applications/update" method="post" class="modal-form">
+            <input type="hidden" name="applicationId" id="acceptApplicationId" value="">
+            <input type="hidden" name="status" value="ACCEPTED">
+            <input type="hidden" name="filterJobId" value="${filterJobId}">
+            <div class="form-group">
+                <label>Acceptance Notice <span class="optional">(optional)</span></label>
+                <textarea name="acceptNote" id="acceptNote" rows="4" placeholder="e.g., Welcome to the team! Please attend the orientation on June 1st."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeAcceptModal()">Cancel</button>
+                <button type="submit" class="btn btn-success">Confirm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 function showNoCvNotice(displayName) {
     alert((displayName || 'This user') + ' has not uploaded a CV yet.');
@@ -258,6 +275,17 @@ function closeInterviewModal() {
     document.getElementById('interviewNote').value = '';
 }
 
+function showAcceptModal(applicationId) {
+    document.getElementById('acceptApplicationId').value = applicationId;
+    document.getElementById('acceptModal').classList.add('active');
+}
+
+function closeAcceptModal() {
+    document.getElementById('acceptModal').classList.remove('active');
+    document.getElementById('acceptApplicationId').value = '';
+    document.getElementById('acceptNote').value = '';
+}
+
 // Close modal on overlay click
 document.getElementById('rejectModal').addEventListener('click', function(e) {
     if (e.target === this) {
@@ -267,6 +295,11 @@ document.getElementById('rejectModal').addEventListener('click', function(e) {
 document.getElementById('interviewModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeInterviewModal();
+    }
+});
+document.getElementById('acceptModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAcceptModal();
     }
 });
 </script>

@@ -45,6 +45,17 @@
 .feedback-btn-interview:hover svg {
     color: #fff;
 }
+.feedback-btn-accepted {
+    border-color: #28a745;
+    color: #28a745;
+}
+.feedback-btn-accepted:hover {
+    background: #28a745;
+    color: #fff;
+}
+.feedback-btn-accepted:hover svg {
+    color: #fff;
+}
 .feedback-none {
     color: #999;
     font-size: 0.8125rem;
@@ -223,6 +234,12 @@
                                                     View Details
                                                 </button>
                                             </c:when>
+                                            <c:when test="${a.status == 'ACCEPTED' && not empty a.notes}">
+                                                <button type="button" class="feedback-btn feedback-btn-accepted" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Acceptance Notice')">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                                    View Notice
+                                                </button>
+                                            </c:when>
                                             <c:otherwise>
                                                 <span class="feedback-none">-</span>
                                             </c:otherwise>
@@ -266,6 +283,8 @@ function showReasonModal(content, title) {
         displayContent = displayContent.substring(10);
     } else if (displayContent.indexOf('Interview: ') === 0) {
         displayContent = displayContent.substring(11);
+    } else if (displayContent.indexOf('Accepted: ') === 0) {
+        displayContent = displayContent.substring(10);
     }
     document.getElementById('reasonModalTitle').textContent = modalTitle;
     document.getElementById('reasonContent').textContent = displayContent;
