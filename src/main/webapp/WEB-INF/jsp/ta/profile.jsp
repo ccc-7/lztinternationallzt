@@ -1,4 +1,3 @@
-```jsp
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
@@ -8,72 +7,103 @@
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
 <style>
-html {
-    overflow-y: scroll !important;
-}
-.profile-columns {
+.profile-page-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 1fr;
     gap: 20px;
-    align-items: stretch;
+    align-items: start;
 }
 
-.profile-left-column {
+.profile-column {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.profile-left-column > .panel {
+.profile-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.profile-card-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.profile-form-panel .panel {
     margin-bottom: 0;
 }
 
-.basic-profile-grid {
+.profile-builder-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.profile-builder-head h1 {
+    margin-bottom: 8px;
+}
+
+.profile-summary-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.profile-cv-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #fcfdff 0%, #f8fbff 100%);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.profile-cv-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.profile-cv-meta {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    color: var(--text-secondary);
 }
 
-.skills-availability-grid {
+.profile-cv-upload-row {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.profile-right-column > .panel {
-    height: 100%;
-    box-sizing: border-box;
+.profile-cv-upload-row input[type="file"] {
+    flex: 1 1 240px;
 }
 
-.summary-builder-grid {
+.profile-inline-actions {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    height: calc(100% - 80px);
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.summary-builder-grid .form-group:nth-child(1),
-.summary-builder-grid .form-group:nth-child(3) {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+@media (max-width: 960px) {
+    .profile-page-grid {
+        grid-template-columns: 1fr;
+    }
 
-.summary-builder-grid .form-group:nth-child(2) {
-    flex: 0 0 auto;
-}
-
-.summary-builder-grid textarea {
-    flex-grow: 1;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"],
-textarea {
-    width: 100%;
-    box-sizing: border-box;
+    .profile-cv-meta,
+    .profile-card-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 
@@ -118,152 +148,173 @@ textarea {
             </button>
             <div class="topbar-title">My Profile</div>
             <div class="topbar-right">
-                <a class="user-name" href="${pageContext.request.contextPath}/ta/profile">${sessionScope.currentUser.username}</a>
+                <span>${sessionScope.currentUser.username}</span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
             </div>
         </div>
 
         <div class="ta-content">
-            <section class="panel">
-                <div class="page-header profile-header">
-                    <h1>Candidate Summary Builder</h1>
-                    <div class="header-right">
-                        <span class="summary-status status-${user.summaryStatus == 'COMPLETE' ? 'complete' : 'incomplete'}">
-                            SUMMARY STATUS: ${user.summaryStatus}
+            <section class="panel profile-form-panel<c:if test="${taProfileFieldRings}"> profile-field-rings</c:if>">
+                <div class="profile-builder-head">
+                    <div>
+                        <h1>Candidate Summary Builder</h1>
+                        <p class="form-help">Summary and original PDF CV are managed separately. Save your profile fields here, then use preview or PDF actions independently.</p>
+                    </div>
+                    <div class="profile-summary-status">
+                        <span class="summary-status-label">Summary Status</span>
+                        <span class="summary-status-badge ${profileUser.summaryStatus}">
+                            <c:choose>
+                                <c:when test="${profileUser.summaryStatus == 'SUMMARY_COMPLETE'}">Summary Complete</c:when>
+                                <c:when test="${profileUser.summaryStatus == 'BASIC_COMPLETE'}">Basic Complete</c:when>
+                                <c:otherwise>Incomplete</c:otherwise>
+                            </c:choose>
                         </span>
-                        <button type="button" class="btn btn-secondary" onclick="previewSummary()">Preview Candidate Summary</button>
+                        <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" target="_blank">Preview Candidate Summary</a>
+                        <c:if test="${profileHasCv}">
+                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" target="_blank">Preview Uploaded CV</a>
+                        </c:if>
                     </div>
                 </div>
-                <p class="form-help">Summary and original PDF CV are now managed as two separate reviewer-facing artifacts.</p>
-            </section>
 
-            <form class="profile-form" action="${pageContext.request.contextPath}/ta/profile" method="post" enctype="multipart/form-data">
-                <div class="profile-columns">
-                    <div class="profile-left-column">
-                        <section class="panel">
-                            <h2>Basic Profile</h2>
-                            <p class="form-help">These fields support account identity, contact information, and matching logic.</p>
-                            <div class="basic-profile-grid">
-                                <div class="form-group">
-                                    <label>Username</label>
-                                    <input type="text" name="username" value="${user.username}" readonly>
+                <form id="taProfileForm" class="grid-form" action="${pageContext.request.contextPath}/ta/profile" method="post">
+                    <div class="profile-page-grid">
+                        <div class="profile-column">
+                            <section class="panel">
+                                <h2>Basic Profile</h2>
+                                <p class="form-help">These fields support account identity, contact information, and matching logic.</p>
+                                <div class="profile-card-grid">
+                                    <div>
+                                        <label>Username</label>
+                                        <input type="text" value="${profileUser.username}" readonly>
+                                    </div>
+                                    <div>
+                                        <label>Full Name</label>
+                                        <input type="text" name="name" value="${profileUser.name}" placeholder="Your full name">
+                                    </div>
+                                    <div>
+                                        <label>Email</label>
+                                        <input type="email" name="email" value="${profileUser.email}" placeholder="you@example.com">
+                                    </div>
+                                    <div>
+                                        <label>Year</label>
+                                        <input type="number" name="year" min="1" max="8" value="${profileUser.year}" placeholder="e.g. 3">
+                                    </div>
+                                    <div class="full-width">
+                                        <label>Major</label>
+                                        <input type="text" name="major" value="${profileUser.major}" placeholder="e.g. Computer Science">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Full Name</label>
-                                    <input type="text" name="name" value="${user.name}" placeholder="Your full name">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" name="email" value="${user.email}" placeholder="you@example.com">
-                                </div>
-                                <div class="form-group">
-                                    <label>Year</label>
-                                    <input type="number" name="year" value="${user.year}" min="1" max="10" placeholder="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Major</label>
-                                    <input type="text" name="major" value="${user.major}" placeholder="e.g. Computer Science">
-                                </div>
-                            </div>
-                        </section>
+                            </section>
 
-                        <section class="panel">
-                            <h2>Skills & Availability</h2>
-                            <p class="form-help">These fields help the system rank jobs and help MO compare applicants quickly.</p>
-                            <div class="skills-availability-grid">
-                                <div class="form-group">
-                                    <label>Availability</label>
-                                    <input type="text" name="availability" value="${user.availability}" placeholder="e.g. Mon/Wed afternoons">
+                            <section class="panel">
+                                <h2>Skills & Availability</h2>
+                                <p class="form-help">These fields help the system rank jobs and help MO compare applicants quickly.</p>
+                                <div class="profile-card-grid">
+                                    <div class="full-width">
+                                        <label>Availability</label>
+                                        <input type="text" name="availability" value="${profileUser.availability}" placeholder="e.g. Mon/Wed afternoons">
+                                    </div>
+                                    <div class="full-width">
+                                        <label>Preferred Role</label>
+                                        <input type="text" name="preferredRole" value="${profileUser.preferredRole}" placeholder="e.g. Lab Support | Tutorial Support">
+                                    </div>
+                                    <div class="full-width">
+                                        <label>Skills</label>
+                                        <textarea name="skills" rows="4" placeholder="e.g. Java, SQL, Data Structures">${profileUser.skills}</textarea>
+                                        <p class="hint-text">Skills are normalized to `|` for CSV storage.</p>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Preferred Role</label>
-                                    <input type="text" name="preferredRole" value="${user.preferredRole}" placeholder="e.g. Lab Support | Tutorial Support">
+                            </section>
+                        </div>
+
+                        <div class="profile-column">
+                            <section class="panel">
+                                <h2>Candidate Summary Builder</h2>
+                                <p class="form-help">Use these structured fields to generate a richer summary for reviewers. Line breaks are compacted for CSV compatibility.</p>
+                                <div class="profile-card-grid">
+                                    <div class="full-width">
+                                        <label>Personal Statement</label>
+                                        <textarea name="personalStatement" rows="6" placeholder="Short self-introduction or motivation">${profileUser.personalStatement}</textarea>
+                                    </div>
+                                    <div class="full-width">
+                                        <label>Relevant Courses</label>
+                                        <input type="text" name="relevantCourses" value="${profileUser.relevantCourses}" placeholder="Use commas, semicolons, or | to separate items">
+                                    </div>
+                                    <div class="full-width">
+                                        <label>Project / Teaching Experience</label>
+                                        <textarea name="projectExperience" rows="8" placeholder="One project or teaching experience per line">${profileUser.projectExperience}</textarea>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Skills</label>
-                                    <textarea name="skills" rows="4" placeholder="e.g. Java, SQL, Data Structures">${user.skills}</textarea>
-                                    <p class="form-note">Skills are normalized to '|' for CSV storage.</p>
-                                </div>
-                            </div>
-                        </section>
+                            </section>
+                        </div>
                     </div>
 
-                    <div class="profile-right-column">
-                        <section class="panel">
-                            <h2>Candidate Summary Builder</h2>
-                            <p class="form-help">Use these structured fields to generate a richer summary for reviewers. Line breaks are compacted for CSV compatibility.</p>
-                            <div class="summary-builder-grid">
-                                <div class="form-group">
-                                    <label>Personal Statement</label>
-                                    <textarea name="personalStatement" placeholder="Short self-introduction or motivation">${user.personalStatement}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Relevant Courses</label>
-                                    <input type="text" name="relevantCourses" value="${user.relevantCourses}" placeholder="Use commas, semicolons, or | to separate items">
-                                </div>
-                                <div class="form-group">
-                                    <label>Project / Teaching Experience</label>
-                                    <textarea name="projectExperience" placeholder="One project or teaching experience per line">${user.projectExperience}</textarea>
-                                </div>
-                            </div>
-                        </section>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Profile & Summary</button>
+                        <a href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" class="btn btn-secondary" target="_blank">Preview Summary</a>
+                        <c:if test="${profileHasCv}">
+                            <a href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" class="btn btn-secondary" target="_blank">Preview CV</a>
+                        </c:if>
+                        <a href="${pageContext.request.contextPath}/ta/dashboard" class="btn btn-secondary">Back</a>
                     </div>
-                </div>
+                </form>
 
                 <section class="panel">
                     <h2>CV Upload</h2>
-                    <c:choose>
-                        <c:when test="${empty user.cvStoredName}">
-                            <p class="form-help">Upload a PDF version of your CV. File must be smaller than 2MB.</p>
-                            <div class="form-group file-upload-group">
-                                <label for="cvFile" class="file-label">Choose File</label>
-                                <span id="cvFileNameDisplay">No file chosen</span>
-                                <input type="file" id="cvFile" name="cvFile" accept="application/pdf" onchange="updateFileNameDisplay(this)">
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="cv-status">
-                                <p class="cv-status-text">CV Uploaded: <span class="cv-filename">${user.cvOriginalName}</span></p>
-                                <div class="cv-actions">
-                                    <a href="${pageContext.request.contextPath}/ta/cv/download" class="btn btn-secondary btn-sm">View / Download</a>
-                                    <button type="submit" name="action" value="deleteCv" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete your CV?');">Delete CV</button>
-                                </div>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                </section>
+                    <p class="form-help">Upload a PDF version of your CV. Maximum size: ${cvMaxSizeMb}MB.</p>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+                    <div class="profile-cv-card">
+                        <div class="profile-cv-status-row">
+                            <div>
+                                <strong>CV Status</strong>
+                                <span class="summary-status-badge ${profileHasCv ? 'SUMMARY_COMPLETE' : 'INCOMPLETE'}">
+                                    <c:choose>
+                                        <c:when test="${profileHasCv}">Uploaded</c:when>
+                                        <c:otherwise>Missing</c:otherwise>
+                                    </c:choose>
+                                </span>
+                            </div>
+                            <div class="profile-inline-actions">
+                                <c:if test="${profileHasCv}">
+                                    <a href="${pageContext.request.contextPath}/files/cv/${profileUser.userId}" class="btn btn-secondary btn-small" target="_blank">Preview CV</a>
+                                    <a href="${pageContext.request.contextPath}/files/cv-summary/${profileUser.userId}" class="btn btn-secondary btn-small" target="_blank">Preview Profile</a>
+                                </c:if>
+                            </div>
+                        </div>
+
+                        <c:choose>
+                            <c:when test="${profileHasCv}">
+                                <div class="profile-cv-meta">
+                                    <div><strong>File:</strong> ${profileUser.cvOriginalName}</div>
+                                    <div><strong>Uploaded:</strong> ${profileUser.cvUploadedAt}</div>
+                                    <div><strong>Type:</strong> ${profileUser.cvContentType}</div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="profile-placeholder-box">
+                                    <strong>No PDF uploaded yet.</strong>
+                                    <span>You can still save and preview your structured summary before uploading a PDF CV.</span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <form action="${pageContext.request.contextPath}/ta/profile/cv/upload" method="post" enctype="multipart/form-data" class="profile-cv-upload-form">
+                            <div class="profile-cv-upload-row">
+                                <input type="file" name="cvFile" accept="application/pdf,.pdf" required>
+                                <button type="submit" class="btn btn-primary">${profileHasCv ? 'Replace PDF CV' : 'Upload PDF CV'}</button>
+                            </div>
+                        </form>
+
+                        <c:if test="${profileHasCv}">
+                            <form action="${pageContext.request.contextPath}/ta/profile/cv/delete" method="post" onsubmit="return confirm('Delete the currently uploaded PDF CV?');">
+                                <button type="submit" class="btn btn-secondary">Delete Uploaded CV</button>
+                            </form>
+                        </c:if>
+                    </div>
+                </section>
+            </section>
         </div>
     </main>
 </div>
 
-<script>
-function updateFileNameDisplay(input) {
-    const display = document.getElementById('cvFileNameDisplay');
-    display.textContent = input.files[0]?.name || 'No file chosen';
-}
-
-function previewSummary() {
-    const url = '${pageContext.request.contextPath}/ta/profile/preview';
-    const form = document.querySelector('.profile-form');
-    const formData = new FormData(form);
-
-    fetch(url, {
-        method: 'POST',
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            window.open(url, '_blank');
-        } else {
-            alert('Failed to preview summary. Please save your changes first.');
-        }
-    });
-}
-</script>
-
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
-```
