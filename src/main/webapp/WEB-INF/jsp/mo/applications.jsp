@@ -6,6 +6,35 @@
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
+<style>
+.document-action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.document-action-group .btn {
+    min-width: 112px;
+    padding: 7px 12px;
+}
+
+.document-pill-muted {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    padding: 7px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid #d5dde8;
+    background: #f7f9fc;
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+}
+</style>
+
 <div class="layout">
     <aside class="sidebar">
         <div class="sidebar-brand">
@@ -96,18 +125,18 @@
                                     <td><span class="module-code">${jobTitles[a.jobId]}</span></td>
                                     <td><span class="availability">${a.availability}</span></td>
                                     <td>
-                                        <div class="decision-buttons">
+                                        <div class="document-action-group">
                                             <a href="${pageContext.request.contextPath}/files/cv-summary/${a.userId}" class="btn btn-outline btn-small" target="_blank">
                                                 View Summary
                                             </a>
                                             <c:choose>
                                                 <c:when test="${applicantHasCv[a.userId]}">
                                                     <a href="${pageContext.request.contextPath}/files/cv/${a.userId}" class="btn btn-outline btn-small" target="_blank">
-                                                        View CV
+                                                        View PDF
                                                     </a>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <span class="hint-text">PDF Missing</span>
+                                                    <span class="document-pill-muted">PDF Missing</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
