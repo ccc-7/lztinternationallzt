@@ -1,5 +1,5 @@
 userId,username,password,name,email,role,year,major,skills,status,availability,personalStatement,relevantCourses,projectExperience,preferredRole,summaryStatus,cvStoredName,cvOriginalName,cvContentType,cvUploadedAt,cvStatus
-U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,Mon/Wed afternoons,I am iot student,,Having robot experience named RoboCup,,SUMMARY_COMPLETE,U001.pdf,Seele_U001_Test_CV.pdf,application/pdf,2026-05-16 17:39:16,UPLOADED
+U001,seele,123456,Seele,seele@bupt.edu.cn,TA,3,IoT,Java|Python|Data Structure|STM32,ACTIVE,Mon/Wed afternoons,I am iot student,Software Engineering|RFID|AI,Having robot experience named RoboCup.,Software Engineering TA,SUMMARY_COMPLETE,U001.pdf,Seele_U001_Test_CV.pdf,application/pdf,2026-05-19 13:56:04,UPLOADED
 U002,luna,123456,Luna,luna@bupt.edu.cn,TA,2,Software Engineering,Java|Testing|Documentation,ACTIVE,Tue/Thu mornings,,,,,,,,,MISSING,
 U003,kevin,123456,Kevin,kevin@bupt.edu.cn,TA,4,Embedded Systems,C|STM32|Debugging,ACTIVE,Fri all day,,,,,,,,,MISSING,
 U004,mo1,123456,Dr.Wang,wang@bupt.edu.cn,MO,0,Faculty,Teaching|Java,ACTIVE,,,,,,,,,MISSING,,
