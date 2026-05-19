@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,9 @@ import java.util.List;
  * @see edu.bupt.ta.service.ApplicationService
  */
 public class FileStorageUtil {
+
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /** CSV column header for ta_users.csv (21 columns). */
     private static final String USERS_HEADER =
@@ -721,7 +725,7 @@ public class FileStorageUtil {
      * @return formatted timestamp string
      */
     public String nowText() {
-        return LocalDateTime.now().withNano(0).toString().replace('T', ' ');
+        return LocalDateTime.now().format(TIMESTAMP_FORMATTER);
     }
 
     /**
