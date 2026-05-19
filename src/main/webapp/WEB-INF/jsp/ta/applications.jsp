@@ -8,53 +8,46 @@
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
 
 <style>
-.feedback-rejected {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: #dc3545;
-    font-size: 0.8125rem;
-    cursor: pointer;
-}
-.feedback-rejected svg {
-    color: #dc3545;
-    flex-shrink: 0;
-}
-.feedback-accepted {
-    color: #28a745;
-    font-size: 0.8125rem;
-}
-.feedback-interview {
-    color: #007bff;
-    font-size: 0.8125rem;
-}
-.feedback-none {
-    color: #999;
-    font-size: 0.8125rem;
-}
-.feedback-rejected-btn {
+.feedback-btn {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     background: none;
-    border: 1px solid #dc3545;
-    color: #dc3545;
+    border: 1px solid;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s;
 }
-.feedback-rejected-btn:hover {
+.feedback-btn svg {
+    flex-shrink: 0;
+}
+.feedback-btn-rejected {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+.feedback-btn-rejected:hover {
     background: #dc3545;
     color: #fff;
 }
-.feedback-rejected-btn svg {
-    color: #dc3545;
-    flex-shrink: 0;
-}
-.feedback-rejected-btn:hover svg {
+.feedback-btn-rejected:hover svg {
     color: #fff;
+}
+.feedback-btn-interview {
+    border-color: #007bff;
+    color: #007bff;
+}
+.feedback-btn-interview:hover {
+    background: #007bff;
+    color: #fff;
+}
+.feedback-btn-interview:hover svg {
+    color: #fff;
+}
+.feedback-none {
+    color: #999;
+    font-size: 0.8125rem;
 }
 .modal-overlay {
     position: fixed;
@@ -219,16 +212,16 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${a.status == 'REJECTED' && not empty a.notes}">
-                                                <button type="button" class="feedback-rejected-btn" onclick="showReasonModal('${fn:escapeXml(a.notes)}')">
+                                                <button type="button" class="feedback-btn feedback-btn-rejected" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Rejection Reason')">
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                                     View Reason
                                                 </button>
                                             </c:when>
-                                            <c:when test="${a.status == 'ACCEPTED' && not empty a.notes}">
-                                                <span class="feedback-accepted">${a.notes}</span>
-                                            </c:when>
                                             <c:when test="${a.status == 'INTERVIEW' && not empty a.notes}">
-                                                <span class="feedback-interview">${a.notes}</span>
+                                                <button type="button" class="feedback-btn feedback-btn-interview" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Interview Details')">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                                    View Details
+                                                </button>
                                             </c:when>
                                             <c:otherwise>
                                                 <span class="feedback-none">-</span>
@@ -252,7 +245,7 @@
 <div class="modal-overlay" id="reasonModal">
     <div class="modal">
         <div class="modal-header">
-            <h3>Rejection Reason</h3>
+            <h3 id="reasonModalTitle">Details</h3>
             <button class="modal-close" onclick="closeReasonModal()">&times;</button>
         </div>
         <div class="modal-body">
@@ -265,13 +258,17 @@
 </div>
 
 <script>
-function showReasonModal(reason) {
-    var content = reason || 'No reason provided.';
-    // Remove "Rejected: " prefix if present for cleaner display
-    if (content.indexOf('Rejected: ') === 0) {
-        content = content.substring(10);
+function showReasonModal(content, title) {
+    var modalTitle = title || 'Details';
+    var displayContent = content || 'No details provided.';
+    // Remove prefix if present
+    if (displayContent.indexOf('Rejected: ') === 0) {
+        displayContent = displayContent.substring(10);
+    } else if (displayContent.indexOf('Interview: ') === 0) {
+        displayContent = displayContent.substring(11);
     }
-    document.getElementById('reasonContent').textContent = content;
+    document.getElementById('reasonModalTitle').textContent = modalTitle;
+    document.getElementById('reasonContent').textContent = displayContent;
     document.getElementById('reasonModal').classList.add('active');
 }
 
