@@ -20,6 +20,48 @@ html {
     height: 38px;
     vertical-align: middle;
 }
+
+.job-results-panel {
+    margin-top: 20px;
+}
+
+.job-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.job-results-scroll {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.job-results-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.job-results-scroll::-webkit-scrollbar-thumb {
+    background: #d3dceb;
+    border-radius: 999px;
+}
+
+.job-results-meta {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+}
+
+.job-empty-state {
+    padding: 36px 20px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    background: #fafcff;
+    text-align: center;
+    color: var(--text-secondary);
+}
 </style>
 
 <div class="layout layout-ta">
@@ -84,32 +126,49 @@ html {
                 </form>
             </section>
 
-            <section class="job-grid-simple">
-            <c:forEach var="job" items="${jobs}">
-                <div class="job-card-simple ${job.matchScore >= 60 ? 'high-match' : ''}"
-                     role="button"
-                     tabindex="0"
-                     aria-labelledby="job-card-title-${job.jobId}"
-                     onclick="showJobDetail('${job.jobId}')"
-                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showJobDetail('${job.jobId}');}">
-                    <div class="job-card-header">
-                        <div class="job-info">
-                            <h3 id="job-card-title-${job.jobId}">${job.title}</h3>
-                            <span class="module-code">${job.moduleCode}</span>
-                        </div>
-                        <span class="badge badge-${job.status == 'OPEN' ? 'green' : 'gray'}">${job.status}</span>
-                    </div>
-                    <div class="job-card-body">
-                        <span class="organiser">${job.organiser}</span>
-                    </div>
-                    <div class="job-card-footer">
-                        <div class="match-indicator match-${job.matchScore >= 60 ? 'high' : job.matchScore >= 40 ? 'medium' : 'low'}">
-                            <span class="match-number">${job.matchScore}</span>
-                            <span class="match-text">match</span>
-                        </div>
-                    </div>
+            <section class="panel job-results-panel">
+                <div class="job-results-header">
+                    <h2>Available Jobs</h2>
+                    <span class="job-results-meta">${jobsCount} position(s) shown</span>
                 </div>
-            </c:forEach>
+                <div class="job-results-scroll">
+                    <c:choose>
+                        <c:when test="${empty jobs}">
+                            <div class="job-empty-state">
+                                No jobs match the current filters. Try clearing filters or lowering the match score threshold.
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <section class="job-grid-simple">
+                            <c:forEach var="job" items="${jobs}">
+                                <div class="job-card-simple ${job.matchScore >= 60 ? 'high-match' : ''}"
+                                     role="button"
+                                     tabindex="0"
+                                     aria-labelledby="job-card-title-${job.jobId}"
+                                     onclick="showJobDetail('${job.jobId}')"
+                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showJobDetail('${job.jobId}');}">
+                                    <div class="job-card-header">
+                                        <div class="job-info">
+                                            <h3 id="job-card-title-${job.jobId}">${job.title}</h3>
+                                            <span class="module-code">${job.moduleCode}</span>
+                                        </div>
+                                        <span class="badge badge-${job.status == 'OPEN' ? 'green' : 'gray'}">${job.status}</span>
+                                    </div>
+                                    <div class="job-card-body">
+                                        <span class="organiser">${job.organiser}</span>
+                                    </div>
+                                    <div class="job-card-footer">
+                                        <div class="match-indicator match-${job.matchScore >= 60 ? 'high' : job.matchScore >= 40 ? 'medium' : 'low'}">
+                                            <span class="match-number">${job.matchScore}</span>
+                                            <span class="match-text">match</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                            </section>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </section>
         </div>
     </main>

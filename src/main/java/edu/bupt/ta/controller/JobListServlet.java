@@ -39,6 +39,7 @@ public class JobListServlet extends HttpServlet {
         List<edu.bupt.ta.model.Job> jobs = jobService.getOpenJobsForUser(user, search, moduleCode, minMatchScore);
 
         req.setAttribute("jobs", jobs);
+        req.setAttribute("jobsCount", jobs.size());
         req.setAttribute("search", search == null ? "" : search);
         req.setAttribute("moduleCode", moduleCode == null ? "" : moduleCode);
         req.setAttribute("minMatchScore", minMatchScore == null ? "" : minMatchScore);
