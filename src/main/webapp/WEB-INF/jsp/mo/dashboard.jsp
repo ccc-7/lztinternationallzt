@@ -149,6 +149,30 @@
                                                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                                                 </svg>
                                             </a>
+                                            <c:choose>
+                                                <c:when test="${job.status == 'OPEN'}">
+                                                    <form method="post" action="${pageContext.request.contextPath}/mo/jobs/close/${job.jobId}" style="display:inline;">
+                                                        <button type="submit" class="btn-icon-action btn-close" title="Close Job">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <form method="post" action="${pageContext.request.contextPath}/mo/jobs/open/${job.jobId}" style="display:inline;">
+                                                        <button type="submit" class="btn-icon-action btn-open" title="Reopen Job">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                </c:otherwise>
+                                            </c:choose>
                                             <a href="${pageContext.request.contextPath}/mo/jobs/edit/${job.jobId}" class="btn-icon-action" title="Edit Job">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

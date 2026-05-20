@@ -160,7 +160,7 @@
             <h3 id="jobModalTitle">Add Job</h3>
             <button class="modal-close" onclick="closeJobModal()">&times;</button>
         </div>
-        <form action="${pageContext.request.contextPath}/admin/jobs/save" method="post" id="jobForm" class="modal-form">
+        <form action="${pageContext.request.contextPath}/admin/jobs" method="post" id="jobForm" class="modal-form">
             <input type="hidden" name="action" id="jobFormAction" value="create">
             <input type="hidden" name="jobId" id="jobId" value="">
 

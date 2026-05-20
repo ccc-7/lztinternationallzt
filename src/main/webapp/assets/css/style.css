@@ -2232,6 +2232,44 @@ select:focus {
 .inline-form { display: inline; }
 .action-completed { color: var(--text-tertiary); font-size: 0.8125rem; }
 
+/* Action buttons in tables */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.btn-icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius);
+    background: var(--gray-100);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.btn-icon-action:hover {
+    background: var(--enterprise-blue);
+    border-color: var(--enterprise-blue);
+    color: #fff;
+}
+
+.btn-icon-action.btn-close:hover {
+    background: var(--status-red);
+    border-color: var(--status-red);
+}
+
+.btn-icon-action.btn-open:hover {
+    background: var(--status-green);
+    border-color: var(--status-green);
+}
+
 /* Modals */
 .modal-overlay {
     display: none;
