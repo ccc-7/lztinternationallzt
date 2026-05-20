@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    request.setAttribute("pageTitle", "Post Job");
+    boolean isEdit = Boolean.TRUE.equals(request.getAttribute("isEdit"));
+    request.setAttribute("pageTitle", isEdit ? "Edit Job" : "Post Job");
 %>
 <%@ include file="/WEB-INF/jsp/common/header.jspf" %>
 <%@ include file="/WEB-INF/jsp/common/flash.jspf" %>
@@ -21,7 +23,7 @@
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 </span> Dashboard
             </a>
-            <a class="nav-item active" href="${pageContext.request.contextPath}/mo/jobs/new">
+            <a class="nav-item ${isEdit ? '' : 'active'}" href="${pageContext.request.contextPath}/mo/jobs/new">
                 <span class="nav-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 </span> Post Job
@@ -39,7 +41,7 @@
             <button type="button" class="sidebar-toggle">
                 <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
-            <div class="topbar-title">Post Job</div>
+            <div class="topbar-title">${isEdit ? 'Edit Job' : 'Post Job'}</div>
             <div class="topbar-right">
                 <span>${sessionScope.currentUser.username}</span>
                 <a href="${pageContext.request.contextPath}/logout">Log out</a>
@@ -60,12 +62,12 @@
                     </svg>
                 </div>
                 <div class="form-title-area">
-                    <h1>Post New Job</h1>
-                    <p class="form-subtitle">Create a new TA position listing for students</p>
+                    <h1>${isEdit ? 'Edit Job' : 'Post New Job'}</h1>
+                    <p class="form-subtitle">${isEdit ? 'Update the TA position details' : 'Create a new TA position listing for students'}</p>
                 </div>
             </div>
 
-            <form action="${pageContext.request.contextPath}/mo/jobs/new" method="post" class="job-form">
+            <form action="${pageContext.request.contextPath}${isEdit ? '/mo/jobs/edit/' : '/mo/jobs/new'}${isEdit ? job.jobId : ''}" method="post" class="job-form">
                 <div class="form-section">
                     <h3 class="section-title">
                         <span class="section-icon">&#128203;</span>
@@ -74,21 +76,21 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="title">Job Title <span class="required">*</span></label>
-                            <input type="text" id="title" name="title" required placeholder="e.g. Software Engineering TA">
+                            <input type="text" id="title" name="title" required placeholder="e.g. Software Engineering TA" value="${isEdit ? job.title : ''}">
                         </div>
                         <div class="form-group">
                             <label for="moduleCode">Module Code <span class="required">*</span></label>
-                            <input type="text" id="moduleCode" name="moduleCode" required placeholder="e.g. EBU6304">
+                            <input type="text" id="moduleCode" name="moduleCode" required placeholder="e.g. EBU6304" value="${isEdit ? job.moduleCode : ''}">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="organiser">Instructor Name</label>
-                            <input type="text" id="organiser" name="organiser" placeholder="Leave blank to use your name">
+                            <input type="text" id="organiser" name="organiser" placeholder="Leave blank to use your name" value="${isEdit ? job.organiser : ''}">
                         </div>
                         <div class="form-group">
                             <label for="vacancies">Vacancies <span class="required">*</span></label>
-                            <input type="number" id="vacancies" name="vacancies" min="1" required placeholder="e.g. 2">
+                            <input type="number" id="vacancies" name="vacancies" min="1" required placeholder="e.g. 2" value="${isEdit ? job.vacancies : '1'}">
                         </div>
                     </div>
                 </div>
@@ -101,33 +103,33 @@
                     <div class="form-row three-col">
                         <div class="form-group">
                             <label for="hours">Total Hours <span class="required">*</span></label>
-                            <input type="number" id="hours" name="hours" min="1" required placeholder="e.g. 20">
+                            <input type="number" id="hours" name="hours" min="1" required placeholder="e.g. 20" value="${isEdit ? job.hours : '20'}">
                         </div>
                         <div class="form-group">
                             <label for="minYear">Min Year <span class="required">*</span></label>
                             <select id="minYear" name="minYear" required>
                                 <option value="">Select</option>
-                                <option value="1">Year 1</option>
-                                <option value="2">Year 2</option>
-                                <option value="3">Year 3</option>
-                                <option value="4">Year 4</option>
+                                <option value="1" ${isEdit && job.minYear == 1 ? 'selected' : ''}>Year 1</option>
+                                <option value="2" ${isEdit && job.minYear == 2 ? 'selected' : ''}>Year 2</option>
+                                <option value="3" ${isEdit && job.minYear == 3 ? 'selected' : ''}>Year 3</option>
+                                <option value="4" ${isEdit && job.minYear == 4 ? 'selected' : ''}>Year 4</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="maxYear">Max Year <span class="required">*</span></label>
                             <select id="maxYear" name="maxYear" required>
                                 <option value="">Select</option>
-                                <option value="1">Year 1</option>
-                                <option value="2">Year 2</option>
-                                <option value="3">Year 3</option>
-                                <option value="4">Year 4</option>
+                                <option value="1" ${isEdit && job.maxYear == 1 ? 'selected' : ''}>Year 1</option>
+                                <option value="2" ${isEdit && job.maxYear == 2 ? 'selected' : ''}>Year 2</option>
+                                <option value="3" ${isEdit && job.maxYear == 3 ? 'selected' : ''}>Year 3</option>
+                                <option value="4" ${isEdit && job.maxYear == 4 ? 'selected' : ''}>Year 4</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="deadline">Application Deadline <span class="required">*</span></label>
-                            <input type="date" id="deadline" name="deadline" required lang="en">
+                            <input type="date" id="deadline" name="deadline" required lang="en" value="${isEdit ? job.deadline : ''}">
                             <span class="hint">yyyy/mm/dd</span>
                         </div>
                     </div>
@@ -140,7 +142,7 @@
                     </h3>
                     <div class="form-group">
                         <label for="requiredSkills">Required Skills</label>
-                        <input type="text" id="requiredSkills" name="requiredSkills" placeholder="Java, Python, Teamwork (separate with comma)">
+                        <input type="text" id="requiredSkills" name="requiredSkills" placeholder="Java, Python, Teamwork (separate with comma)" value="${isEdit ? job.requiredSkills : ''}">
                         <span class="hint">Separate skills with comma or vertical bar</span>
                     </div>
                 </div>
@@ -148,7 +150,7 @@
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-large">
                         <span class="btn-icon">&#10003;</span>
-                        Post Job
+                        ${isEdit ? 'Save Changes' : 'Post Job'}
                     </button>
                     <a href="${pageContext.request.contextPath}/mo/dashboard" class="btn btn-secondary btn-large">
                         Cancel

@@ -1,5 +1,6 @@
 package edu.bupt.ta.controller;
 
+import edu.bupt.ta.model.Job;
 import edu.bupt.ta.model.User;
 import edu.bupt.ta.model.UserRole;
 import edu.bupt.ta.service.JobService;
@@ -12,13 +13,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Handles MO job creation. GET shows the new-job form; POST creates a job via
- * {@link edu.bupt.ta.service.JobService#createJob}. The organiser field is
- * automatically set to the MO's display name.
+ * Handles MO job creation and editing. GET shows the form; POST creates or updates a job via
+ * {@link edu.bupt.ta.service.JobService}.
  *
  * @see edu.bupt.ta.service.JobService#createJob
+ * @see edu.bupt.ta.service.JobService#updateJob
  */
-@WebServlet("/mo/jobs/new")
+@WebServlet(urlPatterns = {
+    "/mo/jobs/new",
+    "/mo/jobs/edit/*"
+})
 public class MOJobServlet extends HttpServlet {
 
     private final JobService jobService = new JobService();
@@ -29,9 +33,27 @@ public class MOJobServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "please log in as a MO to create jobs.");
+            req.getSession().setAttribute("flashError", "please log in as a MO to access job management.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
+        }
+
+        String servletPath = req.getServletPath();
+        String pathInfo = req.getPathInfo();
+
+        // Edit mode: /mo/jobs/edit/{jobId}
+        if (servletPath.equals("/mo/jobs/edit") && pathInfo != null && pathInfo.length() > 1) {
+            String jobId = pathInfo.substring(1);
+            Job job = jobService.findById(jobId);
+            if (job == null) {
+                req.getSession().setAttribute("flashError", "Job not found");
+                resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
+                return;
+            }
+            req.setAttribute("job", job);
+            req.setAttribute("isEdit", true);
+        } else {
+            req.setAttribute("isEdit", false);
         }
 
         req.getRequestDispatcher("/WEB-INF/jsp/mo/new-job.jsp").forward(req, resp);
@@ -45,12 +67,17 @@ public class MOJobServlet extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.MO) {
-            req.getSession().setAttribute("flashError", "please log in as a MO to create jobs.");
+            req.getSession().setAttribute("flashError", "please log in as a MO to manage jobs.");
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
+        String servletPath = req.getServletPath();
+        String pathInfo = req.getPathInfo();
+        boolean isEdit = servletPath.equals("/mo/jobs/edit") && pathInfo != null && pathInfo.length() > 1;
+
         try {
+            String jobId = isEdit ? pathInfo.substring(1) : null;
             String title = req.getParameter("title");
             String moduleCode = req.getParameter("moduleCode");
             String organiser = req.getParameter("organiser");
@@ -70,12 +97,21 @@ public class MOJobServlet extends HttpServlet {
                 organiser = user.getDisplayName();
             }
 
-            jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
-            req.getSession().setAttribute("flashSuccess", "Job created successfully");
+            if (isEdit) {
+                jobService.updateJob(jobId, title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
+                req.getSession().setAttribute("flashSuccess", "Job updated successfully");
+            } else {
+                jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
+                req.getSession().setAttribute("flashSuccess", "Job created successfully");
+            }
             resp.sendRedirect(req.getContextPath() + "/mo/dashboard");
         } catch (Exception e) {
-            req.getSession().setAttribute("flashError", "Failed to create job, please check your input");
-            resp.sendRedirect(req.getContextPath() + "/mo/jobs/new");
+            req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());
+            if (isEdit) {
+                resp.sendRedirect(req.getContextPath() + "/mo/jobs/edit" + pathInfo);
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/mo/jobs/new");
+            }
         }
     }
 }

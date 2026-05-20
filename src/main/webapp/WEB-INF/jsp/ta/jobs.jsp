@@ -62,6 +62,18 @@ html {
     text-align: center;
     color: var(--text-secondary);
 }
+
+.closed-notice {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
 </style>
 
 <div class="layout layout-ta">
@@ -230,10 +242,18 @@ html {
 
         <div class="job-detail-actions">
             <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-            <form id="modalApplyForm" action="${pageContext.request.contextPath}/apply" method="post">
+            <form id="modalApplyForm" action="${pageContext.request.contextPath}/apply" method="post" style="display:none;">
                 <input type="hidden" name="jobId" id="modalJobId" value="">
                 <button type="submit" class="btn btn-primary">Apply Now</button>
             </form>
+            <div id="modalClosedNotice" class="closed-notice" style="display:none;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                Applications Closed
+            </div>
         </div>
     </div>
 </div>
@@ -281,9 +301,20 @@ function showJobDetail(jobId) {
     document.getElementById('modalJobId').value = jobId;
     document.getElementById('modalMatchScore').textContent = job.matchScore + '%';
 
+    // Show/hide apply button based on job status
+    const applyForm = document.getElementById('modalApplyForm');
+    const closedNotice = document.getElementById('modalClosedNotice');
+    if (job.status === 'OPEN') {
+        applyForm.style.display = 'inline-block';
+        closedNotice.style.display = 'none';
+    } else {
+        applyForm.style.display = 'none';
+        closedNotice.style.display = 'flex';
+    }
+
     const skillsContainer = document.getElementById('modalSkills');
     const skills = job.skills.split('|').filter(s => s.trim());
-    skillsContainer.innerHTML = skills.map(skill => 
+    skillsContainer.innerHTML = skills.map(skill =>
         '<span class="job-skill-chip">' + skill.trim() + '</span>'
     ).join('');
 
