@@ -134,14 +134,16 @@ src/test/
 - `JobQueryTests`: Get all jobs, open jobs only, filter by organiser, count operations
 - `SkillNormalizationTests`: Normalize comma-separated skills to pipe-separated
 
-### 4.3 ApplicationServiceTest (21 tests)
+### 4.3 ApplicationServiceTest (25 tests)
 
 **Location**: `src/test/java/edu/bupt/ta/service/ApplicationServiceTest.java`
 
-**Purpose**: Tests the `ApplicationService` class which handles the job application lifecycle.
+**Purpose**: Tests the `ApplicationService` class which handles the job application lifecycle, including withdraw and delete (Iteration 5).
 
 **Key test scenarios**:
 - `ApplyTests`: Submit application successfully, reject duplicate application, reject non-existent user/job
+- `WithdrawTests`: Withdraw pending application, reject withdraw for non-pending applications (NEW in Iteration 5)
+- `DeleteTests`: Delete any application regardless of status, reject delete for non-owner (NEW in Iteration 5)
 - `QueryTests`: Get applications by user, by job, count operations
 - `StatusUpdateTests`: Update status to ACCEPTED/REJECTED/INTERVIEW, custom notes
 - `FindByIdTests`: Find application by ID
@@ -408,8 +410,10 @@ Follow the AAA pattern:
 | Category | Classes | Tests |
 |----------|---------|-------|
 | Model Tests | 4 | 45 |
-| Service Tests | 9 | 174 |
-| **Total** | **13** | **219** |
+| Service Tests | 9 | 178 |
+| **Total** | **13** | **223** |
+
+> **Note**: Iteration 5 added 4 new test methods to ApplicationServiceTest for withdraw/delete functionality.
 
 ### Coverage by Feature
 
@@ -420,6 +424,7 @@ Follow the AAA pattern:
 | Job CRUD | `JobServiceTest` |
 | Skill Matching | `SkillMatchServiceTest`, `JobServiceTest` |
 | Application Submission | `ApplicationServiceTest` |
+| Application Withdraw/Delete | `ApplicationServiceTest` (NEW in Iteration 5) |
 | Application Status | `ApplicationServiceTest` |
 | Workload Calculation | `WorkloadServiceTest` |
 | Dashboard Statistics | `AdminServiceTest`, `DashboardServiceTest` |
