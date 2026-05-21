@@ -87,7 +87,7 @@ public class AdminServlet extends HttpServlet {
     private User checkAdminAccess(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) req.getSession().getAttribute("currentUser");
         if (user == null || user.getRole() != UserRole.ADMIN) {
-            req.getSession().setAttribute("flashError", "请先以 Admin 身份登录");
+            req.getSession().setAttribute("flashError", "Please log in as Admin first");
             resp.sendRedirect(req.getContextPath() + "/home");
             return null;
         }
@@ -371,7 +371,7 @@ public class AdminServlet extends HttpServlet {
             applicationService.updateStatus(applicationId, ApplicationStatus.REJECTED, "Rejected: " + reason);
 
             logService.log(admin.getUserId(), admin.getDisplayName(), "REJECT", "Application",
-                    applicationId, "reject " + applicationId + "，reason：" + reason, getClientIP(req));
+                    applicationId, "reject " + applicationId + ", reason: " + reason, getClientIP(req));
 
             req.getSession().setAttribute("flashSuccess", "Application rejected");
         } catch (Exception e) {
@@ -430,12 +430,12 @@ public class AdminServlet extends HttpServlet {
             if ("create".equals(action)) {
                 jobService.createJob(title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "CREATE", "Job",
-                        title, "create job：" + title, getClientIP(req));
+                        title, "create job: " + title, getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "Job created successfully");
             } else {
                 jobService.updateJob(jobId, title, moduleCode, organiser, minYear, maxYear, hours, requiredSkills, deadline, vacancies);
                 logService.log(admin.getUserId(), admin.getDisplayName(), "UPDATE", "Job",
-                        jobId, "update job：" + title, getClientIP(req));
+                        jobId, "update job: " + title, getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "Job updated successfully");
             }
         } catch (Exception e) {
@@ -488,7 +488,7 @@ public class AdminServlet extends HttpServlet {
                 userService.registerUser(newUser);
 
                 logService.log(admin.getUserId(), admin.getDisplayName(), "CREATE", "User",
-                        username, "create user：" + username + " (role:" + role + ")", getClientIP(req));
+                        username, "create user: " + username + " (role: " + role + ")", getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "User created successfully");
             } catch (Exception e) {
                 req.getSession().setAttribute("flashError", "Operation failed: " + e.getMessage());

@@ -1,731 +1,725 @@
-# 第53组 原型与报告 第一部分
-## A部分：原型页面线框结构
+# Team 53 - Prototype and Report Part 1
+## Part A: Prototype Page Wireframe Structure
 
-### 1. 原型概述
+### 1. Prototype Overview
 
-该原型为 **TA 招聘系统** 而设计，主要围绕三类核心用户展开：
+This prototype is designed for the **TA Recruitment System**, focusing on three core user types:
 
-* 助教申请者（Teaching Assistant, TA）
-* 课程负责人（Module Organiser, MO）
-* 管理员（Admin）
+* Teaching Assistant Applicants (Teaching Assistant, TA)
+* Course Instructors (Module Organiser, MO)
+* System Administrators (Admin)
 
-该原型的目标是以清晰、易用的方式展示系统的核心工作流程。它覆盖了主要的用户路径，同时也包含了重要的系统状态，例如成功提示、校验错误提示以及空状态页面。
+The goal of this prototype is to demonstrate the core workflows of the system in a clear and user-friendly manner. It covers major user paths, as well as important system states such as success messages, validation error messages, and empty state pages.
 
-设计原则是保持系统**简单、模块化、易于理解**。由于这是早期阶段的原型，因此重点放在**功能完整性**和**可用性**上，而不是视觉精美度上。
-
----
-
-## 2. 通用入口页面
-
-### P01. 登录页面
-
-**目的：**
-为三类用户提供统一的系统入口。
-
-**主要组件：**
-
-* 系统标题：TA Recruitment System（TA 招聘系统）
-* 角色选择：TA / MO / Admin
-* 用户名或学号/工号输入框
-* 密码输入框
-* 登录按钮
-* 面向 TA 用户的注册链接
-* 错误信息显示区域
-
-**主要交互：**
-
-* 用户选择角色并登录
-* 系统跳转到对应角色的主页
-* 如果登录失败，则显示错误信息
+The design principle is to keep the system **simple, modular, and easy to understand**. Since this is an early-stage prototype, the focus is on **functional completeness** and **usability** rather than visual aesthetics.
 
 ---
 
-## 3. TA 用户流程页面
+## 2. Common Entry Pages
 
-### P02. TA 主页
+### P01. Login Page
 
-**目的：**
-为 TA 提供当前状态总览，并快速进入主要任务。
+**Purpose:**
+Provides a unified system entry point for three types of users.
 
-**主要组件：**
+**Main Components:**
 
-* 侧边导航栏：
+* System title: TA Recruitment System
+* Role selection: TA / MO / Admin
+* Username or student/staff ID input field
+* Password input field
+* Login button
+* Registration link for TA users
+* Error message display area
 
-  * Profile（个人资料）
-  * CV（简历）
-  * Jobs（岗位）
-  * My Applications（我的申请）
-* 资料完成度指示器
-* 简历上传状态
-* 快捷操作按钮：
+**Main Interactions:**
 
-  * 完善个人资料
-  * 上传简历
-  * 浏览岗位
-* 概览卡片：
-
-  * 资料状态
-  * 简历状态
-  * 已申请岗位数量
-
-**设计说明：**
-该页面应引导 TA 明确下一步要做什么。
+* User selects a role and logs in
+* System redirects to the home page for the corresponding role
+* If login fails, an error message is displayed
 
 ---
 
-### P03. 创建 / 编辑个人资料页面
+## 3. TA User Flow Pages
 
-**目的：**
-允许 TA 填写和维护申请所需的信息。
+### P02. TA Home Page
 
-**主要字段：**
+**Purpose:**
+Provides TA users with an overview of their current status and quick access to main tasks.
 
-* 姓名
-* 学号
-* 专业/项目名称
-* 年级
-* 技能
-* 可工作时间
-* 过往 TA 经历
-* 联系邮箱
+**Main Components:**
 
-**按钮：**
+* Sidebar navigation:
+  * Profile
+  * CV (Resume)
+  * Jobs
+  * My Applications
+* Profile completeness indicator
+* Resume upload status
+* Quick action buttons:
+  * Complete profile
+  * Upload resume
+  * Browse jobs
+* Overview cards:
+  * Profile status
+  * Resume status
+  * Number of applied jobs
 
-* 保存
-* 取消
-
-**系统状态：**
-
-* 必填项缺失错误提示
-* 邮箱格式错误提示
-* “资料保存成功”提示
-
----
-
-### P04. 简历上传页面
-
-**目的：**
-允许 TA 上传并管理自己的简历。
-
-**主要组件：**
-
-* 当前简历上传状态
-* 上传按钮
-* 替换简历选项
-* 文件名显示区域
-* 保存 / 确认按钮
-* 返回主页按钮
-
-**系统状态：**
-
-* 未选择文件错误提示
-* 文件类型不支持错误提示
-* “简历上传成功”提示
+**Design Notes:**
+This page should guide the TA on what to do next.
 
 ---
 
-### P05. 岗位列表页面
+### P03. Create / Edit Profile Page
 
-**目的：**
-允许 TA 浏览当前可申请的岗位。
+**Purpose:**
+Allows TAs to fill in and maintain the information required for applications.
 
-**主要组件：**
+**Main Fields:**
 
-* 搜索栏
-* 筛选选项
-* 岗位卡片列表
+* Full name
+* Student ID
+* Major/Program name
+* Year
+* Skills
+* Available hours
+* Previous TA experience
+* Contact email
 
-**每张岗位卡片包含：**
+**Buttons:**
 
-* 岗位名称
-* 课程或活动名称
-* 工作时长
-* 截止日期
-* 状态
-* 查看详情按钮
+* Save
+* Cancel
 
-**系统状态：**
+**System States:**
 
-* “没有找到匹配的岗位”
-
----
-
-### P06. 岗位详情页面
-
-**目的：**
-帮助 TA 在申请前了解岗位信息。
-
-**主要组件：**
-
-* 岗位名称
-* 岗位描述
-* 所需技能
-* 工作时长
-* 截止日期
-* 课程负责人信息
-* 申请按钮
-* 返回岗位列表按钮
-
-**规则：**
-
-* 如果个人资料未填写完整，则显示警告
-* 如果未上传简历，则申请操作应被阻止，并给出明确提示
+* Error message for missing required fields
+* Error message for invalid email format
+* "Profile saved successfully" message
 
 ---
 
-### P07. 申请确认页面
+### P04. Resume Upload Page
 
-**目的：**
-在正式提交申请前进行确认。
+**Purpose:**
+Allows TAs to upload and manage their resumes.
 
-**主要组件：**
+**Main Components:**
 
-* 岗位信息摘要
-* 申请人信息摘要
-* 简历已附带指示
-* 确认申请按钮
-* 取消按钮
+* Current resume upload status
+* Upload button
+* Replace resume option
+* File name display area
+* Save / Confirm button
+* Return to home button
 
-**系统状态：**
+**System States:**
 
-* “申请提交成功”
-* 缺少个人资料/简历的错误提示
-
----
-
-### P08. 我的申请页面
-
-**目的：**
-允许 TA 跟踪已提交的申请状态。
-
-**主要组件：**
-
-* 申请记录表格或列表
-
-**每条记录包含：**
-
-* 岗位名称
-* 申请日期
-* 当前状态
-* 查看详情操作
-
-**状态类型：**
-
-* 已提交（Submitted）
-* 候补（Waitlisted）
-* 已拒绝（Rejected）
-* 已录用（Selected）
-
-**设计说明：**
-状态标签应保持一致，并且便于理解。
+* Error message for no file selected
+* Error message for unsupported file type
+* "Resume uploaded successfully" message
 
 ---
 
-## 4. MO 用户流程页面
+### P05. Job List Page
 
-### P09. MO 主页
+**Purpose:**
+Allows TAs to browse currently available positions.
 
-**目的：**
-为 MO 提供与招聘相关活动的总览。
+**Main Components:**
 
-**主要组件：**
+* Search bar
+* Filter options
+* Job card list
 
-* 侧边导航栏：
+**Each Job Card Contains:**
 
-  * 发布岗位
-  * 我的岗位
-  * 申请者
-* 概览卡片：
+* Job title
+* Course or activity name
+* Working hours
+* Deadline
+* Status
+* View details button
 
-  * 当前活跃岗位数
-  * 申请者总数
-  * 待处理决策数
-* 快捷操作按钮：
+**System States:**
 
-  * 创建新岗位
-
----
-
-### P10. 创建岗位页面
-
-**目的：**
-允许 MO 发布新的岗位。
-
-**主要字段：**
-
-* 岗位名称
-* 课程 / 活动名称
-* 岗位描述
-* 所需技能
-* 工作时长
-* 截止日期
-* 招聘人数
-
-**按钮：**
-
-* 保存草稿
-* 发布
-
-**校验规则：**
-
-* 必填项不能为空
-* 截止日期必须有效
-
-**系统状态：**
-
-* “岗位发布成功”
-* 必填项缺失错误提示
+* "No matching jobs found"
 
 ---
 
-### P11. 岗位列表页面
+### P06. Job Details Page
 
-**目的：**
-允许 MO 查看自己创建的全部岗位。
+**Purpose:**
+Helps TAs understand job information before applying.
 
-**主要组件：**
+**Main Components:**
 
-* 已发布岗位列表
+* Job title
+* Job description
+* Required skills
+* Working hours
+* Deadline
+* Module organiser information
+* Apply button
+* Return to job list button
 
-**每条岗位记录包含：**
+**Rules:**
 
-* 岗位名称
-* 状态
-* 申请人数
-* 查看申请者按钮
-* 编辑按钮
-* 关闭岗位按钮
-
----
-
-### P12. 申请者列表页面
-
-**目的：**
-允许 MO 查看某个岗位下的全部申请者。
-
-**主要组件：**
-
-* 申请者表格
-* 筛选与排序控件
-* 申请者数量统计
-
-**每条申请者记录包含：**
-
-* 姓名
-* 专业
-* 可工作时间
-* 当前状态
-* 查看资料按钮
-
-**系统状态：**
-
-* “暂无申请者”
+* If profile is incomplete, display a warning
+* If resume is not uploaded, the apply action should be blocked with a clear message
 
 ---
 
-### P13. 申请者详情与决策页面
+### P07. Application Confirmation Page
 
-**目的：**
-允许 MO 查看申请者详细信息并作出招聘决定。
+**Purpose:**
+Confirmation before formally submitting an application.
 
-**主要组件：**
+**Main Components:**
 
-* 申请者资料摘要
-* 简历预览或下载入口
-* 技能摘要
-* 可工作时间摘要
+* Job information summary
+* Applicant information summary
+* Resume attached indicator
+* Confirm application button
+* Cancel button
 
-**决策按钮：**
+**System States:**
 
-* 录用
-* 拒绝
-* 候补
-
-**系统状态：**
-
-* “决策更新成功”
+* "Application submitted successfully"
+* Error message for missing profile/resume
 
 ---
 
-## 5. Admin 用户流程页面
+### P08. My Applications Page
 
-### P14. 管理员主页 / 工作量总览页面
+**Purpose:**
+Allows TAs to track the status of submitted applications.
 
-**目的：**
-允许管理员监控整个系统中 TA 的工作量分配情况。
+**Main Components:**
 
-**主要组件：**
+* Application records table or list
 
-* 按 TA 姓名或学号搜索
-* 按工作量状态筛选
-* 工作量表格
+**Each Record Contains:**
 
-**每条记录包含：**
+* Job title
+* Application date
+* Current status
+* View details action
 
-* TA 姓名
-* 学号
-* 已分配岗位数量
-* 总工时
-* 工作量状态
+**Status Types:**
 
-**系统状态：**
+* Submitted
+* Waitlisted
+* Rejected
+* Selected
 
-* “未找到记录”
-
-**设计说明：**
-工作量过高的 TA 应被明显标识出来。
+**Design Notes:**
+Status labels should be consistent and easy to understand.
 
 ---
 
-## 6. 通用系统状态页面
+## 4. MO User Flow Pages
 
-### P15. 空状态页面
+### P09. MO Home Page
 
-**示例：**
+**Purpose:**
+Provides MOs with an overview of recruitment-related activities.
 
-* 暂无岗位
-* 暂无申请者
-* 暂无工作量记录
+**Main Components:**
 
----
-
-### P16. 错误状态页面
-
-**示例：**
-
-* 申请前请先完善个人资料
-* 申请前请先上传简历
-* 必填项不能为空
-
----
-
-### P17. 成功反馈页面
-
-**示例：**
-
-* 资料保存成功
-* 简历上传成功
-* 申请提交成功
-* 岗位发布成功
-* 决策更新成功
+* Sidebar navigation:
+  * Post jobs
+  * My jobs
+  * Applicants
+* Overview cards:
+  * Number of currently active jobs
+  * Total number of applicants
+  * Number of pending decisions
+* Quick action buttons:
+  * Create new job
 
 ---
 
-## 7. 主要原型流程
+### P10. Create Job Page
 
-### TA 主流程
+**Purpose:**
+Allows MOs to publish new positions.
 
-登录 → TA主页 → 创建/编辑个人资料 → 上传简历 → 浏览岗位 → 查看岗位详情 → 确认申请 → 查看我的申请
+**Main Fields:**
 
-### MO 主流程
+* Job title
+* Course / Activity name
+* Job description
+* Required skills
+* Working hours
+* Deadline
+* Number of positions
 
-登录 → MO主页 → 创建岗位 → 岗位列表 → 申请者列表 → 申请者详情与决策
+**Buttons:**
 
-### Admin 主流程
+* Save as draft
+* Publish
 
-登录 → 管理员主页 / 工作量总览
+**Validation Rules:**
 
----
+* Required fields cannot be empty
+* Deadline must be valid
 
-## 8. 原型设计说明
+**System States:**
 
-原型设计应遵循以下原则：
-
-* 导航清晰
-* 角色分离明确
-* 页面布局简单易懂
-* 系统状态可见
-* 校验与错误反馈明确
-* 覆盖完整的端到端工作流程
-* 同时支持功能性与可用性评估
-
-原型不应被视为一组彼此孤立的页面，而必须呈现出三类用户完整、连贯的使用路径。
-
----
-
-# B部分：报告第一部分
-
-## 1. 用户故事编写工作坊
-
-### 1.1 工作坊目的
-
-用户故事编写工作坊的目的是将 TA 招聘这一问题转化为一个结构化、可排序优先级的产品待办列表（product backlog）。由于项目说明中只给出了高层次需求，因此小组需要识别系统的主要用户角色，明确项目范围，并将用户需求转化为用户故事，以指导后续原型设计和软件实现。
-
-该工作坊主要聚焦于：
-
-* 识别系统的主要用户
-* 明确项目范围
-* 从业务流程中提炼 Epic
-* 以标准格式编写用户故事
-* 定义验收标准
-* 分配优先级
-* 估算工作量
-* 制定迭代规划
-
-这一工作坊为后续的原型和产品待办列表奠定了基础。
+* "Job published successfully"
+* Error message for missing required fields
 
 ---
 
-### 1.2 已识别的用户角色
+### P11. Job List Page
 
-根据项目说明，识别出以下三类主要用户：
+**Purpose:**
+Allows MOs to view all jobs they have created.
 
-**助教申请者（TA）：**
-TA 是申请者，负责创建个人资料、上传简历、搜索可申请岗位、提交岗位申请，并查看申请状态。
+**Main Components:**
 
-**课程负责人（MO）：**
-MO 负责发布 TA 岗位、查看申请者，并选择合适的候选人。
+* List of published jobs
 
-**管理员（Admin）：**
-管理员负责查看 TA 的整体工作量，以支持公平分配和监督管理。
+**Each Job Record Contains:**
 
-这三类角色构成了系统的主要用户，也是原型与产品待办列表设计的基础。
-
----
-
-### 1.3 范围定义
-
-在第一次考核中，项目范围被有意识地限制在**核心招聘流程**内。
-
-**范围内（In Scope）：**
-
-* 申请者资料创建与编辑
-* 简历上传
-* 岗位浏览与岗位详情查看
-* 申请提交
-* 申请状态跟踪
-* 岗位发布
-* 申请者查看与决策
-* 工作量总览查看
-
-**范围外（Out of Scope）：**
-
-* 基于 AI 的技能匹配
-* 自动推荐
-* 邮件通知
-* 移动端应用版本
-* 高级分析功能
-* 数据库集成
-
-这样定义范围，是为了保证系统在可行的前提下，既聚焦客户价值，又适合增量式开发。
+* Job title
+* Status
+* Number of applicants
+* View applicants button
+* Edit button
+* Close job button
 
 ---
 
-### 1.4 工作坊中定义的 Epic
+### P12. Applicant List Page
 
-招聘流程被组织为以下几个 Epic：
+**Purpose:**
+Allows MOs to view all applicants for a specific job.
 
-1. TA 资料管理
-2. 岗位发现与申请
-3. 申请状态跟踪
-4. MO 岗位发布与申请者选择
-5. Admin 工作量监控
-6. 可选 AI 支持功能
+**Main Components:**
 
-这些 Epic 随后被进一步拆分为更细致的用户故事。
+* Applicant table
+* Filter and sort controls
+* Applicant count statistics
 
----
+**Each Applicant Record Contains:**
 
-### 1.5 用户故事格式
+* Name
+* Major
+* Available hours
+* Current status
+* View profile button
 
-小组为所有用户故事采用了以下标准格式：
+**System States:**
 
-**作为一个 [角色]，我想要 [行为]，以便 [收益]。**
-
-之所以采用这一格式，是因为它能让重点始终放在**用户价值**上，而不是技术实现细节上。
-
-例如：
-
-* 作为一个 TA，我想上传我的简历，以便课程负责人可以查看我的资质。
-* 作为一个 MO，我想发布一个岗位，以便学生能够申请。
-* 作为一个管理员，我想查看 TA 的工作量，以便我能监控工作量分配情况。
+* "No applicants yet"
 
 ---
 
-### 1.6 验收标准
+### P13. Applicant Details and Decision Page
 
-每条用户故事都配有验收标准，以便该需求能够被验证和测试。
+**Purpose:**
+Allows MOs to view applicant details and make hiring decisions.
 
-例如：
+**Main Components:**
 
-**用户故事：**
-作为一个 TA，我想申请一个岗位，以便我能够被考虑录用。
+* Applicant profile summary
+* Resume preview or download link
+* Skills summary
+* Available hours summary
 
-**验收标准：**
+**Decision Buttons:**
 
-* TA 必须先完成个人资料填写后才能申请
-* TA 必须先上传简历后才能申请
-* 系统必须显示申请提交成功信息
-* 已提交的申请必须出现在申请记录列表中
-* MO 必须能够看到该申请
+* Accept
+* Reject
+* Waitlist
 
-验收标准是必要的，因为它使用户故事更加精确，也帮助将需求与原型行为直接对应起来。
+**System States:**
 
----
-
-### 1.7 优先级排序
-
-小组采用了 **Must / Should / Could** 的优先级划分方法。
-
-**Must（必须有）：**
-展示系统核心价值所必不可少的功能。
-
-**Should（应该有）：**
-对提升系统可用性和完整性很重要，但不属于 MVP 的绝对核心功能。
-
-**Could（可以有）：**
-可以放到后续迭代中的可选增强功能。
-
-例如：
-
-* 资料创建、简历上传、岗位浏览、岗位申请、岗位发布、申请者查看以及工作量总览被归类为 **Must**
-* 筛选功能和编辑功能被归类为 **Should**
-* 基于 AI 的匹配与平衡功能被归类为 **Could**
-
-之所以采用这样的排序方式，是为了确保系统的第一版在**可实现**的前提下，仍能清晰地交付招聘系统的核心流程。
+* "Decision updated successfully"
 
 ---
 
-### 1.8 工作量估算
+## 5. Admin User Flow Pages
 
-小组使用了故事点（story points）来估算用户故事，采用的刻度如下：
+### P14. Admin Home / Workload Overview Page
 
-* 1 = 非常小的任务
-* 2 = 小任务
-* 3 = 中等任务
-* 5 = 较大的多步骤任务
-* 8 = 复杂增强功能
+**Purpose:**
+Allows administrators to monitor the TA workload distribution across the entire system.
 
-使用故事点有助于团队比较不同用户故事之间的工作量，并支持 sprint 规划。
+**Main Components:**
 
-例如：
+* Search by TA name or student ID
+* Filter by workload status
+* Workload table
 
-* 查看岗位详情 = 2 点
-* 上传简历 = 3 点
-* 申请岗位 = 5 点
-* AI 技能匹配 = 8 点
+**Each Record Contains:**
 
----
+* TA name
+* Student ID
+* Number of assigned positions
+* Total hours
+* Workload status
 
-### 1.9 迭代规划
+**System States:**
 
-小组将 backlog 分为三个层次：
+* "No records found"
 
-**迭代1 / Sprint 1：**
-核心 MVP 流程
-
-* 创建申请者资料
-* 上传简历
-* 浏览岗位
-* 查看岗位详情
-* 申请岗位
-* 查看申请状态
-* 发布岗位
-* 查看申请者
-* 查看申请者资料与简历
-* 录用或拒绝申请者
-* 查看工作量总览
-
-**迭代2：**
-次级可用性与管理功能
-
-* 编辑资料
-* 筛选岗位
-* 编辑或关闭岗位
-* 筛选工作量记录
-
-**未来 Backlog：**
-可选 AI 增强功能
-
-* 技能匹配建议
-* 工作量平衡建议
-
-该迭代规划体现了**客户价值**与**开发可行性**之间的平衡。
+**Design Notes:**
+TAs with excessive workload should be clearly highlighted.
 
 ---
 
-## 2. 事实调查（Fact Finding）
+## 6. Common System State Pages
 
-### 2.1 目的
+### P15. Empty State Page
 
-事实调查用于更好地理解招聘流程，并为 backlog 设计和原型改进提供依据。由于项目说明只提供了高层次指导，因此需要额外的信息来澄清预期并识别更实际的需求。
+**Examples:**
 
----
-
-### 2.2 所采用的事实调查方法
-
-小组计划采用以下几种方法：
-
-**1. 文档分析（Document Analysis）**
-通过分析项目 handout，识别：
-
-* 主要用户群体
-* 核心功能
-* 项目约束
-* 可选 AI 功能
-
-**2. 访谈问题（Interview Questions）**
-准备一组简短的访谈问题，收集潜在用户或评审者的看法，以了解他们的预期、痛点以及系统中可能缺失的功能。
-
-**3. 问卷调查（Survey / Questionnaire）**
-设计原型反馈问卷，收集结构化反馈，包括：
-
-* 系统目标是否清晰
-* 工作流程是否易用
-* 信息是否完整
-* 哪些页面或步骤让人困惑
-* 对改进的建议
-
-**4. 原型用户反馈（User Feedback on Prototype）**
-向若干评审者展示原型，以便改进导航、页面结构以及可能缺失的信息。
+* No jobs yet
+* No applicants yet
+* No workload records yet
 
 ---
 
-### 2.3 选择这些方法的原因
+### P16. Error State Page
 
-这些事实调查方法之所以被选用，是因为它们适合一个**早期阶段的软件工程项目**，尤其是在时间有限、初始需求不完整的情况下。
+**Examples:**
 
-文档分析能够提供一个结构化的起点。
-访谈和问卷对学生团队来说成本较低、操作现实。
-而原型反馈尤为重要，因为它能让小组在真正进入实现之前，先验证系统的功能性与可用性。
-
----
-
-### 2.4 预期收集的证据
-
-小组计划收集以下证据：
-
-* 访谈问题
-* 问卷问题
-* 问卷结果
-* 客户或同伴反馈
-* 关键发现总结
-* 基于反馈所做的原型与 backlog 修改记录
-
-这些证据将在之后作为报告附录中的支撑材料使用。
+* Please complete your profile before applying
+* Please upload your resume before applying
+* Required fields cannot be empty
 
 ---
 
-## 3. 优先级划分的理由
+### P17. Success Feedback Page
 
-本次优先级划分主要基于两个原则：
+**Examples:**
 
-**1. 客户价值（Customer Value）**
-系统的第一版应优先支持从申请到选择的基础招聘流程。
-
-**2. 可行性（Feasibility）**
-团队应优先完成那些在项目约束下更现实、更容易被原型化并后续实现的功能。
-
-因此，小组没有将 AI 功能纳入 MVP。尽管 AI 技能匹配和工作量平衡被认为是有价值的后续增强功能，但它们并不是展示系统核心目标所必需的第一阶段功能。
-
-小组认为，先优先实现基础流程，会使系统在清晰度和项目可控性上都更好。
+* Profile saved successfully
+* Resume uploaded successfully
+* Application submitted successfully
+* Job published successfully
+* Decision updated successfully
 
 ---
 
-## 4. 结论
+## 7. Main Prototype Flows
 
-项目的这一初始阶段为 TA 招聘系统建立了概念基础。通过用户故事编写工作坊，小组识别了核心用户，明确了项目范围，将系统组织为若干 Epic，并形成了带有验收标准、优先级、估算和迭代规划的结构化用户故事。
+### TA Main Flow
 
-通过事实调查，小组也识别出合适的方法来收集证据，并通过用户反馈验证原型。这些活动直接支持了一个有意义的产品待办列表和一个连贯原型的形成。
+Login → TA Home → Create/Edit Profile → Upload Resume → Browse Jobs → View Job Details → Confirm Application → View My Applications
 
-其结果是为项目下一阶段——包括原型优化、backlog 完善以及后续软件实现——提供了结构化基础。
+### MO Main Flow
+
+Login → MO Home → Create Job → Job List → Applicant List → Applicant Details and Decision
+
+### Admin Main Flow
+
+Login → Admin Home / Workload Overview
+
+---
+
+## 8. Prototype Design Notes
+
+The prototype design should follow these principles:
+
+* Clear navigation
+* Distinct role separation
+* Simple and easy-to-understand page layout
+* Visible system states
+* Clear validation and error feedback
+* Coverage of complete end-to-end workflows
+* Support for both functional and usability evaluation
+
+The prototype should not be viewed as a set of isolated pages, but must present complete and coherent usage paths for all three user types.
+
+---
+
+# Part B: Report Part 1
+
+## 1. User Story Writing Workshop
+
+### 1.1 Workshop Purpose
+
+The purpose of the user story writing workshop is to transform the TA recruitment problem into a structured, prioritized product backlog. Since the project description only provides high-level requirements, the team needs to identify the main user roles of the system, clarify the project scope, and transform user needs into user stories to guide subsequent prototype design and software implementation.
+
+This workshop focuses on:
+
+* Identifying the main users of the system
+* Clarifying the project scope
+* Extracting Epics from business processes
+* Writing user stories in standard format
+* Defining acceptance criteria
+* Assigning priorities
+* Estimating workload
+* Creating iteration plans
+
+This workshop lays the foundation for the subsequent prototype and product backlog.
+
+---
+
+### 1.2 Identified User Roles
+
+Based on the project description, three main user types have been identified:
+
+**Teaching Assistant Applicants (TA):**
+TAs are applicants responsible for creating profiles, uploading resumes, searching for available positions, submitting job applications, and checking application status.
+
+**Module Organisers (MO):**
+MOs are responsible for publishing TA positions, viewing applicants, and selecting suitable candidates.
+
+**Administrators (Admin):**
+Administrators are responsible for viewing the overall workload of TAs to support fair distribution and supervision management.
+
+These three user types constitute the main users of the system and form the basis for prototype and product backlog design.
+
+---
+
+### 1.3 Scope Definition
+
+In the first assessment, the project scope was intentionally limited to the **core recruitment process**.
+
+**In Scope:**
+
+* Applicant profile creation and editing
+* Resume upload
+* Job browsing and job details viewing
+* Application submission
+* Application status tracking
+* Job posting
+* Applicant viewing and decision making
+* Workload overview viewing
+
+**Out of Scope:**
+
+* AI-based skill matching
+* Automatic recommendations
+* Email notifications
+* Mobile app version
+* Advanced analytics features
+* Database integration
+
+This scope definition ensures that the system, while feasible to implement, focuses on customer value and is suitable for incremental development.
+
+---
+
+### 1.4 Epics Defined in Workshop
+
+The recruitment process is organized into the following Epics:
+
+1. TA Profile Management
+2. Job Discovery and Application
+3. Application Status Tracking
+4. MO Job Posting and Applicant Selection
+5. Admin Workload Monitoring
+6. Optional AI Support Features
+
+These Epics are further broken down into more detailed user stories.
+
+---
+
+### 1.5 User Story Format
+
+The team adopted the following standard format for all user stories:
+
+**As a [role], I want [behavior], so that [benefit].**
+
+This format was chosen because it keeps the focus on **user value** rather than technical implementation details.
+
+For example:
+
+* As a TA, I want to upload my resume so that module organisers can review my qualifications.
+* As an MO, I want to publish a position so that students can apply.
+* As an administrator, I want to view TA workload so that I can monitor workload distribution.
+
+---
+
+### 1.6 Acceptance Criteria
+
+Each user story is accompanied by acceptance criteria so that the requirement can be verified and tested.
+
+For example:
+
+**User Story:**
+As a TA, I want to apply for a position so that I can be considered for hiring.
+
+**Acceptance Criteria:**
+
+* TA must complete profile before applying
+* TA must upload resume before applying
+* System must display application submission success message
+* Submitted application must appear in the application records list
+* MO must be able to see the application
+
+Acceptance criteria are necessary because they make user stories more precise and help directly map requirements to prototype behavior.
+
+---
+
+### 1.7 Priority Ranking
+
+The team adopted the **Must / Should / Could** priority classification method.
+
+**Must (Must Have):**
+Features essential to demonstrate the core value of the system.
+
+**Should (Should Have):**
+Features important for improving system usability and completeness, but not absolutely essential for the MVP.
+
+**Could (Could Have):**
+Optional enhancement features that can be placed in subsequent iterations.
+
+For example:
+
+* Profile creation, resume upload, job browsing, job application, job posting, applicant viewing, and workload overview are classified as **Must**
+* Filtering features and editing features are classified as **Should**
+* AI-based matching and balancing features are classified as **Could**
+
+This ranking ensures that the first version of the system, while achievable, still clearly delivers the core recruitment process.
+
+---
+
+### 1.8 Workload Estimation
+
+The team used story points to estimate user stories, with the following scale:
+
+* 1 = Very small task
+* 2 = Small task
+* 3 = Medium task
+* 5 = Larger multi-step task
+* 8 = Complex enhancement
+
+Using story points helps the team compare workloads between different user stories and supports sprint planning.
+
+For example:
+
+* View job details = 2 points
+* Upload resume = 3 points
+* Apply for job = 5 points
+* AI skill matching = 8 points
+
+---
+
+### 1.9 Iteration Planning
+
+The team divided the backlog into three levels:
+
+**Iteration 1 / Sprint 1:**
+Core MVP process
+
+* Create applicant profile
+* Upload resume
+* Browse jobs
+* View job details
+* Apply for job
+* View application status
+* Post job
+* View applicants
+* View applicant profiles and resumes
+* Accept or reject applicants
+* View workload overview
+
+**Iteration 2:**
+Secondary usability and management features
+
+* Edit profile
+* Filter jobs
+* Edit or close jobs
+* Filter workload records
+
+**Future Backlog:**
+Optional AI enhancement features
+
+* Skill matching suggestions
+* Workload balancing suggestions
+
+This iteration plan reflects the balance between **customer value** and **development feasibility**.
+
+---
+
+## 2. Fact Finding
+
+### 2.1 Purpose
+
+Fact finding is used to better understand the recruitment process and provide evidence for backlog design and prototype improvement. Since the project description only provides high-level guidance, additional information is needed to clarify expectations and identify more practical requirements.
+
+---
+
+### 2.2 Fact Finding Methods Used
+
+The team plans to use the following methods:
+
+**1. Document Analysis**
+By analyzing the project handout, identify:
+
+* Main user groups
+* Core functions
+* Project constraints
+* Optional AI features
+
+**2. Interview Questions**
+Prepare a set of brief interview questions to collect perspectives from potential users or reviewers to understand their expectations, pain points, and potentially missing features in the system.
+
+**3. Survey / Questionnaire**
+Design a prototype feedback questionnaire to collect structured feedback, including:
+
+* Whether the system objectives are clear
+* Whether the workflow is easy to use
+* Whether the information is complete
+* Which pages or steps are confusing
+* Suggestions for improvement
+
+**4. User Feedback on Prototype**
+Present the prototype to several reviewers for improvement of navigation, page structure, and potentially missing information.
+
+---
+
+### 2.3 Reasons for Selecting These Methods
+
+These fact-finding methods were chosen because they are suitable for an **early-stage software engineering project**, especially when time is limited and initial requirements are incomplete.
+
+Document analysis can provide a structured starting point.
+Interviews and surveys are low-cost and practical for student teams.
+Prototype feedback is particularly important because it allows the team to verify system functionality and usability before entering implementation.
+
+---
+
+### 2.4 Evidence to Be Collected
+
+The team plans to collect the following evidence:
+
+* Interview questions
+* Survey questions
+* Survey results
+* Customer or peer feedback
+* Key findings summary
+* Prototype and backlog modification records based on feedback
+
+This evidence will later be used as supporting material in the report appendices.
+
+---
+
+## 3. Rationale for Priority Ranking
+
+This priority ranking is primarily based on two principles:
+
+**1. Customer Value**
+The first version of the system should prioritize supporting the basic recruitment process from application to selection.
+
+**2. Feasibility**
+The team should prioritize completing features that are more realistic, easier to prototype, and subsequently implement under project constraints.
+
+Therefore, the team did not include AI features in the MVP. Although AI skill matching and workload balancing are considered valuable subsequent enhancements, they are not essential for demonstrating the core objectives of the system in the first phase.
+
+The team believes that prioritizing the basic process first will make the system better in terms of clarity and project controllability.
+
+---
+
+## 4. Conclusion
+
+This initial phase of the project establishes the conceptual foundation for the TA Recruitment System. Through the user story writing workshop, the team identified core users, clarified the project scope, organized the system into several Epics, and formed structured user stories with acceptance criteria, priorities, estimates, and iteration plans.
+
+Through fact finding, the team also identified appropriate methods to collect evidence and verified the prototype through user feedback. These activities directly support the formation of a meaningful product backlog and a coherent prototype.
+
+The result is a structured foundation for the next phase of the project—including prototype optimization, backlog refinement, and subsequent software implementation.
