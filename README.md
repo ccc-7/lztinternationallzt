@@ -89,6 +89,7 @@ The CV module is split into two clearly separated parts:
 - Job search with keyword, module code, and minimum match score filters
 - Submit job applications
 - View application history and status
+- Withdraw or delete pending applications (right-click context menu)
 
 ### 4.2 Module Organiser (MO)
 
@@ -125,6 +126,16 @@ The CV module is split into two clearly separated parts:
 - User year must satisfy `minYear / maxYear` constraints
 - Duplicate application to the same job is blocked
 - Active applications are limited to `3` per TA
+
+### 4.5 Application Statuses
+
+| Status | Description |
+|--------|-------------|
+| `PENDING` | Application submitted and awaiting review |
+| `INTERVIEW` | Application shortlisted; an interview is scheduled |
+| `ACCEPTED` | Application approved; TA has been selected |
+| `REJECTED` | Application declined or rejected by MO/Admin |
+| `WITHDRAWN` | Application withdrawn by the TA applicant |
 
 ---
 
@@ -489,6 +500,7 @@ Test coverage includes:
 6. Open uploaded PDF
 7. Browse **Job Listings** and view match scores
 8. Submit an application
+9. Right-click on a pending application to **Withdraw** or **Delete Record**
 
 ### MO Demo
 
@@ -516,10 +528,11 @@ Test coverage includes:
 
 ### Not Yet Implemented
 
-- TA job search UI with advanced filters (basic filtering is implemented)
+- Advanced TA job search UI with more filters (basic filtering is implemented)
 - PDF parsing and auto-fill back into profile
 - Email notification system
 - Multi-language support
+- Password reset functionality
 - Password reset functionality
 
 ---

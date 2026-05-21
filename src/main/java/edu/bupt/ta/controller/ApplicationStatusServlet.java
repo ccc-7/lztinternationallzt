@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Displays the current TA's submitted applications, enriched with job details
  * (title, module code, organiser) via {@link edu.bupt.ta.model.ApplicationWithJob}.
+ * Supports POST requests for withdrawing or deleting own applications.
  *
  * @see edu.bupt.ta.service.ApplicationService#getApplicationsByUserId
  */
@@ -63,5 +64,42 @@ public class ApplicationStatusServlet extends HttpServlet {
 
         req.setAttribute("applications", applicationsWithJob);
         req.getRequestDispatcher("/WEB-INF/jsp/ta/applications.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        User user = (User) req.getSession().getAttribute("currentUser");
+        if (user == null || user.getRole() != UserRole.TA) {
+            req.getSession().setAttribute("flashError", "please log in as a TA to perform this action.");
+            resp.sendRedirect(req.getContextPath() + "/home");
+            return;
+        }
+
+        String action = req.getParameter("action");
+        String applicationId = req.getParameter("applicationId");
+
+        if (applicationId == null || applicationId.isBlank()) {
+            req.getSession().setAttribute("flashError", "Invalid application ID.");
+            resp.sendRedirect(req.getContextPath() + "/applications");
+            return;
+        }
+
+        try {
+            if ("withdraw".equals(action)) {
+                applicationService.withdrawApplication(applicationId, user.getUserId());
+                req.getSession().setAttribute("flashSuccess", "Application withdrawn successfully.");
+            } else if ("delete".equals(action)) {
+                applicationService.deleteOwnApplication(applicationId, user.getUserId());
+                req.getSession().setAttribute("flashSuccess", "Application deleted successfully.");
+            } else {
+                req.getSession().setAttribute("flashError", "Unknown action.");
+            }
+        } catch (IllegalArgumentException e) {
+            req.getSession().setAttribute("flashError", e.getMessage());
+        }
+
+        resp.sendRedirect(req.getContextPath() + "/applications");
     }
 }

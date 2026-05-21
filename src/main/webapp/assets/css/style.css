@@ -907,9 +907,14 @@ select:focus {
     color: #856404;
 }
 
-.badge.REJECTED, .badge.rejected, .badge.CLOSED {
+.badge.REJECTED, .badge.rejected, .badge.CLOSED, .badge.WITHDRAWN {
     background: var(--status-red-bg);
     color: var(--status-red);
+}
+
+.badge.WITHDRAWN {
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 .badge.CREATE { background: var(--enterprise-blue-light); color: var(--enterprise-blue); }

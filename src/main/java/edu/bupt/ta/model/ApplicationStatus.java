@@ -16,7 +16,10 @@ public enum ApplicationStatus {
     ACCEPTED,
 
     /** Application declined or rejected. */
-    REJECTED;
+    REJECTED,
+
+    /** Application withdrawn by the TA applicant. */
+    WITHDRAWN;
 
     /**
      * Parses a string value into an ApplicationStatus.
