@@ -1249,7 +1249,7 @@ async function checkUsernameAvailability(forceCheck) {
     }
 }
 
-// 修复后的密码强度判断逻辑
+// Fixed password strength validation logic
 function updatePasswordStrength(password) {
     var bars = [
         document.getElementById('bar1'),
@@ -1269,18 +1269,18 @@ function updatePasswordStrength(password) {
 
     var score = 0;
 
-    // 长度评分
+    // Length scoring
     if (password.length >= 4) score += 1;
     if (password.length >= 8) score += 1;
     if (password.length >= 12) score += 1;
 
-    // 字符类型评分
-    if (/[a-z]/.test(password)) score += 1; // 小写字母
-    if (/[A-Z]/.test(password)) score += 1; // 大写字母
-    if (/[0-9]/.test(password)) score += 1; // 数字
-    if (/[^a-zA-Z0-9]/.test(password)) score += 1; // 特殊字符
+    // Character type scoring
+    if (/[a-z]/.test(password)) score += 1; // lowercase letters
+    if (/[A-Z]/.test(password)) score += 1; // uppercase letters
+    if (/[0-9]/.test(password)) score += 1; // numbers
+    if (/[^a-zA-Z0-9]/.test(password)) score += 1; // special characters
 
-    // 强度分级
+    // Strength classification
     var strength, level;
     if (score <= 2) {
         strength = 'weak';
@@ -1296,7 +1296,7 @@ function updatePasswordStrength(password) {
         text.textContent = 'Strong';
     }
 
-    // 更新UI
+    // Update UI
     text.className = 'strength-text ' + strength;
     bars.forEach(function(bar, index) {
         bar.classList.remove('active', 'weak', 'medium', 'strong');

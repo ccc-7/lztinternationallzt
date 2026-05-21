@@ -1,114 +1,113 @@
 ## Iteration 0 / First Meeting Summary
 
-### 1. 会议概况
+### 1. Meeting Overview
 
-- **日期**：2026-03-09  
-- **参会成员**：Zhu Siyuan, Chen Taiyu  
-- **记录人**：Zhu Siyuan  
-- **主要目标**：
-  - 统一理解课程项目要求（TA Recruitment System）；
-  - 讨论并确定初步开发方式与技术栈；
-  - 明确 Git 仓库结构与分支管理方式；
-  - 列出第一次迭代前的待办事项（To-do）。
-
----
-
-### 2. 项目目标与范围共识
-
-- 确定系统类型：**轻量 JSP/Servlet Web 应用**，部署在本地 Tomcat 上。  
-- 数据存储：仅使用 **文本文件（CSV/JSON）**，不使用数据库。  
-- 主要用户角色：**TA、Module Organiser (MO)、Admin**。  
-- 初期目标：
-  - 完成 TA 注册 / 登录 / 浏览岗位 的基本流程；
-  - 搭建一个清晰、可扩展的项目结构，方便后续迭代开发；
-  - 为后续需求分析、原型设计和多次迭代开发打下基础。
+- **Date**: 2026-03-09
+- **Attendees**: Zhu Siyuan, Chen Taiyu
+- **Recorder**: Zhu Siyuan
+- **Main Objectives**:
+  - Align understanding of course project requirements (TA Recruitment System);
+  - Discuss and determine preliminary development approach and tech stack;
+  - Clarify Git repository structure and branch management approach;
+  - List todos before the first iteration.
 
 ---
 
-### 3. 已完成事项
+### 2. Project Goals and Scope Consensus
 
-**（1）代码与环境部分**
-
-- 已完成组内对技术路线的讨论，确认采用 **JDK 17 + Tomcat 10 + Maven + JSP/Servlet + 文本文件存储** 的轻量 Web 架构。
-- 主要成员已在本地完成开发环境搭建：
-  - 安装并配置 JDK 17（`JAVA_HOME` 与 `Path`）；
-  - 安装并配置 Tomcat 10（`CATALINA_HOME` 与运行验证）；
-  - 安装并配置 Maven（`MAVEN_HOME` 与 `mvn -v` 验证）。
-- 在 `ta-webapp` 目录下创建了 Maven Web 项目骨架：
-  - 目录结构包括 `src/main/java`, `src/main/webapp`, `data`, `docs` 等；
-  - 在 `data/` 中添加示例 CSV 数据文件，为后续实现文件读写逻辑做准备。
-- 已创建并初始化 GitHub 仓库：
-  - 将 `ta-webapp` 推送至远程 `master` 分支，作为团队统一代码基线；
-  - 在 `README.md` 中记录了环境配置步骤与项目结构说明。
-
-**（2）流程与规范部分**
-
-- 在第一次组会中，讨论并初步达成以下软件工程流程共识：
-  - 采用迭代式 / Agile 开发方式，每个迭代结束需有可演示版本；
-  - 所有成员统一通过 Git 分支 + Pull Request 的方式提交代码，不直接在 `master` 上开发；
-  - 需求、设计、测试等文档统一放在 `docs/` 目录下集中维护；
-  - 在主要里程碑（各次 assessment）前，完成分支合并与版本标记。
+- System type determined: **Lightweight JSP/Servlet Web Application**, deployed on local Tomcat.
+- Data storage: Using only **text files (CSV/JSON)**, no database.
+- Main user roles: **TA, Module Organiser (MO), Admin**.
+- Initial goals:
+  - Complete basic flow for TA registration / login / browse jobs;
+  - Establish a clear, scalable project structure for subsequent iterative development;
+  - Lay the foundation for subsequent requirement analysis, prototype design, and multiple iteration development.
 
 ---
 
-### 4. 后续待办事项（下一阶段工作）
+### 3. Completed Items
 
-**4.1 需求与分析阶段 —— 明确用户故事与产品范围**
+**(1) Code and Environment**
 
-- 完成第一次系统化的需求分析：
-  - 通过 Story Writing Workshop 的形式，围绕 TA / MO / Admin 三类角色编写用户故事；
-  - 为每个用户故事补充验收标准、优先级和预估工作量；
-  - 将整理后的用户故事录入课程要求的 Product Backlog Excel 中。
-- 明确系统边界与核心功能集：
-  - 列出“迭代 1 必须实现的最小可用功能”（如注册、登录、浏览岗位）；
-  - 将可选的高级功能（如简单“智能匹配”）标记为后续迭代候选。
+- Completed internal discussion on technical approach, confirmed **JDK 17 + Tomcat 10 + Maven + JSP/Servlet + text file storage** lightweight Web architecture.
+- Main members have completed local development environment setup:
+  - Installed and configured JDK 17 (`JAVA_HOME` and `Path`);
+  - Installed and configured Tomcat 10 (`CATALINA_HOME` and running verification);
+  - Installed and configured Maven (`MAVEN_HOME` and `mvn -v` verification).
+- Created Maven Web project skeleton in `ta-webapp` directory:
+  - Directory structure includes `src/main/java`, `src/main/webapp`, `data`, `docs`, etc.;
+  - Added sample CSV data files in `data/` for subsequent file read/write logic implementation.
+- Created and initialized GitHub repository:
+  - Pushed `ta-webapp` to remote `master` branch as team's unified code baseline;
+  - Recorded environment configuration steps and project structure in `README.md`.
 
-**4.2 原型设计阶段 —— 形成可讨论的界面蓝图**
+**(2) Process and Standards**
 
-- 基于需求分析结果，完成主要页面的低/中保真原型：
-  - TA 视角：注册 / 登录 / 查看岗位 / 查看申请状态；
-  - MO 视角：发布岗位 / 查看申请人 / 更新申请状态；
-  - Admin 视角：查看整体岗位与工作量概览。
-- 收集团队内部与指导教师/助教的初步反馈，并在原型上做 1–2 轮轻量调整。
+- In the first team meeting, discussed and initially agreed on the following software engineering process:
+  - Adopt iterative / Agile development approach, each iteration should have a demonstrable version;
+  - All members submit code through Git branches + Pull Requests, no direct development on `master`;
+  - Requirements, design, testing, and other documents are centrally maintained in `docs/` directory;
+  - Before major milestones (each assessment), complete branch merges and version tagging.
 
-**4.3 调查与反馈（Fact-Finding）—— 收集真实使用需求**
+---
 
-- 选择合适的调研方式（问卷、访谈、小范围试用等），获取潜在用户/同学的意见；
-- 将调研结果整理成简要结论，用于支持 Product Backlog 中优先级和范围的确定；
-- 在 `docs/requirements.md` 中补充“需求来源”和“假设前提”，增强需求的可追溯性。
+### 4. Subsequent Todos (Next Phase Work)
 
-**4.4 迭代 1 开发准备 —— 为编码阶段做好拆分与分工**
+**4.1 Requirements and Analysis Phase — Clarify User Stories and Product Scope**
 
-- 在 `docs/architecture.md` 中补充迭代 1 需要用到的关键模块与调用关系（简单架构图或文字描述均可）；
-- 根据已确定的用户故事，将迭代 1 的任务拆分为可分配的开发任务：
-  - 界面开发（JSP）；
-  - 控制层（Servlet）；
-  - 文件存储层（CSV 读写）；
-  - 基本测试与验证。
-- 为每个成员分配至少 1 个明确任务，并对应到 Git 功能分支命名（例如 `sy/login-basic-flow`），为下一步编码阶段做准备。
+- Complete first systematic requirement analysis:
+  - Through Story Writing Workshop, write user stories around three types: TA / MO / Admin;
+  - Add acceptance criteria, priorities, and estimated workload for each user story;
+  - Enter organized user stories into the Product Backlog Excel required by the course.
+- Clarify system boundaries and core feature set:
+  - List "minimum viable features for Iteration 1" (e.g., registration, login, browse jobs);
+  - Mark optional advanced features (e.g., simple "smart matching") as candidates for subsequent iterations.
+
+**4.2 Prototype Design Phase — Form Discussable Interface Blueprint**
+
+- Based on requirement analysis results, complete low/mid-fidelity prototypes for main pages:
+  - TA perspective: Register / Login / View jobs / View application status;
+  - MO perspective: Post jobs / View applicants / Update application status;
+  - Admin perspective: View overall jobs and workload overview.
+- Collect initial feedback from team and instructor/teaching assistants, and make 1-2 rounds of lightweight adjustments to the prototype.
+
+**4.3 Investigation and Feedback (Fact-Finding) — Collect Real Usage Requirements**
+
+- Select appropriate research methods (questionnaire, interview, small-scale trial, etc.) to get opinions from potential users/classmates;
+- Organize research results into brief conclusions to support priority and scope determination in Product Backlog;
+- Add "requirement sources" and "assumptions" in `docs/requirements.md` to enhance requirement traceability.
+
+**4.4 Iteration 1 Development Preparation — Prepare for Code Phase Task Splitting and Assignment**
+
+- Add key modules and call relationships needed for Iteration 1 in `docs/architecture.md` (simple architecture diagram or text description is acceptable);
+- Based on determined user stories, split Iteration 1 tasks into assignable development tasks:
+  - UI development (JSP);
+  - Controller layer (Servlet);
+  - File storage layer (CSV read/write);
+  - Basic testing and verification.
+- Assign at least 1 clear task to each member, and map to Git feature branch naming (e.g., `sy/login-basic-flow`), to prepare for the next code phase.
 
 ## Iteration 1 / Second Meeting Summary
 
-### 1. 会议概况
+### 1. Meeting Overview
 
-- **日期**：2026-03-13  
-- **参会成员**：Zhu Siyuan, Chen Taiyu  Liu Zeteng
-- **记录人**：Chen Taiyu 
-- **主要目标**：
-  - 明确了第一阶段的任务要求
-  - 讨论并确定接下来的方向以及分工安排；
-  - 与老师进行沟通，理解了backlog的具体要求。
+- **Date**: 2026-03-13
+- **Attendees**: Zhu Siyuan, Chen Taiyu, Liu Zeteng
+- **Recorder**: Chen Taiyu
+- **Main Objectives**:
+  - Clarified Phase 1 task requirements
+  - Discussed and determined next direction and work allocation;
+  - Communicated with instructor, understood specific requirements for backlog.
 
-### 2.项目目标
+### 2. Project Goals
 
-- 开始着手完成：
-  - 产品待办列表（product backlog）
-  - 原型（prototype）
-  - 一份简短报告（brief report）
+- Started working on:
+  - Product backlog
+  - Prototype
+  - Brief report
 
-### 3. 已完成事项
+### 3. Completed Items
 
-- product backlog 
-- brief report 的初稿撰写
-- 两篇稿子优化方向的确定
-
+- Product backlog
+- Draft of brief report
+- Identified optimization directions for both documents

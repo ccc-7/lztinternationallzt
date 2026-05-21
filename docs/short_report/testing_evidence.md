@@ -4,7 +4,7 @@
 
 ---
 
-## 一、Implemented Features and Testability
+## 1. Implemented Features and Testability
 
 | Feature | Implemented | Java Files | JSP Pages | Data Files | Auto-Testable | Manual-Test Required |
 |---------|------------|------------|-----------|------------|---------------|---------------------|
@@ -28,7 +28,7 @@
 
 ---
 
-## 二、Testing Objectives
+## 2. Testing Objectives
 
 Based on the codebase, the project has the following testing objectives:
 
@@ -83,7 +83,7 @@ Based on the codebase, the project has the following testing objectives:
 
 ---
 
-## 三、Testing Techniques Used
+## 3. Testing Techniques Used
 
 | Technique | Purpose | Module | Example | Evidence File |
 |-----------|---------|--------|---------|---------------|
@@ -104,7 +104,7 @@ Based on the codebase, the project has the following testing objectives:
 
 ---
 
-## 四、Automated Test Programs
+## 4. Automated Test Programs
 
 ### 4.1 Test Directory Structure
 
@@ -263,7 +263,7 @@ mvn test output (2026-05-17 12:48:34):
 
 ---
 
-## 五、Manual / Acceptance Test Cases
+## 5. Manual / Acceptance Test Cases
 
 | Test ID | Scenario | User Role | Preconditions | Test Steps | Expected Result | Actual Result | Pass/Fail |
 |---------|----------|-----------|--------------|------------|-----------------|---------------|-----------|
@@ -295,7 +295,7 @@ mvn test output (2026-05-17 12:48:34):
 
 ---
 
-## 六、File-Based Storage Testing
+## 6. File-Based Storage Testing
 
 ### 6.1 Data Files
 
@@ -354,7 +354,7 @@ void setUp() throws IOException {
 
 ---
 
-## 七、Error Handling and Boundary Testing
+## 7. Error Handling and Boundary Testing
 
 ### 7.1 Tested Error Scenarios
 
@@ -401,7 +401,7 @@ void setUp() throws IOException {
 
 ---
 
-## 八、Testing Environment
+## 8. Testing Environment
 
 | Component | Version/Value |
 |-----------|---------------|
@@ -424,7 +424,7 @@ void setUp() throws IOException {
 
 ---
 
-## 九、Test Execution Result
+## 9. Test Execution Result
 
 Based on the actual `mvn test` output from the terminal:
 
@@ -505,7 +505,7 @@ Based on the actual `mvn test` output from the terminal:
 
 ---
 
-## 十、Bugs Found and Fixed
+## 10. Bugs Found and Fixed
 
 > Based on the codebase and the systematic review of error-handling tests, the following issues were identified and addressed during development. Specific commit messages were not retrieved, but the evidence is present in the test code.
 
@@ -530,7 +530,7 @@ Based on the actual `mvn test` output from the terminal:
 
 ---
 
-## 十一、Limitations
+## 11. Limitations
 
 ### 11.1 Pages/Flows Requiring Manual Testing
 
