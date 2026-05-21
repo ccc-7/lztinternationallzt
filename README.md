@@ -1,6 +1,18 @@
 # TA Recruitment System
 
-A Maven-based Java web application for managing the Teaching Assistant (TA) recruitment workflow using Jakarta Servlet/JSP and CSV file storage.
+A Maven-based Java web application for managing the Teaching Assistant (TA) recruitment workflow using Jakarta Servlet/JSP and CSV file storage.  
+  
+Group Member :  
+**[ccc-7:  Taiyu Chen](https://github.com/ccc-7)**  
+**[woruqingshan: Siyuan Zhu](https://github.com/woruqingshan)**  
+**[yongyuandez: Zetang Liu](https://github.com/yongyuandez)**
+
+[Miao200506: Runxi Miao](https://github.com/Miao200506)
+
+**[jingche110: Jiongche Xin](https://github.com/jingche110)**
+
+**[SystemName-e6lq: Gang Yang](https://github.com/SystemName-e6lq)**  
+
 
 ---
 
@@ -40,11 +52,13 @@ The TA Recruitment System is a web-based application that streamlines the proces
 
 ## 2. System Roles
 
-| Role | Description |
-|------|-------------|
-| `TA Applicant` | Students applying for Teaching Assistant positions |
-| `MO (Module Organiser)` | Faculty members who create job postings and review applications |
-| `Admin` | System administrators who manage users, jobs, and system settings |
+
+| Role                    | Description                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| `TA Applicant`          | Students applying for Teaching Assistant positions                |
+| `MO (Module Organiser)` | Faculty members who create job postings and review applications   |
+| `Admin`                 | System administrators who manage users, jobs, and system settings |
+
 
 ---
 
@@ -64,13 +78,12 @@ The system has reached a **demonstrable end-to-end version** with the following 
 The CV module is split into two clearly separated parts:
 
 1. **Candidate Summary**
-   - Generated from structured TA profile fields
-   - Used for quick recruiter review
-
+  - Generated from structured TA profile fields
+  - Used for quick recruiter review
 2. **Original PDF CV**
-   - Uploaded by the TA
-   - Stored as a local file under `data/cvs/`
-   - Viewable by TA, MO, and Admin with proper permission checks
+  - Uploaded by the TA
+  - Stored as a local file under `data/cvs/`
+  - Viewable by TA, MO, and Admin with proper permission checks
 
 ---
 
@@ -89,7 +102,7 @@ The CV module is split into two clearly separated parts:
 - Job search with keyword, module code, and minimum match score filters
 - Submit job applications
 - View application history and status
-- Withdraw or delete pending applications (right-click context menu)
+- Withdraw or delete applications (right-click context menu)
 
 ### 4.2 Module Organiser (MO)
 
@@ -129,28 +142,32 @@ The CV module is split into two clearly separated parts:
 
 ### 4.5 Application Statuses
 
-| Status | Description |
-|--------|-------------|
-| `PENDING` | Application submitted and awaiting review |
+
+| Status      | Description                                        |
+| ----------- | -------------------------------------------------- |
+| `PENDING`   | Application submitted and awaiting review          |
 | `INTERVIEW` | Application shortlisted; an interview is scheduled |
-| `ACCEPTED` | Application approved; TA has been selected |
-| `REJECTED` | Application declined or rejected by MO/Admin |
-| `WITHDRAWN` | Application withdrawn by the TA applicant |
+| `ACCEPTED`  | Application approved; TA has been selected         |
+| `REJECTED`  | Application declined or rejected by MO/Admin       |
+| `WITHDRAWN` | Application withdrawn by the TA applicant          |
+
 
 ---
 
 ## 5. Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Language | Java 17 |
-| Web Framework | Jakarta Servlet / JSP |
-| Tag Library | Jakarta Standard Tag Library (JSTL) |
-| Build Tool | Maven 3.9+ |
-| Application Server | Tomcat 10 |
-| Storage | CSV files + local file storage |
-| Testing | JUnit 5 |
-| CSS | Custom stylesheet |
+
+| Component          | Technology                          |
+| ------------------ | ----------------------------------- |
+| Language           | Java 17                             |
+| Web Framework      | Jakarta Servlet / JSP               |
+| Tag Library        | Jakarta Standard Tag Library (JSTL) |
+| Build Tool         | Maven 3.9+                          |
+| Application Server | Tomcat 10                           |
+| Storage            | CSV files + local file storage      |
+| Testing            | JUnit 5                             |
+| CSS                | Custom stylesheet                   |
+
 
 ---
 
@@ -183,6 +200,7 @@ ta-webapp/
 │   │   ├── MOApplicationServlet.java
 │   │   ├── MODashboardServlet.java
 │   │   ├── MOJobServlet.java
+│   │   ├── MOJobStatusServlet.java
 │   │   ├── RegisterServlet.java
 │   │   ├── TaDashboardServlet.java
 │   │   └── TaProfileServlet.java
@@ -250,42 +268,59 @@ ta-webapp/
 
 ### 7.1 CV-Related Backend
 
-| Servlet | Route | Description |
-|---------|-------|-------------|
-| `CandidateSummaryServlet` | `/files/cv-summary/{userId}` | Displays the structured summary page |
-| `FileDownloadServlet` | `/files/cv/{userId}` | Serves the uploaded original PDF CV only |
-| `CvUploadServlet` | `/ta/profile/cv/upload` | Handles PDF upload / replacement |
-| `CvDeleteServlet` | `/ta/profile/cv/delete` | Removes uploaded PDF CV |
-| `CvFileService` | - | Validates and stores PDF files under `data/cvs/` |
+
+| Servlet                   | Route                        | Description                                      |
+| ------------------------- | ---------------------------- | ------------------------------------------------ |
+| `CandidateSummaryServlet` | `/files/cv-summary/{userId}` | Displays the structured summary page             |
+| `FileDownloadServlet`     | `/files/cv/{userId}`         | Serves the uploaded original PDF CV only         |
+| `CvUploadServlet`         | `/ta/profile/cv/upload`      | Handles PDF upload / replacement                 |
+| `CvDeleteServlet`         | `/ta/profile/cv/delete`      | Removes uploaded PDF CV                          |
+| `CvFileService`           | -                            | Validates and stores PDF files under `data/cvs/` |
+
 
 ### 7.2 Application Flow
 
-| Servlet | Route | Description |
-|---------|-------|-------------|
-| `ApplyServlet` | `/apply` | Handles job application submission |
-| `ApplicationStatusServlet` | `/ta/application/status` | Updates application status (accept/reject/interview) |
-| `MOApplicationServlet` | `/mo/applications` | MO reviews and manages applications |
-| `ApplicationService` | - | Business logic for applications |
 
-### 7.3 Dashboard & Statistics
+| Servlet                    | Route                                         | Description                                   |
+| -------------------------- | --------------------------------------------- | --------------------------------------------- |
+| `ApplyServlet`             | `/apply`                                      | Handles job application submission            |
+| `ApplicationStatusServlet` | `/applications`                               | TA views applications and can withdraw/delete |
+| `MOApplicationServlet`     | `/mo/applications`, `/mo/applications/update` | MO reviews and manages applications           |
+| `ApplicationService`       | -                                             | Business logic for applications               |
 
-| Servlet | Route | Description |
-|---------|-------|-------------|
-| `TaDashboardServlet` | `/ta/dashboard` | TA dashboard with pending counts and job recommendations |
-| `MODashboardServlet` | `/mo/dashboard` | MO dashboard with job and application overview |
-| `AdminDashboardServlet` | `/admin/dashboard` | Admin dashboard with workload statistics and metrics |
-| `DashboardService` | - | Dashboard data aggregation |
-| `AdminService` | - | Workload calculation and dashboard statistics |
 
-### 7.4 Data Storage
+### 7.3 Job Management
 
-| Service | File | Description |
-|---------|------|-------------|
-| `UserService` | `ta_users.csv` | User account management |
-| `JobService` | `jobs.csv` | Job posting management |
-| `ApplicationService` | `applications.csv` | Application tracking |
-| `LogService` | `system_logs.csv` | Audit logging |
-| `FileStorageUtil` | - | Core CSV file operations |
+
+| Servlet              | Route                                 | Description                  |
+| -------------------- | ------------------------------------- | ---------------------------- |
+| `MOJobServlet`       | `/mo/jobs`                            | MO job listing and creation  |
+| `MOJobStatusServlet` | `/mo/jobs/close/*`, `/mo/jobs/open/*` | Close or reopen job postings |
+
+
+### 7.4 Dashboard & Statistics
+
+
+| Servlet                 | Route              | Description                                              |
+| ----------------------- | ------------------ | -------------------------------------------------------- |
+| `TaDashboardServlet`    | `/ta/dashboard`    | TA dashboard with pending counts and job recommendations |
+| `MODashboardServlet`    | `/mo/dashboard`    | MO dashboard with job and application overview           |
+| `AdminDashboardServlet` | `/admin/dashboard` | Admin dashboard with workload statistics and metrics     |
+| `DashboardService`      | -                  | Dashboard data aggregation                               |
+| `AdminService`          | -                  | Workload calculation and dashboard statistics            |
+
+
+### 7.5 Data Storage
+
+
+| Service              | File               | Description              |
+| -------------------- | ------------------ | ------------------------ |
+| `UserService`        | `ta_users.csv`     | User account management  |
+| `JobService`         | `jobs.csv`         | Job posting management   |
+| `ApplicationService` | `applications.csv` | Application tracking     |
+| `LogService`         | `system_logs.csv`  | Audit logging            |
+| `FileStorageUtil`    | -                  | Core CSV file operations |
+
 
 ---
 
@@ -293,13 +328,15 @@ ta-webapp/
 
 The project does **not** use MySQL or any other database. All data is stored in CSV files:
 
-| File | Purpose |
-|------|---------|
-| `data/ta_users.csv` | User accounts, profiles, and CV metadata |
-| `data/jobs.csv` | Job postings |
-| `data/applications.csv` | Job applications |
-| `data/system_logs.csv` | System audit logs |
-| `data/cvs/*.pdf` | Uploaded PDF CV files |
+
+| File                    | Purpose                                  |
+| ----------------------- | ---------------------------------------- |
+| `data/ta_users.csv`     | User accounts, profiles, and CV metadata |
+| `data/jobs.csv`         | Job postings                             |
+| `data/applications.csv` | Job applications                         |
+| `data/system_logs.csv`  | System audit logs                        |
+| `data/cvs/*.pdf`        | Uploaded PDF CV files                    |
+
 
 ---
 
@@ -307,29 +344,31 @@ The project does **not** use MySQL or any other database. All data is stored in 
 
 ### 9.1 `ta_users.csv` Fields
 
-| Field | Description |
-|-------|-------------|
-| `userId` | Unique user identifier (e.g., "U001") |
-| `username` | Login username |
-| `password` | Hashed password |
-| `name` | Display name |
-| `email` | Email address |
-| `role` | `TA`, `MO`, or `ADMIN` |
-| `year` | Academic year |
-| `major` | Major/Department |
-| `skills` | Pipe-separated skill list |
-| `status` | `ACTIVE` or `INACTIVE` |
-| `availability` | Weekly availability hours |
-| `personalStatement` | Personal statement text |
-| `relevantCourses` | Relevant coursework |
-| `projectExperience` | Project experience description |
-| `preferredRole` | Preferred TA role |
-| `summaryStatus` | `INCOMPLETE`, `SUMMARY_COMPLETE`, or `CV_UPLOADED` |
-| `cvStoredName` | Stored file name in `data/cvs/` |
-| `cvOriginalName` | Original upload filename |
-| `cvContentType` | MIME type (e.g., `application/pdf`) |
-| `cvUploadedAt` | Upload timestamp |
-| `cvStatus` | `MISSING` or `UPLOADED` |
+
+| Field               | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `userId`            | Unique user identifier (e.g., "U001")              |
+| `username`          | Login username                                     |
+| `password`          | Hashed password                                    |
+| `name`              | Display name                                       |
+| `email`             | Email address                                      |
+| `role`              | `TA`, `MO`, or `ADMIN`                             |
+| `year`              | Academic year                                      |
+| `major`             | Major/Department                                   |
+| `skills`            | Pipe-separated skill list                          |
+| `status`            | `ACTIVE` or `INACTIVE`                             |
+| `availability`      | Weekly availability hours                          |
+| `personalStatement` | Personal statement text                            |
+| `relevantCourses`   | Relevant coursework                                |
+| `projectExperience` | Project experience description                     |
+| `preferredRole`     | Preferred TA role                                  |
+| `summaryStatus`     | `INCOMPLETE`, `SUMMARY_COMPLETE`, or `CV_UPLOADED` |
+| `cvStoredName`      | Stored file name in `data/cvs/`                    |
+| `cvOriginalName`    | Original upload filename                           |
+| `cvContentType`     | MIME type (e.g., `application/pdf`)                |
+| `cvUploadedAt`      | Upload timestamp                                   |
+| `cvStatus`          | `MISSING` or `UPLOADED`                            |
+
 
 ### 9.2 CV Metadata Meaning
 
@@ -343,7 +382,7 @@ The project does **not** use MySQL or any other database. All data is stored in 
 
 ## 10. Skill Match Algorithm
 
-The `JobService.calculateMatchScore()` method implements a sophisticated skill matching algorithm:
+The `JobService.calculateMatchScore()` method implements a sophisticated skill matching algorithm (lines 434+):
 
 ### Match Types (in priority order)
 
@@ -354,18 +393,22 @@ The `JobService.calculateMatchScore()` method implements a sophisticated skill m
 
 ### Category Weights
 
-| Category | Weight | Examples |
-|----------|--------|----------|
-| `concept` | 1.5 | Data Structures, Algorithms, OOP, Design Patterns |
-| `language` | 1.3 | Java, Python, JavaScript, C++, TypeScript |
-| `ml` | 1.2 | Machine Learning, TensorFlow, PyTorch, NLP |
-| `database` | 1.1 | MySQL, PostgreSQL, MongoDB, Redis |
-| `framework` | 1.0 | Spring, React, Django, Node.js |
-| `tools` | 0.9 | Git, Docker, Kubernetes, AWS |
+
+| Category    | Weight | Examples                                          |
+| ----------- | ------ | ------------------------------------------------- |
+| `concept`   | 1.5    | Data Structures, Algorithms, OOP, Design Patterns |
+| `language`  | 1.3    | Java, Python, JavaScript, C++, TypeScript         |
+| `ml`        | 1.2    | Machine Learning, TensorFlow, PyTorch, NLP        |
+| `database`  | 1.1    | MySQL, PostgreSQL, MongoDB, Redis                 |
+| `framework` | 1.0    | Spring, React, Django, Node.js                    |
+| `tools`     | 0.9    | Git, Docker, Kubernetes, AWS                      |
+
 
 ### Jaccard Bonus
 
 Up to 15 points bonus for overlap between user and required skill sets.
+
+> **Note**: Comprehensive unit tests for the skill match algorithm are located in `src/test/java/edu/bupt/ta/service/SkillMatchServiceTest.java`.
 
 ---
 
@@ -373,27 +416,31 @@ Up to 15 points bonus for overlap between user and required skill sets.
 
 The `ApplicationService.apply()` method enforces the following rules:
 
-| Rule | Description |
-|------|-------------|
-| User existence | User must exist in the system |
+
+| Rule                  | Description                                                 |
+| --------------------- | ----------------------------------------------------------- |
+| User existence        | User must exist in the system                               |
 | Application readiness | User must have `SUMMARY_COMPLETE` status OR uploaded PDF CV |
-| Job existence | Job must exist |
-| Job status | Job must be `OPEN` |
-| Year requirement | User year must satisfy `minYear / maxYear` |
-| Deadline | Application deadline must not be expired |
-| Vacancy limit | Accepted count must not exceed vacancies |
-| Duplicate check | Cannot apply to the same job twice |
-| Active limit | Maximum 3 active (PENDING or INTERVIEW) applications per TA |
+| Job existence         | Job must exist                                              |
+| Job status            | Job must be `OPEN`                                          |
+| Year requirement      | User year must satisfy `minYear / maxYear`                  |
+| Deadline              | Application deadline must not be expired                    |
+| Vacancy limit         | Accepted count must not exceed vacancies                    |
+| Duplicate check       | Cannot apply to the same job twice                          |
+| Active limit          | Maximum 3 active (PENDING or INTERVIEW) applications per TA |
+
 
 ---
 
 ## 12. Default Test Accounts
 
-| Role | Username | Password | Description |
-|------|----------|----------|-------------|
-| TA | `seele` | `123456` | TA applicant for demo |
-| MO | `mo1` | `123456` | Module organiser for demo |
-| Admin | `admin` | `123456` | System administrator |
+
+| Role  | Username | Password | Description               |
+| ----- | -------- | -------- | ------------------------- |
+| TA    | `seele`  | `123456` | TA applicant for demo     |
+| MO    | `mo1`    | `123456` | Module organiser for demo |
+| Admin | `admin`  | `123456` | System administrator      |
+
 
 ---
 
@@ -414,6 +461,7 @@ mvn clean package
 ```
 
 Expected output:
+
 - `BUILD SUCCESS`
 - Generated WAR file: `target/ta-webapp.war`
 
@@ -449,10 +497,12 @@ By default, the application uses the local `data/` directory in the working dire
 
 The application supports external runtime data directories via system properties:
 
-| Property | Description |
-|----------|-------------|
-| `-Dta.data.dir` | Primary data directory for runtime files |
+
+| Property               | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `-Dta.data.dir`        | Primary data directory for runtime files     |
 | `-Dta.data.mirror.dir` | Mirror directory (keeps repo `data/` synced) |
+
 
 #### Example (Windows PowerShell)
 
@@ -481,10 +531,14 @@ mvn test
 ```
 
 Test coverage includes:
-- Model tests (User, Job, Application, ApplicationWithJob)
-- Service tests (UserService, JobService, ApplicationService, AdminService, DashboardService, LogService)
-- Skill match algorithm tests
-- File storage utility tests
+
+
+| Category      | Files                                                                                                                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Model tests   | `UserTest.java`, `JobTest.java`, `ApplicationTest.java`, `ApplicationWithJobTest.java`                                                                                                                              |
+| Service tests | `UserServiceTest.java`, `JobServiceTest.java`, `ApplicationServiceTest.java`, `AdminServiceTest.java`, `DashboardServiceTest.java`, `LogServiceTest.java`, `WorkloadServiceTest.java`, `SkillMatchServiceTest.java` |
+| Storage tests | `FileStorageUtilTest.java`                                                                                                                                                                                          |
+
 
 ---
 
@@ -500,7 +554,7 @@ Test coverage includes:
 6. Open uploaded PDF
 7. Browse **Job Listings** and view match scores
 8. Submit an application
-9. Right-click on a pending application to **Withdraw** or **Delete Record**
+9. Right-click on any application to **Withdraw** (PENDING) or **Delete Record** (any status)
 
 ### MO Demo
 
@@ -533,7 +587,6 @@ Test coverage includes:
 - Email notification system
 - Multi-language support
 - Password reset functionality
-- Password reset functionality
 
 ---
 
@@ -558,3 +611,4 @@ Recommended next iteration order:
 - PDF parsing is **not required** for the current stable version and should be treated as an optional enhancement.
 - All public service methods are designed for dependency injection to support unit testing.
 - System logs track user actions for audit purposes.
+
