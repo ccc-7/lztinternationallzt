@@ -30,8 +30,6 @@
                     <h3>One portal, three roles</h3>
                     <p>TA · MO · Admin — manage applications, postings and reviews in one place.</p>
                 </div>
-
-                <p class="hint-text">Demo accounts — TA: seele / 123456 · MO: mo1 / 123456 · Admin: admin / 123456</p>
             </div>
 
             <div class="login-right">

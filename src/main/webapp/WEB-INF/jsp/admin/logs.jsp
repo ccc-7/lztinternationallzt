@@ -64,9 +64,6 @@
                         <h1>System Logs</h1>
                         <p>View all system operation logs. Critical operation logs are permanently retained and cannot be bulk deleted.</p>
                     </div>
-                    <button class="btn btn-secondary" onclick="exportLogs()">
-                        <span class="btn-icon">&#8595;</span> Export Excel
-                    </button>
                 </div>
             </section>
 
@@ -91,7 +88,6 @@
                             <option value="REJECT" ${currentType == 'REJECT' ? 'selected' : ''}>Reject</option>
                             <option value="ENABLE" ${currentType == 'ENABLE' ? 'selected' : ''}>Enable</option>
                             <option value="DISABLE" ${currentType == 'DISABLE' ? 'selected' : ''}>Disable</option>
-                            <option value="EXPORT" ${currentType == 'EXPORT' ? 'selected' : ''}>Export</option>
                         </select>
 
                         <input type="text" name="search" placeholder="Search log content..." value="${currentSearch}" class="filter-input">
@@ -174,10 +170,6 @@
 <%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
 
 <script>
-function exportLogs() {
-    window.location.href = '${pageContext.request.contextPath}/admin/logs/export';
-}
-
 function showToast(message, type) {
     var container = document.getElementById('toastContainer');
     var toast = document.createElement('div');
