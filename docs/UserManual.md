@@ -121,7 +121,38 @@ The number depends on your user ID.
 
 1. Open **Applications**.
 2. Review the current application status list.
-3. Monitor whether the application is `PENDING`, `INTERVIEW`, `ACCEPTED`, or `REJECTED`.
+3. Monitor whether the application is `PENDING`, `INTERVIEW`, `ACCEPTED`, `REJECTED`, or `WITHDRAWN`.
+
+### 3.10 Withdraw a pending application
+
+1. Open **Applications**.
+2. Right-click on a PENDING application row.
+3. Select **Withdraw** from the context menu.
+4. The application status changes to WITHDRAWN.
+
+> **Note**: Only PENDING applications can be withdrawn.
+
+### 3.11 Delete an application record
+
+1. Open **Applications**.
+2. Right-click on any application row (PENDING, WITHDRAWN, ACCEPTED, or REJECTED).
+3. Select **Delete Record** from the context menu.
+4. Confirm the deletion in the modal dialog.
+5. The application record is permanently removed.
+
+> **Note**: You can delete any of your own applications regardless of status. This action cannot be undone.
+
+### 3.12 Context menu options
+
+The right-click context menu shows different options based on application status:
+
+| Application Status | Withdraw | Delete Record |
+|-------------------|----------|---------------|
+| PENDING | Yes | Yes |
+| INTERVIEW | No | Yes |
+| ACCEPTED | No | Yes |
+| REJECTED | No | Yes |
+| WITHDRAWN | No | Yes |
 
 ---
 

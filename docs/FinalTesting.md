@@ -4,8 +4,8 @@
 |------|-------|
 | **Project** | TA Recruitment System |
 | **Task** | TEST-01 (B-05) |
-| **Version** | Final / Iteration 4 |
-| **Date** | 2026-05-17 |
+| **Version** | Final / Iteration 5 |
+| **Date** | 2026-05-21 |
 | **Base URL** | `http://localhost:8080/ta-webapp/` |
 | **Test type** | Manual functional + negative testing |
 | **Owner** | Team B (framework); Team A may supplement TA/CV screenshots |
@@ -89,6 +89,9 @@ Team A may add TA/CV-specific captures; Team B owns the document structure and n
 | TC-13 | Admin view workload | Normal |
 | TC-14 | `/admin/stats` does not break | Normal |
 | TC-15 | Invalid PDF upload rejected | Exception |
+| TC-16 | TA withdraw pending application | Normal |
+| TC-17 | TA delete any application | Normal |
+| TC-18 | Context menu shows correct options | Normal |
 
 ---
 
@@ -148,7 +151,7 @@ Team A may add TA/CV-specific captures; Team B owns the document structure and n
 | **Test ID** | TC-04 |
 | **Purpose** | Verify TA can upload a valid PDF CV (≤ 5 MB). |
 | **Precondition** | Logged in as TA without an uploaded CV (e.g. `luna` if no `data/cvs/U002.pdf`). Valid sample PDF available. |
-| **Steps** | 1. Open `/ta/profile`.<br>2. In **Original PDF CV**, choose a `.pdf` file (&lt; 5 MB).<br>3. Click **Upload CV**.<br>4. Confirm profile section shows uploaded file name. |
+| **Steps** | 1. Open `/ta/profile`.<br>2. In **Original PDF CV**, choose a `.pdf` file (< 5 MB).<br>3. Click **Upload CV**.<br>4. Confirm profile section shows uploaded file name. |
 | **Expected Result** | Success message; `data/cvs/U002.pdf` created; user CSV metadata (`cvStoredName`, `cvUploadedAt`) updated; **View / Replace / Delete** controls visible. |
 | **Actual Result** | _To be filled during test run_ |
 | **Status** | To be executed |
@@ -321,13 +324,58 @@ Team A may add TA/CV-specific captures; Team B owns the document structure and n
 
 ---
 
+### TC-16 — TA Withdraw Pending Application
+
+| Field | Content |
+|-------|---------|
+| **Test ID** | TC-16 |
+| **Purpose** | Verify TA can withdraw a pending application via right-click context menu. |
+| **Precondition** | Logged in as TA (`seele` or `luna`). At least one PENDING application exists. |
+| **Steps** | 1. Open `/applications`.<br>2. Locate a PENDING application row.<br>3. Right-click on the row.<br>4. Click **Withdraw** from the context menu. |
+| **Expected Result** | Status changes to WITHDRAWN; flash message "Application withdrawn successfully"; `data/applications.csv` updated with WITHDRAWN status and notes. |
+| **Actual Result** | _To be filled during test run_ |
+| **Status** | To be executed |
+| **Screenshot Evidence** | `docs/screenshots/final/TC-16-ta-withdraw.png` |
+
+---
+
+### TC-17 — TA Delete Any Application
+
+| Field | Content |
+|-------|---------|
+| **Test ID** | TC-17 |
+| **Purpose** | Verify TA can delete any of their applications (regardless of status) via right-click context menu. |
+| **Precondition** | Logged in as TA with at least one WITHDRAWN, ACCEPTED, or REJECTED application. |
+| **Steps** | 1. Open `/applications`.<br>2. Locate a WITHDRAWN/ACCEPTED/REJECTED application row.<br>3. Right-click on the row.<br>4. Click **Delete Record**.<br>5. Confirm in the modal dialog. |
+| **Expected Result** | Application removed from list; `data/applications.csv` record deleted; flash message "Application deleted successfully". |
+| **Actual Result** | _To be filled during test run_ |
+| **Status** | To be executed |
+| **Screenshot Evidence** | `docs/screenshots/final/TC-17-ta-delete-app.png` |
+
+---
+
+### TC-18 — Context Menu Shows Correct Options
+
+| Field | Content |
+|-------|---------|
+| **Test ID** | TC-18 |
+| **Purpose** | Verify context menu displays correct options based on application status. |
+| **Precondition** | Logged in as TA with applications in different statuses (PENDING and WITHDRAWN/ACCEPTED/REJECTED). |
+| **Steps** | 1. Open `/applications`.<br>2. Right-click on a PENDING application row.<br>3. Observe menu options (Withdraw + Delete Record should be visible).<br>4. Right-click on a WITHDRAWN/ACCEPTED/REJECTED application row.<br>5. Observe menu options (Only Delete Record should be visible). |
+| **Expected Result** | PENDING: Both "Withdraw" and "Delete Record" visible.<br>WITHDRAWN/ACCEPTED/REJECTED: Only "Delete Record" visible. |
+| **Actual Result** | _To be filled during test run_ |
+| **Status** | To be executed |
+| **Screenshot Evidence** | `docs/screenshots/final/TC-18-context-menu.png` |
+
+---
+
 ## 5. Execution Record (Summary)
 
 | Test ID | Executed by |   Date    | Status | Notes |
 |---------|-------------|-----------|--------|-------|
-|  TC-01  |  Yang Gang  | 2026.5.17 | passed |
+|  TC-01  |  Yang Gang  | 2026.5.17 | passed | |
 |  TC-02  |  Yang Gang  | 2026.5.17 | failed | Candidate Summary Builder & Preferred role cannot be saved |
-|  TC-03  |  Yang Gang  | 2026.5.17 | passed |
+|  TC-03  |  Yang Gang  | 2026.5.17 | passed | |
 |  TC-04  |  Yang Gang  | 2026.5.17 | failed | .pdf file cannot be truly uploaded and saved |
 |  TC-05  |  Yang Gang  | 2026.5.17 | failed | .pdf file cannot be truly uploaded and saved |
 |  TC-06  |  Yang Gang  | 2026.5.17 | failed | .pdf file cannot be truly uploaded and saved |
@@ -340,6 +388,9 @@ Team A may add TA/CV-specific captures; Team B owns the document structure and n
 | TC-13 | | | To be executed | |
 | TC-14 | | | To be executed | |
 | TC-15 | | | To be executed | |
+| TC-16 | | | To be executed | |
+| TC-17 | | | To be executed | |
+| TC-18 | | | To be executed | |
 
 ---
 
@@ -349,6 +400,7 @@ Team A may add TA/CV-specific captures; Team B owns the document structure and n
 2. **Application readiness:** TA must have `SUMMARY_COMPLETE` profile **or** uploaded PDF before apply (TC-07).
 3. **Charts (TC-13):** Dashboard uses CSS-only charts; no external CDN — suitable for offline demo.
 4. **Related docs:** `docs/final/testing_guide.md` (environment setup), `README.md` (feature list).
+5. **TC-16/17/18 (New in Iteration 5):** Application withdraw and delete features require right-click context menu interaction.
 
 ---
 

@@ -3,7 +3,7 @@
 ## 1. Demo Goal
 
 This demo script is designed for an 8–10 minute video presentation.
-It shows the complete recruitment workflow across Admin, MO, and TA roles, including normal actions and error handling.
+It shows the complete recruitment workflow across Admin, MO, and TA roles, including normal actions, error handling, and application management (withdraw/delete).
 
 ---
 
@@ -14,9 +14,11 @@ It shows the complete recruitment workflow across Admin, MO, and TA roles, inclu
 3. TA login and profile completion
 4. TA uploads PDF CV
 5. TA browses jobs and applies
-6. MO reviews applicant summary and CV, then accepts an applicant
-7. Admin checks workload/statistics changes
-8. Error handling demonstrations
+6. TA withdraws a pending application
+7. TA deletes a withdrawn/accepted application
+8. MO reviews applicant summary and CV, then accepts an applicant
+9. Admin checks workload/statistics changes
+10. Error handling demonstrations
 
 ---
 
@@ -157,7 +159,36 @@ Before recording, ensure:
 
 ---
 
-### Segment 6 — MO reviews the applicant and decides
+### Segment 6 — TA manages applications (withdraw/delete)
+
+**Estimated time: 1 minute**
+
+1. Open **Applications** page.
+2. Locate a PENDING application.
+3. Right-click on the PENDING application row.
+4. Show the context menu (Withdraw + Delete Record visible).
+5. Click **Withdraw**.
+6. Show the status changes to WITHDRAWN.
+7. Right-click on the WITHDRAWN application.
+8. Show the context menu (only Delete Record visible).
+9. Click **Delete Record**.
+10. Confirm deletion in the modal.
+
+**Talking points**
+
+- TA can withdraw pending applications.
+- TA can delete any of their applications regardless of status.
+- Context menu options change based on application status.
+
+**Suggested screenshot**
+
+- Context menu for PENDING status
+- Context menu for WITHDRAWN/ACCEPTED/REJECTED status
+- Application list after withdraw/delete
+
+---
+
+### Segment 7 — MO reviews the applicant and decides
 
 **Estimated time: 1.5 minutes**
 
@@ -181,7 +212,7 @@ Before recording, ensure:
 
 ---
 
-### Segment 7 — Admin checks workload/statistics changes
+### Segment 8 — Admin checks workload/statistics changes
 
 **Estimated time: 1 minute**
 
@@ -201,7 +232,7 @@ Before recording, ensure:
 
 ---
 
-### Segment 8 — Error handling demo
+### Segment 9 — Error handling demo
 
 **Estimated time: 1 minute**
 
@@ -236,7 +267,7 @@ Demonstrate three quick error cases:
 
 Close the demo by summarizing:
 
-- TA can manage profile, summary, PDF CV, and applications.
+- TA can manage profile, summary, PDF CV, applications, and withdraw/delete applications.
 - MO can publish jobs and review applicants.
 - Admin can manage and monitor the whole system.
 
