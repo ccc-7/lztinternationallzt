@@ -130,6 +130,57 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+/* Right-click context menu */
+.context-menu {
+    position: fixed;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    min-width: 160px;
+    z-index: 1001;
+    display: none;
+    overflow: hidden;
+}
+.context-menu.active {
+    display: block;
+}
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.875rem;
+    color: #333;
+    text-decoration: none;
+}
+.context-menu-item:hover {
+    background: #f5f5f5;
+}
+.context-menu-item.danger {
+    color: #dc3545;
+}
+.context-menu-item.danger:hover {
+    background: #fff1f1;
+}
+.context-menu-item svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+.context-menu-divider {
+    height: 1px;
+    background: #eee;
+    margin: 4px 0;
+}
+.context-menu-item.disabled {
+    color: #aaa;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 </style>
 
 <div class="layout layout-ta">
@@ -213,7 +264,7 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach var="a" items="${applications}">
-                                <tr>
+                                <tr oncontextmenu="showContextMenu(event, '${a.applicationId}', '${a.status}')" data-app-id="${a.applicationId}" data-status="${a.status}">
                                     <td><span class="app-id">${a.applicationId}</span></td>
                                     <td><strong>${a.jobTitle}</strong></td>
                                     <td><span class="module-code">${a.moduleCode}</span></td>
@@ -223,19 +274,19 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${a.status == 'REJECTED' && not empty a.notes}">
-                                                <button type="button" class="feedback-btn feedback-btn-rejected" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Rejection Reason')">
+                                                <button type="button" class="feedback-btn feedback-btn-rejected btn-view-feedback" data-notes="${fn:escapeXml(a.notes)}" data-title="Rejection Reason">
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                                     View Reason
                                                 </button>
                                             </c:when>
                                             <c:when test="${a.status == 'INTERVIEW' && not empty a.notes}">
-                                                <button type="button" class="feedback-btn feedback-btn-interview" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Interview Details')">
+                                                <button type="button" class="feedback-btn feedback-btn-interview btn-view-feedback" data-notes="${fn:escapeXml(a.notes)}" data-title="Interview Details">
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                                     View Details
                                                 </button>
                                             </c:when>
                                             <c:when test="${a.status == 'ACCEPTED' && not empty a.notes}">
-                                                <button type="button" class="feedback-btn feedback-btn-accepted" onclick="showReasonModal('${fn:escapeXml(a.notes)}', 'Acceptance Notice')">
+                                                <button type="button" class="feedback-btn feedback-btn-accepted btn-view-feedback" data-notes="${fn:escapeXml(a.notes)}" data-title="Acceptance Notice">
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                                                     View Notice
                                                 </button>
@@ -274,7 +325,128 @@
     </div>
 </div>
 
+<!-- Right-click context menu -->
+<div class="context-menu" id="contextMenu">
+    <div class="context-menu-item" id="menuWithdraw" onclick="withdrawApplication()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Withdraw
+    </div>
+    <div class="context-menu-divider"></div>
+    <div class="context-menu-item danger" id="menuDelete" onclick="deleteApplication()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Delete Record
+    </div>
+</div>
+
+<!-- Confirmation modal for delete -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this application record? This action cannot be undone.</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+            <form id="deleteForm" method="post" style="display: inline;">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="applicationId" id="deleteAppId">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+var currentAppId = null;
+var currentAppStatus = null;
+
+function showContextMenu(event, appId, status) {
+    event.preventDefault();
+    currentAppId = appId;
+    currentAppStatus = status;
+
+    var menu = document.getElementById('contextMenu');
+    var withdrawItem = document.getElementById('menuWithdraw');
+    var deleteItem = document.getElementById('menuDelete');
+
+    // Show/hide options based on application status
+    // Only PENDING applications can be withdrawn
+    // Delete is available for all statuses (PENDING, WITHDRAWN, ACCEPTED, REJECTED)
+    if (status === 'PENDING') {
+        withdrawItem.style.display = 'flex';
+        deleteItem.style.display = 'flex';
+    } else {
+        // For WITHDRAWN, ACCEPTED, REJECTED - only show delete
+        withdrawItem.style.display = 'none';
+        deleteItem.style.display = 'flex';
+    }
+
+    // Position the menu
+    var x = event.clientX;
+    var y = event.clientY;
+    var menuWidth = 160;
+    var menuHeight = 90;
+
+    // Adjust if menu would go off screen
+    if (x + menuWidth > window.innerWidth) {
+        x = window.innerWidth - menuWidth - 10;
+    }
+    if (y + menuHeight > window.innerHeight) {
+        y = window.innerHeight - menuHeight - 10;
+    }
+
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    menu.classList.add('active');
+}
+
+function hideContextMenu() {
+    document.getElementById('contextMenu').classList.remove('active');
+}
+
+function withdrawApplication() {
+    if (!currentAppId) return;
+
+    var form = document.createElement('form');
+    form.method = 'post';
+    form.action = '${pageContext.request.contextPath}/applications';
+
+    var actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = 'withdraw';
+    form.appendChild(actionInput);
+
+    var appIdInput = document.createElement('input');
+    appIdInput.type = 'hidden';
+    appIdInput.name = 'applicationId';
+    appIdInput.value = currentAppId;
+    form.appendChild(appIdInput);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function deleteApplication() {
+    if (!currentAppId) return;
+    document.getElementById('deleteAppId').value = currentAppId;
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+}
+
 function showReasonModal(content, title) {
     var modalTitle = title || 'Details';
     var displayContent = content || 'No details provided.';
@@ -295,10 +467,34 @@ function closeReasonModal() {
     document.getElementById('reasonModal').classList.remove('active');
 }
 
-// Close modal on overlay click
+// Event delegation for feedback buttons using data attributes
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-view-feedback');
+    if (btn) {
+        var notes = btn.getAttribute('data-notes');
+        var title = btn.getAttribute('data-title');
+        showReasonModal(notes, title);
+    }
+});
+
+// Close context menu on click outside
+document.addEventListener('click', function(e) {
+    var menu = document.getElementById('contextMenu');
+    if (!menu.contains(e.target)) {
+        hideContextMenu();
+    }
+});
+
+// Close modals on overlay click
 document.getElementById('reasonModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeReasonModal();
+    }
+});
+
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeConfirmModal();
     }
 });
 </script>

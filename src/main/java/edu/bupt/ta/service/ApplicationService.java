@@ -319,6 +319,69 @@ public class ApplicationService {
     }
 
     /**
+     * Withdraws an application by setting its status to WITHDRAWN.
+     * Only applications with PENDING status can be withdrawn by the TA.
+     *
+     * @param applicationId the application ID to withdraw
+     * @param userId the user ID (for ownership validation)
+     * @throws IllegalArgumentException if application not found, not owned by user, or not in PENDING status
+     */
+    public void withdrawApplication(String applicationId, String userId) {
+        List<Application> applications = storage.loadApplications();
+        boolean found = false;
+
+        for (Application app : applications) {
+            if (app.getApplicationId().equals(applicationId)) {
+                if (!app.getUserId().equals(userId)) {
+                    throw new IllegalArgumentException("You do not have permission to withdraw this application.");
+                }
+                if (app.getStatus() != ApplicationStatus.PENDING) {
+                    throw new IllegalArgumentException("Only pending applications can be withdrawn.");
+                }
+                app.setStatus(ApplicationStatus.WITHDRAWN);
+                app.setNotes("Withdrawn by applicant");
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            throw new IllegalArgumentException("Application not found.");
+        }
+
+        storage.saveApplications(applications);
+    }
+
+    /**
+     * Permanently deletes an application. Only the owner can delete their application.
+     *
+     * @param applicationId the application ID to delete
+     * @param userId the user ID (for ownership validation)
+     * @throws IllegalArgumentException if application not found or not owned by user
+     */
+    public void deleteOwnApplication(String applicationId, String userId) {
+        List<Application> applications = storage.loadApplications();
+        boolean found = false;
+
+        for (Application app : applications) {
+            if (app.getApplicationId().equals(applicationId)) {
+                if (!app.getUserId().equals(userId)) {
+                    throw new IllegalArgumentException("You do not have permission to delete this application.");
+                }
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            throw new IllegalArgumentException("Application not found.");
+        }
+
+        applications.removeIf(a -> a.getApplicationId().equals(applicationId));
+        storage.saveApplications(applications);
+    }
+
+    /**
      * @param userId the user ID to count for
      * @return the number of active (PENDING or INTERVIEW) applications for this user
      */
