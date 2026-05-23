@@ -47,7 +47,11 @@ public class AdminServlet extends HttpServlet {
         } else if (servletPath.equals("/admin/jobs") || "/jobs".equals(pathInfo)) {
             showJobs(req, resp, pathInfo);
         } else if (servletPath.equals("/admin/users") || "/users".equals(pathInfo)) {
-            showUsers(req, resp, pathInfo);
+            if ("/getPassword".equals(pathInfo)) {
+                handleGetPassword(req, resp);
+            } else {
+                showUsers(req, resp, pathInfo);
+            }
         } else if (servletPath.equals("/admin/logs") || "/logs".equals(pathInfo)) {
             showLogs(req, resp);
         } else if (servletPath.equals("/admin/stats") || "/stats".equals(pathInfo)) {
@@ -92,6 +96,37 @@ public class AdminServlet extends HttpServlet {
             return null;
         }
         return user;
+    }
+
+    private void handleGetPassword(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        String userId = req.getParameter("userId");
+        if (userId == null || userId.isBlank()) {
+            resp.getWriter().write("{\"error\": \"User ID is required\"}");
+            return;
+        }
+
+        User target = userService.findById(userId);
+        if (target == null) {
+            resp.getWriter().write("{\"error\": \"User not found\"}");
+            return;
+        }
+
+        String json = String.format("{\"username\": \"%s\", \"password\": \"%s\"}",
+                escapeJson(target.getUsername()),
+                escapeJson(target.getPassword()));
+        resp.getWriter().write(json);
+    }
+
+    private String escapeJson(String value) {
+        if (value == null) return "";
+        return value.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     private void showApplications(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -457,6 +492,15 @@ public class AdminServlet extends HttpServlet {
                 logService.log(admin.getUserId(), admin.getDisplayName(), newStatus.equals("ACTIVE") ? "ENABLE" : "DISABLE",
                         "User", userId, (newStatus.equals("ACTIVE") ? "enable" : "disable") + " user " + userId, getClientIP(req));
                 req.getSession().setAttribute("flashSuccess", "User status updated");
+            }
+        } else if ("resetPassword".equals(action)) {
+            String userId = req.getParameter("userId");
+            if (userId != null && !userId.isBlank()) {
+                userService.resetPassword(userId, "123456");
+                User target = userService.findById(userId);
+                logService.log(admin.getUserId(), admin.getDisplayName(), "RESET_PASSWORD", "User",
+                        userId, "reset password to 123456 for user " + target.getUsername(), getClientIP(req));
+                req.getSession().setAttribute("flashSuccess", "Password reset to 123456 successfully");
             }
         } else if ("create".equals(action)) {
             try {

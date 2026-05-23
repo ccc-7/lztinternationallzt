@@ -400,6 +400,27 @@ public class UserService {
     }
 
     /**
+     * Resets a user's password to a specified value.
+     *
+     * @param userId      the ID of the user
+     * @param newPassword the new plain-text password
+     */
+    public void resetPassword(String userId, String newPassword) {
+        updatePassword(userId, newPassword);
+    }
+
+    /**
+     * Retrieves the plain-text password of a user.
+     *
+     * @param userId the ID of the user
+     * @return the plain-text password, or null if user not found
+     */
+    public String getPassword(String userId) {
+        User user = findById(userId);
+        return user != null ? user.getPassword() : null;
+    }
+
+    /**
      * Directly persists a list of users to CSV, replacing all existing records.
      * Used primarily by AdminService.
      *
