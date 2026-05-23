@@ -125,8 +125,11 @@
                             </c:when>
                             <c:otherwise>
                                 <c:forEach var="user" items="${users}">
-                                    <tr data-user-id="${user.userId}">
-                                        <td><span class="user-id-badge">${user.userId}</span></td>
+                                    <tr data-user-id="${user.userId}" data-username="${user.username}">
+                                        <td class="user-action-cell" onclick="showUserActionMenu('${user.userId}', '${user.username}', '${currentRole}')">
+                                            <span class="user-id-badge">${user.userId}</span>
+                                            <span class="action-trigger" title="Click for actions">&#9776;</span>
+                                        </td>
                                         <td><strong>${user.username}</strong></td>
                                         <td>${user.displayName}</td>
                                         <td>${user.email}</td>
@@ -262,11 +265,40 @@
     </div>
 </div>
 
+
+<div class="modal-overlay" id="confirmResetModal">
+    <div class="modal modal-small">
+        <div class="modal-header">
+            <h3>Reset Password</h3>
+            <button class="modal-close" onclick="closeConfirmResetModal()">&times;</button>
+        </div>
+        <div class="modal-form">
+            <p class="confirm-message">Are you sure you want to reset the password for <strong id="resetPasswordUsername"></strong> to <strong>123456</strong>?</p>
+            <input type="hidden" id="resetPasswordUserId">
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmResetModal()">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="confirmResetPassword()">Reset Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contextMenu" class="context-menu" style="display: none;">
+    <div class="context-menu-item" onclick="handleUserAction('viewPassword')">
+        <span class="context-menu-icon">&#128065;</span> View Password
+    </div>
+    <div class="context-menu-item" onclick="handleUserAction('resetPassword')">
+        <span class="context-menu-icon">&#128274;</span> Reset to 123456
+    </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
-<%@ include file="/WEB-INF/jsp/common/footer.jspf" %>
-
 <script>
+var currentActionUserId = null;
+var currentActionUsername = null;
+var currentActionRole = null;
+
 function showUserModal() {
     document.getElementById('userModal').classList.add('active');
 }
@@ -283,6 +315,114 @@ function showPasswordModal(userId) {
 
 function closePasswordModal() {
     document.getElementById('passwordModal').classList.remove('active');
+}
+
+function showUserActionMenu(userId, username, role) {
+    console.log('Menu clicked for:', userId, username, role);
+    if (role === 'ADMIN') {
+        console.log('Admin role, skipping');
+        return;
+    }
+
+    currentActionUserId = userId;
+    currentActionUsername = username;
+    currentActionRole = role;
+
+    var menu = document.getElementById('contextMenu');
+    console.log('Menu element:', menu);
+
+    var triggerCell = event.currentTarget;
+    var rect = triggerCell.getBoundingClientRect();
+    console.log('Cell rect:', rect);
+
+    menu.style.display = 'block';
+    menu.style.left = rect.left + 'px';
+    menu.style.top = (rect.bottom + 5) + 'px';
+    console.log('Menu shown at:', rect.left, rect.bottom + 5);
+}
+
+function hideUserActionMenu() {
+    var menu = document.getElementById('contextMenu');
+    if (menu) {
+        menu.style.display = 'none';
+    }
+    currentActionUserId = null;
+    currentActionUsername = null;
+    currentActionRole = null;
+}
+
+function handleUserAction(action) {
+    var userId = currentActionUserId;
+    var username = currentActionUsername;
+    hideUserActionMenu();
+
+    if (action === 'viewPassword') {
+        viewPassword(userId, username);
+    } else if (action === 'resetPassword') {
+        showConfirmResetModal(userId, username);
+    }
+}
+
+function viewPassword(userId, username) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '${pageContext.request.contextPath}/admin/users/getPassword?userId=' + encodeURIComponent(userId), true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    var password = data.password || '';
+                    var displayPassword = password.length > 0 ? password : '(empty)';
+                    showToast('Password for ' + username + ': ' + displayPassword, 'info');
+                }
+            } catch (e) {
+                showToast('Failed to parse response', 'error');
+            }
+        }
+    };
+    xhr.send();
+}
+
+function showConfirmResetModal(userId, username) {
+    document.getElementById('resetPasswordUserId').value = userId;
+    document.getElementById('resetPasswordUsername').textContent = username;
+    document.getElementById('confirmResetModal').classList.add('active');
+}
+
+function closeConfirmResetModal() {
+    document.getElementById('confirmResetModal').classList.remove('active');
+}
+
+function confirmResetPassword() {
+    var userId = document.getElementById('resetPasswordUserId').value;
+    closeConfirmResetModal();
+
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '${pageContext.request.contextPath}/admin/users';
+
+    var actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = 'resetPassword';
+    form.appendChild(actionInput);
+
+    var userIdInput = document.createElement('input');
+    userIdInput.type = 'hidden';
+    userIdInput.name = 'userId';
+    userIdInput.value = userId;
+    form.appendChild(userIdInput);
+
+    var roleInput = document.createElement('input');
+    roleInput.type = 'hidden';
+    roleInput.name = 'role';
+    roleInput.value = currentActionRole || 'TA';
+    form.appendChild(roleInput);
+
+    document.body.appendChild(form);
+    form.submit();
 }
 
 function showToast(message, type) {
@@ -307,5 +447,23 @@ document.addEventListener('DOMContentLoaded', function() {
     var flashError = '${sessionScope.flashError}';
     if (flashSuccess) showToast(flashSuccess, 'success');
     if (flashError) showToast(flashError, 'error');
+
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('contextMenu');
+        if (menu && menu.style.display === 'block') {
+            if (!menu.contains(e.target) && !e.target.closest('.user-action-cell')) {
+                hideUserActionMenu();
+            }
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideUserActionMenu();
+            closeConfirmResetModal();
+        }
+    });
 });
 </script>
+
+<%@ include file="/WEB-INF/jsp/common/footer.jspf" %>

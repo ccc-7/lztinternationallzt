@@ -3522,3 +3522,131 @@ code {
 .job-filter-bar .btn {
     white-space: nowrap;
 }
+
+/* ===== Context Menu ===== */
+.context-menu {
+    display: none;
+    position: fixed;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-elevated);
+    min-width: 180px;
+    z-index: 2000;
+    padding: 4px 0;
+    overflow: hidden;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.context-menu-item:hover {
+    background: var(--bg-hover);
+    color: var(--enterprise-blue);
+}
+
+.context-menu-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* ===== User Action Cell ===== */
+.user-action-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+    position: relative;
+}
+
+.user-action-cell:hover {
+    background: var(--enterprise-blue-light);
+}
+
+.user-action-cell:hover .action-trigger {
+    color: var(--enterprise-blue);
+}
+
+.action-trigger {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
+    pointer-events: none;
+}
+
+/* ===== Password Display ===== */
+.password-display {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.password-input {
+    flex: 1;
+}
+
+.btn-toggle-password {
+    padding: 8px 12px;
+    background: var(--gray-100);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-toggle-password:hover {
+    background: var(--gray-200);
+}
+
+/* ===== Confirm Message ===== */
+.confirm-message {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+}
+
+/* ===== Warning Button ===== */
+.btn-warning {
+    background: var(--status-orange);
+    color: #fff;
+    border: 1px solid var(--status-orange);
+}
+
+.btn-warning:hover {
+    background: #e76b00;
+    border-color: #e76b00;
+    opacity: 1;
+}
+
+/* ===== Table Row Context Menu Indicator ===== */
+.custom-table tbody tr[data-user-id] {
+    cursor: context-menu;
+}
+
+.custom-table tbody tr[data-user-id]:hover {
+    background: var(--enterprise-blue-light);
+}
+
+/* ===== Readonly Input ===== */
+input[readonly] {
+    background: var(--gray-100) !important;
+    color: var(--text-secondary) !important;
+    cursor: default;
+}
